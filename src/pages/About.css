@@ -52,7 +52,7 @@
   .who-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
   @media(max-width:900px){.who-grid{grid-template-columns:1fr;}}
   .who-copy p{font-size:15px;color:var(--slate);margin-bottom:16px;line-height:1.75;}
-  .who-photo{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/5;}
+  .who-photo{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:3/2;}
   .who-photo img{width:100%;height:100%;object-fit:cover;}
   .who-photo-tag{position:absolute;top:14px;right:14px;font-family:var(--mono);font-size:10px;color:var(--gold);background:rgba(20,21,42,0.72);border:1px solid rgba(240,177,36,0.3);padding:4px 10px;border-radius:100px;backdrop-filter:blur(6px);}
 
