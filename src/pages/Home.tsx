@@ -9,6 +9,7 @@ import canadaImg from '../assets/destinations/canada.jpg';
 import usaImg from '../assets/destinations/usa.jpg';
 import ukImg from '../assets/destinations/uk.jpg';
 import irelandImg from '../assets/destinations/ireland.jpg';
+import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import './Home.css';
 
 const HEADLINE_WORDS = ['global education', 'visa success', 'seamless travel'];
@@ -296,15 +297,21 @@ export default function Home() {
       {/* PARTNERS */}
       <section className="partners-section">
         <div className="wrap">
-          <div className="partners-label reveal">
-            <span className="eyebrow">Partners</span>
-            <h2 style={{ fontSize: 24, marginTop: 12 }}>Trusted Global Partners</h2>
-            <p style={{ color: 'var(--slate)', marginTop: 10, fontSize: 14.5 }}>We work with recognized international partners to give your application stronger credibility and better outcomes.</p>
-          </div>
-          <div className="partners-row reveal">
-            <span className="partner-name">ApplyBoard</span>
-            <span className="partner-name">KC Overseas Education</span>
-            <span className="partner-name">BorderPass</span>
+          <div className="partners-grid">
+            <div className="reveal">
+              <span className="eyebrow">Partners</span>
+              <h2 style={{ fontSize: 26, marginTop: 12 }}>Trusted Global Partners</h2>
+              <p style={{ color: 'var(--slate)', marginTop: 10, fontSize: 14.5, maxWidth: 420 }}>We work with recognized international partners to give your application stronger credibility and better outcomes.</p>
+              <div className="partners-row" style={{ marginTop: 30, justifyContent: 'flex-start' }}>
+                <span className="partner-name">ApplyBoard</span>
+                <span className="partner-name">KC Overseas Education</span>
+                <span className="partner-name">BorderPass</span>
+              </div>
+            </div>
+            <div className="partners-photo reveal">
+              <img src={kcOverseasTeam} alt="Our KC Overseas partner team" />
+              <span className="partners-photo-caption">Our KC Overseas Education partner team</span>
+            </div>
           </div>
         </div>
       </section>
