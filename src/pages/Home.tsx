@@ -15,9 +15,9 @@ import './Home.css';
 
 const HEADLINE_WORDS = ['global education', 'visa success', 'seamless travel'];
 const LEAD_TEXTS = [
-  'From admission and visa processing to flights and accommodation Oma Synergies guides you end to end, with real-time tracking every step of the way.',
-  'Admissions. Visas. Flights. Accommodation. One trusted partner tracked in real time from application to arrival.',
-  'From admission to arrival, we guide every step, visas, flights, accommodation, with real-time updates you can actually see, not just promises.',
+  'From admission and visa processing to flights, tours, and accommodation Oma Synergies guides you end to end, with real-time tracking every step of the way.',
+  'Admissions. Visas. Flights. Tours. Accommodation. One trusted partner tracked in real time from application to arrival.',
+  'From admission to arrival, we guide every step, visas, flights, tours, accommodation, with real-time updates you can actually see, not just promises.',
 ];
 
 const SERVICES_CORE = [
