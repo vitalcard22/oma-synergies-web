@@ -10,6 +10,7 @@ import usaImg from '../assets/destinations/usa.jpg';
 import ukImg from '../assets/destinations/uk.jpg';
 import irelandImg from '../assets/destinations/ireland.jpg';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
+import wwdTeamPhoto from '../assets/wwd-team.jpg';
 import './Home.css';
 
 const HEADLINE_WORDS = ['global education', 'visa success', 'seamless travel'];
@@ -247,8 +248,7 @@ export default function Home() {
               <p>Study abroad and visa support are where we started, and where we're strongest. Travel services round out the journey once your plans are set.</p>
             </div>
             <div className="wwd-photo reveal">
-              <span className="wwd-photo-tag">Sample Photo</span>
-              <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=700&q=80" alt="Student prepared for study abroad" />
+              <img src={wwdTeamPhoto} alt="The Oma Synergies team at our office" />
               <div className="wwd-photo-badge">
                 <div>
                   <div className="num">2018</div>
