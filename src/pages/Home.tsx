@@ -177,6 +177,10 @@ export default function Home() {
               <circle cx="660" cy="262" r="3" opacity="0.7" />
               <circle cx="1000" cy="500" r="3" opacity="0.7" />
             </g>
+            <g>
+              <path d="M0 0 L 7 -2 L 10 -8 L 12 -8 L 11 -1 L 18 1 L 18 3 L 11 4 L 10 11 L 8 11 L 7 3 Z" fill="#F0B124" />
+              <animateMotion dur="7s" repeatCount="indefinite" path="M300,310 Q410,150 520,119" rotate="auto" />
+            </g>
           </svg>
         </div>
         <div className="wrap hero-grid">
