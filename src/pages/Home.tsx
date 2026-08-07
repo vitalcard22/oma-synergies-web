@@ -5,6 +5,10 @@ import Footer from '../components/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { useCountUp } from '../hooks/useCountUp';
 import logoIcon from '../assets/logo-icon.png';
+import canadaImg from '../assets/destinations/canada.jpg';
+import usaImg from '../assets/destinations/usa.jpg';
+import ukImg from '../assets/destinations/uk.jpg';
+import irelandImg from '../assets/destinations/ireland.jpg';
 import './Home.css';
 
 const HEADLINE_WORDS = ['global education', 'visa success', 'seamless travel'];
@@ -28,10 +32,10 @@ const SERVICES_TRAVEL = [
 ];
 
 const DESTINATIONS = [
-  { name: 'Canada', img: 'https://images.unsplash.com/photo-1519832979-6fa011b87667?w=600&q=80', processing: '8–12 weeks', slug: 'canada' },
-  { name: 'USA', img: 'https://images.unsplash.com/photo-1485738422979-f5c462d49f74?w=600&q=80', processing: '6–10 weeks', slug: 'usa' },
-  { name: 'United Kingdom', img: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80', processing: '3–6 weeks', slug: 'uk' },
-  { name: 'Ireland', img: 'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?w=600&q=80', processing: '4–8 weeks', slug: 'ireland' },
+  { name: 'Canada', img: canadaImg, processing: '8–12 weeks', slug: 'canada' },
+  { name: 'USA', img: usaImg, processing: '6–10 weeks', slug: 'usa' },
+  { name: 'United Kingdom', img: ukImg, processing: '3–6 weeks', slug: 'uk' },
+  { name: 'Ireland', img: irelandImg, processing: '4–8 weeks', slug: 'ireland' },
   { name: 'France', img: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=600&q=80', processing: '4–8 weeks', slug: 'france' },
   { name: 'Italy', img: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&q=80', processing: '4–8 weeks', slug: 'italy' },
   { name: 'Sweden', img: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=600&q=80', processing: '6–10 weeks', slug: 'sweden' },
