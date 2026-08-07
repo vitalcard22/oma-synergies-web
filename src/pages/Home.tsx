@@ -253,7 +253,7 @@ export default function Home() {
               <p>Study abroad and visa support are where we started, and where we're strongest. Travel services round out the journey once your plans are set.</p>
             </div>
             <div className="wwd-photo reveal">
-              <img src={wwdTeamPhoto} alt="The Oma Synergies team at our office" />
+              <img src={wwdTeamPhoto} alt="Student excited with passport and travel plans ready" />
               <div className="wwd-photo-badge">
                 <div>
                   <div className="num">2018</div>
