@@ -1,16 +1,17 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import About from './pages/About';
 import Placeholder from './pages/Placeholder';
 import './styles/global.css';
 
-const PORT_NOTE = 'This page exists as a full static prototype and is being ported into React next, following the same pattern used for the Home page.';
+const PORT_NOTE = 'This page exists as a full static prototype and is being ported into React next, following the same pattern used for the Home and About pages.';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<Placeholder title="About Us" note={PORT_NOTE} />} />
+        <Route path="/about" element={<About />} />
         <Route path="/services" element={<Placeholder title="Our Services" note={PORT_NOTE} />} />
         <Route path="/services/:slug" element={<Placeholder title="Service Detail" note={PORT_NOTE} />} />
         <Route path="/destinations" element={<Placeholder title="Destinations" note={PORT_NOTE} />} />
