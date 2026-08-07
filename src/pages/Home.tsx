@@ -186,7 +186,7 @@ export default function Home() {
         <div className="wrap hero-grid">
           <div>
             <div className="hero-eyebrow">
-              <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel — One Trusted Partner</span>
+              <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour — One Trusted Partner</span>
             </div>
             <h1>
               Your journey to{' '}
