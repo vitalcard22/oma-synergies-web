@@ -95,8 +95,9 @@
   .membership-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;}
   .board-label{font-family:var(--mono);color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px;}
   .board-label::after{content:"";flex:1;height:1px;background:var(--line);}
-  .board-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
-  @media(max-width:760px){.board-grid{grid-template-columns:repeat(2,1fr);gap:24px 0;}}
+  .board-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;}
+  @media(max-width:900px){.board-grid{grid-template-columns:repeat(3,1fr);gap:24px 0;}}
+  @media(max-width:560px){.board-grid{grid-template-columns:repeat(2,1fr);}}
   .board-item{padding:0 24px;border-left:1px solid var(--line);}
   .board-item:first-child{border-left:none;padding-left:0;}
   @media(max-width:760px){.board-item:nth-child(odd){border-left:none;padding-left:0;}}
