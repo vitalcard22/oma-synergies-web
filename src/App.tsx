@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
+import Contact from './pages/Contact';
 import Placeholder from './pages/Placeholder';
 import './styles/global.css';
 
@@ -18,7 +19,7 @@ export default function App() {
         <Route path="/destinations/:slug" element={<Placeholder title="Destination Detail" note={PORT_NOTE} />} />
         <Route path="/tours" element={<Placeholder title="Tours & Packages" note={PORT_NOTE} />} />
         <Route path="/success-stories" element={<Placeholder title="Success Stories" note={PORT_NOTE} />} />
-        <Route path="/contact" element={<Placeholder title="Contact Us" note={PORT_NOTE} />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/terms" element={<Placeholder title="Terms & Conditions" note={PORT_NOTE} />} />
         <Route path="/privacy" element={<Placeholder title="Privacy Policy" note={PORT_NOTE} />} />
         <Route path="/portal" element={<Placeholder title="Client Portal" note="Coming soon — you'll be able to log in and track your application in real time." />} />
