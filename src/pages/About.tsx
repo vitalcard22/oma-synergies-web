@@ -6,6 +6,7 @@ import adaezePhoto from '../assets/team/adaeze.jpg';
 import increasePhoto from '../assets/team/increase.jpg';
 import nnennaPhoto from '../assets/team/nnenna.jpg';
 import joshuaPhoto from '../assets/team/joshua.jpg';
+import whoWeAreTeam from '../assets/who-we-are-team.jpg';
 import './About.css';
 
 const TEAM = [
@@ -62,8 +63,7 @@ export default function About() {
             </p>
           </div>
           <div className="who-photo reveal">
-            <span className="who-photo-tag">Sample Photo</span>
-            <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=700&q=80" alt="Team consultation" />
+            <img src={whoWeAreTeam} alt="The Oma Synergies team at our Abuja office" />
           </div>
         </div>
       </section>
