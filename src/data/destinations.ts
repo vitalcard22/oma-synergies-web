@@ -2,6 +2,12 @@ import canadaImg from '../assets/destinations/canada.jpg';
 import usaImg from '../assets/destinations/usa.jpg';
 import ukImg from '../assets/destinations/uk.jpg';
 import irelandImg from '../assets/destinations/ireland.jpg';
+import franceImg from '../assets/destinations/france.jpg';
+import italyImg from '../assets/destinations/italy.jpg';
+import austriaImg from '../assets/destinations/austria.jpg';
+import southKoreaImg from '../assets/destinations/south-korea.jpg';
+import philippinesImg from '../assets/destinations/philippines.jpg';
+import chinaImg from '../assets/destinations/china.jpg';
 
 export interface Destination {
   slug: string;
@@ -59,7 +65,7 @@ export const DESTINATIONS: Destination[] = [
     slug: 'france',
     name: 'France',
     region: 'Europe',
-    img: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=1200&q=80',
+    img: franceImg,
     processing: '4–8 weeks',
     why: 'France offers affordable, high-quality education with especially strong programs in business, engineering, and the arts, at a lower cost than many Western countries.',
     programs: ['Business (Grandes Écoles)', 'Fashion & Design', 'Engineering', 'Culinary Arts'],
@@ -69,7 +75,7 @@ export const DESTINATIONS: Destination[] = [
     slug: 'italy',
     name: 'Italy',
     region: 'Europe',
-    img: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&q=80',
+    img: italyImg,
     processing: '4–8 weeks',
     why: 'Italy combines a rich academic tradition with relatively low tuition at public universities, and strong programs in design, fashion, and engineering.',
     programs: ['Design & Fashion', 'Architecture', 'Engineering', 'Art History'],
@@ -89,7 +95,7 @@ export const DESTINATIONS: Destination[] = [
     slug: 'austria',
     name: 'Austria',
     region: 'Europe',
-    img: 'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=1200&q=80',
+    img: austriaImg,
     processing: '6–10 weeks',
     why: 'Austria offers high academic standards and a lower cost of living relative to much of Western Europe, with central access to the rest of the EU.',
     programs: ['Music & Performing Arts', 'Business', 'Engineering', 'Medicine'],
@@ -99,7 +105,7 @@ export const DESTINATIONS: Destination[] = [
     slug: 'south-korea',
     name: 'South Korea',
     region: 'Asia',
-    img: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=1200&q=80',
+    img: southKoreaImg,
     processing: '6–10 weeks',
     why: 'South Korea is a fast-growing technology and business hub, with increasing scholarship opportunities for international students across top universities.',
     programs: ['Business & Trade', 'Engineering', 'Media & Design', 'Korean Studies'],
@@ -109,7 +115,7 @@ export const DESTINATIONS: Destination[] = [
     slug: 'philippines',
     name: 'Philippines',
     region: 'Asia',
-    img: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=1200&q=80',
+    img: philippinesImg,
     processing: '3–6 weeks',
     why: 'The Philippines offers English-taught programs, a lower cost of living, and a welcoming environment for international students, especially in medical fields.',
     programs: ['Medicine', 'Nursing', 'Business Administration', 'Aviation'],
@@ -119,7 +125,7 @@ export const DESTINATIONS: Destination[] = [
     slug: 'china',
     name: 'China',
     region: 'Asia',
-    img: 'https://images.unsplash.com/photo-1508804052814-cd3ba865a116?w=1200&q=80',
+    img: chinaImg,
     processing: '6–10 weeks',
     why: 'China offers extensive scholarship programs and rapidly rising global university rankings, particularly strong in engineering and business.',
     programs: ['Engineering', 'International Business', 'Medicine', 'Mandarin Studies'],

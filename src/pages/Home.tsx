@@ -6,10 +6,7 @@ import FlightBg from '../components/FlightBg';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { useCountUp } from '../hooks/useCountUp';
 import logoIcon from '../assets/logo-icon.png';
-import canadaImg from '../assets/destinations/canada.jpg';
-import usaImg from '../assets/destinations/usa.jpg';
-import ukImg from '../assets/destinations/uk.jpg';
-import irelandImg from '../assets/destinations/ireland.jpg';
+import { DESTINATIONS } from '../data/destinations';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import wwdTeamPhoto from '../assets/wwd-team.jpg';
 import wwdStaffDesk from '../assets/wwd-staff-desk.jpg';
@@ -37,21 +34,6 @@ const SERVICES_CORE = [
 const SERVICES_TRAVEL = [
   { icon: '✈️', title: 'Comprehensive Flight Bookings & Travel Logistics', desc: 'Itinerary planning, competitive flight bookings, visa-purpose reservations, and hotel or short-let accommodation for every traveler.', link: '/services/flights' },
   { icon: '🏠', title: 'Relocation & Destination Assistance', desc: 'Post-visa support to secure safe housing, prepare for departure, and settle smoothly into your new international community.', link: '/services/relocation' },
-];
-
-const DESTINATIONS = [
-  { name: 'Canada', img: canadaImg, processing: '8–12 weeks', slug: 'canada' },
-  { name: 'USA', img: usaImg, processing: '6–10 weeks', slug: 'usa' },
-  { name: 'United Kingdom', img: ukImg, processing: '3–6 weeks', slug: 'uk' },
-  { name: 'Ireland', img: irelandImg, processing: '4–8 weeks', slug: 'ireland' },
-  { name: 'France', img: 'https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=600&q=80', processing: '4–8 weeks', slug: 'france' },
-  { name: 'Italy', img: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&q=80', processing: '4–8 weeks', slug: 'italy' },
-  { name: 'Sweden', img: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=600&q=80', processing: '6–10 weeks', slug: 'sweden' },
-  { name: 'Austria', img: 'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=600&q=80', processing: '6–10 weeks', slug: 'austria' },
-  { name: 'South Korea', img: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=600&q=80', processing: '6–10 weeks', slug: 'south-korea' },
-  { name: 'Philippines', img: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=600&q=80', processing: '3–6 weeks', slug: 'philippines' },
-  { name: 'China', img: 'https://images.unsplash.com/photo-1508804052814-cd3ba865a116?w=600&q=80', processing: '6–10 weeks', slug: 'china' },
-  { name: 'New Zealand', img: 'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=600&q=80', processing: '4–6 weeks', slug: 'new-zealand' },
 ];
 
 const TOURS = [
