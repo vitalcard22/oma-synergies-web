@@ -8,6 +8,8 @@ import austriaImg from '../assets/destinations/austria.jpg';
 import southKoreaImg from '../assets/destinations/south-korea.jpg';
 import philippinesImg from '../assets/destinations/philippines.jpg';
 import chinaImg from '../assets/destinations/china.jpg';
+import swedenImg from '../assets/destinations/sweden.jpg';
+import newZealandImg from '../assets/destinations/new-zealand.jpg';
 
 export interface Destination {
   slug: string;
@@ -85,7 +87,7 @@ export const DESTINATIONS: Destination[] = [
     slug: 'sweden',
     name: 'Sweden',
     region: 'Europe',
-    img: 'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=1200&q=80',
+    img: swedenImg,
     processing: '6–10 weeks',
     why: "Sweden's innovation-driven education system places strong emphasis on sustainability, technology, and research, with programs taught widely in English.",
     programs: ['Sustainability Studies', 'Engineering', 'Computer Science', 'Design'],
@@ -135,7 +137,7 @@ export const DESTINATIONS: Destination[] = [
     slug: 'new-zealand',
     name: 'New Zealand',
     region: 'Oceania',
-    img: 'https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=1200&q=80',
+    img: newZealandImg,
     processing: '4–6 weeks',
     why: 'New Zealand offers a high quality of life, a safe environment, and straightforward post-study work pathways for international graduates.',
     programs: ['Agriculture & Environment', 'Business', 'Hospitality', 'Engineering'],
