@@ -16,12 +16,7 @@ import PhotoCrossfade from '../components/PhotoCrossfade';
 import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
-const HEADLINES = [
-  { pre: 'Your journey to ', highlight: 'world-class education', post: ' starts here.' },
-  { pre: 'Your ', highlight: 'visa journey', post: ' starts here.' },
-  { pre: 'Your journey to ', highlight: 'unforgettable destinations', post: ' starts here.' },
-  { pre: 'Your journey to ', highlight: 'explore the world', post: ' starts here.' },
-];
+const HEADLINE_WORDS = ['world-class education', 'visa success', 'unforgettable destinations', 'exploring the world'];
 const LEAD_TEXTS = [
   'From admission and visa processing to flights, tours, and accommodation Oma Synergies guides you end to end, with real-time tracking every step of the way.',
   'Admissions. Visas. Flights. Tours. Accommodation. One trusted partner tracked in real time from application to arrival.',
@@ -94,7 +89,7 @@ export default function Home() {
     const t = setInterval(() => {
       setHeadlineVisible(false);
       setTimeout(() => {
-        setHeadlineIdx((i) => (i + 1) % HEADLINES.length);
+        setHeadlineIdx((i) => (i + 1) % HEADLINE_WORDS.length);
         setHeadlineVisible(true);
       }, 300);
     }, 2600);
@@ -181,11 +176,11 @@ export default function Home() {
               <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour — One Trusted Partner</span>
             </div>
             <h1>
-              <span style={{ opacity: headlineVisible ? 1 : 0 }}>
-                {HEADLINES[headlineIdx].pre}
-                <span className="cycle">{HEADLINES[headlineIdx].highlight}</span>
-                {HEADLINES[headlineIdx].post}
-              </span>
+              Your journey to{' '}
+              <span className="cycle" style={{ opacity: headlineVisible ? 1 : 0 }}>
+                {HEADLINE_WORDS[headlineIdx]}
+              </span>{' '}
+              starts here
             </h1>
             <p className="lead" style={{ opacity: leadVisible ? 1 : 0, transition: 'opacity .4s ease' }}>
               {LEAD_TEXTS[leadIdx]}
