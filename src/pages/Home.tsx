@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import FlightBg from '../components/FlightBg';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { useCountUp } from '../hooks/useCountUp';
 import logoIcon from '../assets/logo-icon.png';
@@ -324,6 +325,7 @@ export default function Home() {
 
       {/* HOW IT WORKS */}
       <div className="timeline-wrap" id="how-it-works">
+        <FlightBg />
         <section>
           <div className="wrap">
             <div className="section-head reveal">
@@ -417,6 +419,7 @@ export default function Home() {
 
       {/* TESTIMONIALS */}
       <div className="test-wrap" id="stories">
+        <FlightBg />
         <section>
           <div className="wrap">
             <div className="section-head reveal">

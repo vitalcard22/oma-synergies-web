@@ -148,7 +148,11 @@
   .service-card .learn{font-family:var(--mono);font-size:12px;color:var(--gold);display:inline-block;transition:transform .3s ease;}
 
   /* ===== TIMELINE ===== */
-  .timeline-wrap{background:var(--navy);color:var(--white);}
+  .timeline-wrap{background:var(--navy);color:var(--white);position:relative;overflow:hidden;}
+  .timeline-wrap > section, .test-wrap > section{position:relative;z-index:1;}
+  .flight-bg{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0.5;mask-image:radial-gradient(90% 90% at 70% 40%, black 30%, transparent 80%);-webkit-mask-image:radial-gradient(90% 90% at 70% 40%, black 30%, transparent 80%);}
+  .flight-bg .arc{fill:none;stroke:var(--gold);stroke-width:1.2;stroke-dasharray:1 8;stroke-linecap:round;animation:dashFlow 7s linear infinite;}
+  .flight-bg .node{fill:var(--gold);}
   .timeline{position:relative;margin-top:20px;}
   .timeline-track{position:absolute;top:26px;left:0;right:0;height:1px;background-image:linear-gradient(to right, rgba(255,255,255,0.18) 40%, transparent 0%);background-size:14px 1px;background-repeat:repeat-x;}
   .timeline-progress{position:absolute;top:26px;left:0;height:1px;width:0;background:var(--gold);z-index:1;transition:width 1.4s cubic-bezier(.19,1,.22,1) .3s;}
@@ -204,7 +208,7 @@
   .placeholder-badge{position:absolute;top:12px;left:12px;background:rgba(255,255,255,0.15);color:#fff;font-family:var(--mono);font-size:10px;padding:4px 8px;border-radius:6px;letter-spacing:0.05em;backdrop-filter:blur(4px);}
 
   /* ===== TESTIMONIALS ===== */
-  .test-wrap{background:var(--navy);color:var(--white);}
+  .test-wrap{background:var(--navy);color:var(--white);position:relative;overflow:hidden;}
   .test-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;}
   .test-card{min-width:340px;scroll-snap-align:start;background:var(--navy-soft);border:1px solid var(--line);border-radius:16px;padding:30px;flex-shrink:0;}
   .test-top{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
