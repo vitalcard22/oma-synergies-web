@@ -181,7 +181,7 @@ export default function Home() {
               <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour — One Trusted Partner</span>
             </div>
             <h1>
-              <span style={{ opacity: headlineVisible ? 1 : 0, transition: 'opacity .3s ease' }}>
+              <span style={{ opacity: headlineVisible ? 1 : 0 }}>
                 {HEADLINES[headlineIdx].pre}
                 <span className="cycle">{HEADLINES[headlineIdx].highlight}</span>
                 {HEADLINES[headlineIdx].post}
