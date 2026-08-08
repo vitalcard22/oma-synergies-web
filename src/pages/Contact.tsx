@@ -92,12 +92,31 @@ export default function Contact() {
           </div>
 
           <div className="info-col">
-            <div className="info-card">
-              <h4>Reach Us Directly</h4>
-              <div className="info-row"><span className="ic">✉</span><a href="mailto:Omasynergiestravels@gmail.com">Omasynergiestravels@gmail.com</a></div>
-              <div className="info-row"><span className="ic">☎</span><a href="tel:+2348067696464">0806 769 6464</a></div>
-              <div className="info-row"><span className="ic">☎</span><a href="tel:+2347078084746">0707 808 4746</a></div>
-              <div className="info-row"><span className="ic">📍</span><span>Block B8, 29/32 Utako Market Plaza, Abuja</span></div>
+            <div className="info-card reach-card">
+              <div className="reach-head">
+                <h4>Reach Us Directly</h4>
+                <p>Pick whatever's easiest — we're just as responsive on all of them.</p>
+              </div>
+              <a className="reach-row" href="mailto:Omasynergiestravels@gmail.com">
+                <span className="reach-badge email">✉</span>
+                <div><div className="reach-label">Email</div><div className="reach-value">Omasynergiestravels@gmail.com</div></div>
+                <span className="reach-arrow">→</span>
+              </a>
+              <a className="reach-row" href="tel:+2348067696464">
+                <span className="reach-badge phone">☎</span>
+                <div><div className="reach-label">Call or WhatsApp</div><div className="reach-value">0806 769 6464</div></div>
+                <span className="reach-arrow">→</span>
+              </a>
+              <a className="reach-row" href="tel:+2347078084746">
+                <span className="reach-badge phone">☎</span>
+                <div><div className="reach-label">Call or WhatsApp</div><div className="reach-value">0707 808 4746</div></div>
+                <span className="reach-arrow">→</span>
+              </a>
+              <a className="reach-row" href="https://www.google.com/maps?q=Block+B8,+29/32+Utako+Market+Plaza,+Abuja" target="_blank" rel="noopener noreferrer">
+                <span className="reach-badge location">📍</span>
+                <div><div className="reach-label">Visit Our Office</div><div className="reach-value">Block B8, 29/32 Utako Market Plaza, Abuja</div></div>
+                <span className="reach-arrow">→</span>
+              </a>
             </div>
 
             <div className="office-photo-card">
