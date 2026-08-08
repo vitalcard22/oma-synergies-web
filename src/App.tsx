@@ -6,10 +6,12 @@ import Services from './pages/Services';
 import ServiceDetail from './pages/ServiceDetail';
 import Destinations from './pages/Destinations';
 import DestinationDetail from './pages/DestinationDetail';
+import Tours from './pages/Tours';
+import Stories from './pages/Stories';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 import Placeholder from './pages/Placeholder';
 import './styles/global.css';
-
-const PORT_NOTE = 'This page exists as a full static prototype and is being ported into React next, following the same pattern used for the Home, About, Contact, Services, and Destinations pages.';
 
 export default function App() {
   return (
@@ -21,11 +23,11 @@ export default function App() {
         <Route path="/services/:slug" element={<ServiceDetail />} />
         <Route path="/destinations" element={<Destinations />} />
         <Route path="/destinations/:slug" element={<DestinationDetail />} />
-        <Route path="/tours" element={<Placeholder title="Tours & Packages" note={PORT_NOTE} />} />
-        <Route path="/success-stories" element={<Placeholder title="Success Stories" note={PORT_NOTE} />} />
+        <Route path="/tours" element={<Tours />} />
+        <Route path="/success-stories" element={<Stories />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/terms" element={<Placeholder title="Terms & Conditions" note={PORT_NOTE} />} />
-        <Route path="/privacy" element={<Placeholder title="Privacy Policy" note={PORT_NOTE} />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/portal" element={<Placeholder title="Client Portal" note="Coming soon — you'll be able to log in and track your application in real time." />} />
         <Route path="*" element={<Placeholder title="Page Not Found" note="The page you're looking for doesn't exist." />} />
       </Routes>

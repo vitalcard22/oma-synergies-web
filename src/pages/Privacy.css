@@ -1,0 +1,27 @@
+.privacy-page {
+  padding: 150px 0 100px;
+}
+.privacy-page .wrap {
+  max-width: 760px;
+}
+.privacy-page h1 {
+  font-size: clamp(28px, 3.6vw, 40px);
+  margin-top: 16px;
+}
+.privacy-page p {
+  color: var(--slate);
+  font-size: 15px;
+  margin-top: 20px;
+}
+.privacy-page .notice {
+  margin-top: 34px;
+  background: #FFF7E8;
+  border: 1px solid rgba(240, 177, 36, 0.35);
+  border-radius: 12px;
+  padding: 20px 24px;
+  font-size: 14px;
+}
+.privacy-page .notice strong {
+  display: block;
+  margin-bottom: 6px;
+}
