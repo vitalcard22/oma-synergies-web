@@ -12,6 +12,10 @@ import ukImg from '../assets/destinations/uk.jpg';
 import irelandImg from '../assets/destinations/ireland.jpg';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import wwdTeamPhoto from '../assets/wwd-team.jpg';
+import wwdStaffDesk from '../assets/wwd-staff-desk.jpg';
+import wwdFamilyCart from '../assets/wwd-family-cart.jpg';
+import wwdCheckinHandoff from '../assets/wwd-checkin-handoff.jpg';
+import PhotoCrossfade from '../components/PhotoCrossfade';
 import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
@@ -255,7 +259,15 @@ export default function Home() {
               <p>Study abroad and visa support are where we started, and where we're strongest. Travel services round out the journey once your plans are set.</p>
             </div>
             <div className="wwd-photo reveal">
-              <img src={wwdTeamPhoto} alt="Student excited with passport and travel plans ready" />
+              <PhotoCrossfade
+                images={[wwdTeamPhoto, wwdStaffDesk, wwdFamilyCart, wwdCheckinHandoff]}
+                alts={[
+                  'Student excited with passport and travel plans ready',
+                  'Oma Synergies staff member assisting a client',
+                  'Family traveling together with luggage at the airport',
+                  'Client handing over passport at the airline check-in counter',
+                ]}
+              />
               <div className="wwd-photo-badge">
                 <div>
                   <div className="num">2018</div>
