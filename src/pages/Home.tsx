@@ -92,7 +92,7 @@ export default function Home() {
         setHeadlineIdx((i) => (i + 1) % HEADLINE_WORDS.length);
         setHeadlineVisible(true);
       }, 300);
-    }, 2600);
+    }, 4200);
     return () => clearInterval(t);
   }, []);
 
