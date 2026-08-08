@@ -16,7 +16,7 @@ import PhotoCrossfade from '../components/PhotoCrossfade';
 import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
-const HEADLINE_WORDS = ['world-class education', 'visa success', 'unforgettable destinations', 'exploring the world'];
+const HEADLINE_WORDS = ['journey to world-class education', 'visa journey', 'journey to unforgettable destinations', 'journey to explore the world'];
 const LEAD_TEXTS = [
   'From admission and visa processing to flights, tours, and accommodation Oma Synergies guides you end to end, with real-time tracking every step of the way.',
   'Admissions. Visas. Flights. Tours. Accommodation. One trusted partner tracked in real time from application to arrival.',
@@ -176,11 +176,11 @@ export default function Home() {
               <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour — One Trusted Partner</span>
             </div>
             <h1>
-              Your journey to{' '}
+              Your{' '}
               <span className="cycle" style={{ opacity: headlineVisible ? 1 : 0 }}>
                 {HEADLINE_WORDS[headlineIdx]}
               </span>{' '}
-              starts here
+              starts here.
             </h1>
             <p className="lead" style={{ opacity: leadVisible ? 1 : 0, transition: 'opacity .4s ease' }}>
               {LEAD_TEXTS[leadIdx]}
