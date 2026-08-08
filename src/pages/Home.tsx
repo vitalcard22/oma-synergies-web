@@ -11,6 +11,7 @@ import ukImg from '../assets/destinations/uk.jpg';
 import irelandImg from '../assets/destinations/ireland.jpg';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import wwdTeamPhoto from '../assets/wwd-team.jpg';
+import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
 const HEADLINE_WORDS = ['global education', 'visa success', 'seamless travel'];
@@ -338,6 +339,14 @@ export default function Home() {
                 <div className="t-step"><div className="t-num">02</div><h4>School Admission & Document Prep</h4><p>We handle your school applications and help you craft a strong SOP and professional CV to secure your admission letter.</p></div>
                 <div className="t-step"><div className="t-num">03</div><h4>Visa Support & Study Loans</h4><p>We review your documents carefully, guide your visa application, and help you access study loans covering up to 65% of expenses.</p></div>
                 <div className="t-step"><div className="t-num">04</div><h4>Flight Booking & Relocation</h4><p>Once your visa is approved, we handle flights and travel plans, and help you find safe accommodation to settle in easily.</p></div>
+              </div>
+            </div>
+
+            <div className="visa-photo-strip reveal">
+              <img src={visaPassportPhoto} alt="Visa application and approved passport stamps" />
+              <div className="visa-photo-caption">
+                <span className="eyebrow">The Payoff</span>
+                <p>From application to approval — real visas, real stamps.</p>
               </div>
             </div>
 
