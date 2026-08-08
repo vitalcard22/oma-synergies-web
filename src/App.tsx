@@ -11,6 +11,7 @@ import Stories from './pages/Stories';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Admin from './pages/admin/Admin';
+import Portal from './pages/portal/Portal';
 import Placeholder from './pages/Placeholder';
 import './styles/global.css';
 
@@ -30,7 +31,7 @@ export default function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/portal" element={<Placeholder title="Client Portal" note="Coming soon — you'll be able to log in and track your application in real time." />} />
+        <Route path="/portal" element={<Portal />} />
         <Route path="*" element={<Placeholder title="Page Not Found" note="The page you're looking for doesn't exist." />} />
       </Routes>
     </BrowserRouter>
