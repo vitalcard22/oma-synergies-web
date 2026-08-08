@@ -24,15 +24,15 @@ export default function Services() {
 
       <section>
         <div className="wrap">
-          <div className="cluster reveal">
-            <div className="cluster-head">
+          <div className="svc-cluster reveal">
+            <div className="svc-cluster-head">
               <h3>Study Abroad & Visa</h3>
-              <span className="tag">Core Services</span>
+              <span className="svc-tag">Core Services</span>
             </div>
-            <div className="service-grid">
+            <div className="svc-grid">
               {coreServices.map((s) => (
-                <Link to={`/services/${s.slug}`} className="service-card" key={s.slug}>
-                  <div className="service-icon">{s.icon}</div>
+                <Link to={`/services/${s.slug}`} className="svc-card" key={s.slug}>
+                  <div className="svc-icon">{s.icon}</div>
                   <h4>{s.title}</h4>
                   <p>{s.tagline}</p>
                   <span className="learn">View Service →</span>
@@ -41,15 +41,15 @@ export default function Services() {
             </div>
           </div>
 
-          <div className="cluster reveal">
-            <div className="cluster-head">
+          <div className="svc-cluster reveal">
+            <div className="svc-cluster-head">
               <h3>Travel</h3>
-              <span className="tag secondary">Supporting Services</span>
+              <span className="svc-tag secondary">Supporting Services</span>
             </div>
-            <div className="service-grid">
+            <div className="svc-grid">
               {travelServices.map((s) => (
-                <Link to={`/services/${s.slug}`} className="service-card" key={s.slug}>
-                  <div className="service-icon">{s.icon}</div>
+                <Link to={`/services/${s.slug}`} className="svc-card" key={s.slug}>
+                  <div className="svc-icon">{s.icon}</div>
                   <h4>{s.title}</h4>
                   <p>{s.tagline}</p>
                   <span className="learn">View Service →</span>

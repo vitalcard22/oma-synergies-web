@@ -24,16 +24,15 @@ const LEAD_TEXTS = [
 ];
 
 const SERVICES_CORE = [
-  { icon: '🎓', title: 'Global Admissions Processing', desc: 'Securing university and college admissions across top destinations in Europe, the Americas, Asia, and Oceania.', link: '/services/admissions' },
-  { icon: '✍️', title: 'Professional Academic & Career Branding', desc: 'Expert drafting and review of SOPs, Letters of Intent, and CVs tailored to foreign university and visa standards.', link: '/services/branding' },
-  { icon: '🛂', title: 'End-to-End Visa Application Support', desc: 'Comprehensive management of student visas and study permits, from document compilation to final submission.', link: '/services/visa' },
-  { icon: '⚖️', title: 'Document Review & Profile Verification', desc: 'Rigorous evaluation of academic, financial, and legal documents to minimize errors and maximize approval rates.', link: '/services/document-review' },
-  { icon: '💳', title: 'Study Loan Facilitation', desc: 'Connecting you with trusted global funding partners for education loans covering up to 65% of tuition and living expenses.', link: '/services/study-loan' },
+  { icon: '🎓', title: 'Global Admissions Processing', desc: 'We manage your entire university and college admission process across premium global destinations, including: Americas & Europe — Canada, USA, UK, Ireland, France, Italy, Sweden, and Austria. Asia & Oceania — South Korea, Philippines, China, and New Zealand.', link: '/services/admissions' },
+  { icon: '🛂', title: 'Strategic Visa Application Support', desc: 'We provide end-to-end guidance for study permit and student visa applications. Our team oversees everything from initial file compilation to final submission, ensuring full compliance with immigration requirements.', link: '/services/visa' },
+  { icon: '⚖️', title: 'Legal Document Review & Verification', desc: 'To maximize your approval success rate, our experts conduct rigorous reviews of all financial, academic, and legal documents to eliminate errors and strengthen your application profile.', link: '/services/document-review' },
+  { icon: '💳', title: 'Educational Financing & Study Loan Support', desc: 'Through our trusted global funding partners, we facilitate access to study loans covering up to 65% of your tuition and living expenses, easing the financial burden of relocation.', link: '/services/study-loan' },
+  { icon: '🧭', title: 'Comprehensive End-to-End Guidance', desc: 'From your very first consultation and school selection to the final visa approval, we provide continuous expert mentorship at every stage of your international education journey.', link: '/services' },
 ];
 
 const SERVICES_TRAVEL = [
-  { icon: '✈️', title: 'Comprehensive Flight Bookings & Travel Logistics', desc: 'Itinerary planning, competitive flight bookings, visa-purpose reservations, and hotel or short-let accommodation for every traveler.', link: '/services/flights' },
-  { icon: '🏠', title: 'Relocation & Destination Assistance', desc: 'Post-visa support to secure safe housing, prepare for departure, and settle smoothly into your new international community.', link: '/services/relocation' },
+  { icon: '🏠', title: 'Relocation & Accommodation Assistance', desc: 'Our services extend beyond visa approvals. We assist students in securing safe, comfortable housing and offer essential guidance to help them settle smoothly into their new host countries.', link: '/services/relocation' },
 ];
 
 const TOURS = [
