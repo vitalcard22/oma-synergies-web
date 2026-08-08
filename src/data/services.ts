@@ -29,7 +29,7 @@ export const SERVICES: Service[] = [
     title: 'Global Admissions Processing',
     tagline: 'Securing university and college admissions across top destinations worldwide.',
     description:
-      'We manage your entire university and college admission process across premium global destinations, including Canada, USA, UK, Ireland, France, Italy, Sweden, and Austria in the Americas and Europe, and South Korea, Philippines, China, and New Zealand across Asia and Oceania.',
+      'Securing university and college admissions across top destinations in Europe, the Americas, Asia, and Oceania (including Canada, USA, UK, Ireland, France, Italy, Sweden, Austria, South Korea, Philippines, China, and New Zealand).',
     included: [
       'School and program selection based on your profile and goals',
       'Application compilation and submission to your chosen institutions',
@@ -89,7 +89,7 @@ export const SERVICES: Service[] = [
     title: 'End-to-End Visa Application Support',
     tagline: 'Comprehensive management of student visas and study permits, start to finish.',
     description:
-      'Comprehensive management of student visas and study permit processes, providing full guidance from document compilation to final submission, with strict attention to immigration compliance.',
+      'Comprehensive management of student visas and study permit processes, providing full guidance from document compilation to final submission.',
     included: [
       'Full visa document checklist and compilation guidance',
       'Application form completion support',
@@ -121,7 +121,7 @@ export const SERVICES: Service[] = [
     title: 'Document Review & Profile Verification',
     tagline: 'Rigorous review to eliminate errors and strengthen your application.',
     description:
-      'Rigorous evaluation of academic, financial, and legal documents by industry experts to minimize errors and maximize your visa approval rate.',
+      'Rigorous evaluation of academic, financial, and legal documents by industry experts to minimize errors and maximize visa approval rates.',
     included: [
       'Academic transcript and certificate verification',
       'Financial document review for consistency and sufficiency',
@@ -149,7 +149,7 @@ export const SERVICES: Service[] = [
     title: 'Study Loan Facilitation',
     tagline: 'Funding support covering up to 65% of tuition and living expenses.',
     description:
-      'Connecting students with trusted global funding partners to secure education loans covering up to 65% of tuition and living expenses, easing the financial burden of relocation.',
+      'Connecting students with trusted global funding partners to secure education loans covering up to 65% of tuition and living expenses.',
     included: [
       'Eligibility assessment for study loan options',
       'Introduction to trusted global funding partners',
