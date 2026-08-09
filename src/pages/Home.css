@@ -110,6 +110,18 @@
   .light-eyebrow{color:var(--gold);}
 
   /* ===== WHAT WE DO ===== */
+  .wwd-parts-wrap{position:relative;}
+  .wwd-part{position:relative;z-index:1;}
+  .wwd-part-2{margin-bottom:64px;}
+
+  .flight-tag{margin-bottom:18px;}
+  .flight-tag .split-flap{font-family:var(--mono);font-size:12px;letter-spacing:0.1em;font-weight:600;color:var(--gold);}
+  .flight-tag-sub{font-family:var(--mono);font-size:10.5px;letter-spacing:0.12em;color:var(--slate);margin-top:6px;text-transform:uppercase;}
+
+  .tear-divider{display:flex;gap:8px;justify-content:space-between;align-items:center;margin:0 -4px 56px;position:relative;overflow:hidden;}
+  .tear-divider::before{content:"";position:absolute;top:50%;left:0;right:0;height:1px;background:var(--line-dark);z-index:0;}
+  .tear-divider span{width:6px;height:6px;border-radius:50%;background:var(--paper);border:1px solid var(--line-dark);flex-shrink:0;position:relative;z-index:1;}
+
   .wwd-head-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;margin-bottom:64px;}
   @media(max-width:900px){.wwd-head-grid{grid-template-columns:1fr;}}
   .wwd-head-grid .section-head{margin-bottom:0;}
