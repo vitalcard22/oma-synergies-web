@@ -5,7 +5,6 @@
     --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
   }
 
-  .wrap{max-width:1100px;margin:0 auto;padding:0 32px;}
 
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
   .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;padding:14px 26px;border-radius:100px;cursor:pointer;border:1px solid transparent;transition:all .25s ease;}
@@ -16,7 +15,6 @@
   .btn-outline-dark{border-color:rgba(31,32,53,0.25);color:var(--navy);}
   .btn-outline-dark:hover{border-color:var(--navy);}
 
-  @media(max-width:760px){.nav-links{display:none;}}
 
   .service-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:150px 0 70px;}
   .service-hero .icon-badge{width:56px;height:56px;border-radius:14px;background:rgba(240,177,36,0.12);border:1px solid rgba(240,177,36,0.3);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;}
@@ -35,7 +33,7 @@
 
   .process-wrap{background:var(--navy);color:var(--white);}
   .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:20px;}
-  @media(max-width:800px){.process-steps{grid-template-columns:1fr;gap:32px;}}
+  @media(max-width:900px){.process-steps{grid-template-columns:1fr;gap:32px;}}
   .p-step{padding-right:20px;}
   .p-num{font-family:var(--mono);font-size:13px;color:var(--gold);width:44px;height:44px;border:1px solid rgba(240,177,36,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
   .p-step h4{font-family:var(--display);font-size:15.5px;margin-bottom:8px;}
@@ -50,6 +48,5 @@
   .final-cta p{color:var(--ink-muted);max-width:420px;margin:0 auto 26px;}
   .final-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
 
-  footer{background:var(--navy-deep);color:rgba(255,255,255,0.55);padding:40px 0;border-top:1px solid var(--line);}
   .footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center;font-size:12.5px;font-family:var(--mono);}
   .footer-inner a:hover{color:var(--gold);}

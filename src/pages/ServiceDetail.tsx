@@ -29,7 +29,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
       <Header />
 
       <section className="service-hero">
-        <div className="wrap">
+        <div className="wrap-narrow">
           <div className="icon-badge">{service.icon}</div>
           <span className="eyebrow">{service.cluster}</span>
           <h1>{service.title}</h1>
@@ -38,7 +38,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
       </section>
 
       <section>
-        <div className="wrap">
+        <div className="wrap-narrow">
           <div className="section-inner">
             <h2>What's Included</h2>
             <p>{service.description}</p>
@@ -56,7 +56,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
 
       <div className="process-wrap">
         <section>
-          <div className="wrap">
+          <div className="wrap-narrow">
             <div className="section-inner">
               <h2 style={{ color: '#fff' }}>Our Process</h2>
             </div>
@@ -74,7 +74,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
       </div>
 
       <section>
-        <div className="wrap">
+        <div className="wrap-narrow">
           <div className="section-inner">
             <h2>Frequently Asked</h2>
             {service.faqs.map((f, i) => (
@@ -90,7 +90,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
       </section>
 
       <section className="final-cta">
-        <div className="wrap">
+        <div className="wrap-narrow">
           <span className="eyebrow">Ready to Start?</span>
           <h2>{service.ctaHeadline}</h2>
           <p>Book a free consultation and we'll walk you through exactly what this service involves.</p>

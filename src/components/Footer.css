@@ -9,7 +9,7 @@ footer {
   gap: 40px;
   margin-bottom: 60px;
 }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 .footer-brand img {

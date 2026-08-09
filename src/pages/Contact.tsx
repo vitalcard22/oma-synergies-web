@@ -24,7 +24,7 @@ export default function Contact() {
       <Header />
 
       <section className="page-hero">
-        <div className="wrap">
+        <div className="wrap-narrow">
           <span className="eyebrow">Get In Touch</span>
           <h1>Let's talk about your journey</h1>
           <p>Tell us what you need, admissions, visas, or travel, and our team will follow up personally.</p>
@@ -32,7 +32,7 @@ export default function Contact() {
       </section>
 
       <section>
-        <div className="wrap contact-grid">
+        <div className="wrap-narrow contact-grid">
           <div className="form-card">
             {!submitted ? (
               <form onSubmit={handleSubmit}>

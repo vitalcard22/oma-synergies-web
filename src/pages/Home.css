@@ -18,7 +18,6 @@
   html{scroll-behavior:smooth;}
 
   img{max-width:100%;display:block;}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
 
   .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:600;font-size:14px;padding:14px 26px;border-radius:100px;cursor:pointer;border:1px solid transparent;transition:transform .25s ease,box-shadow .25s ease,background .25s ease;}
@@ -35,20 +34,7 @@
   .reveal.in{opacity:1;transform:translateY(0);}
 
   /* ===== NAV ===== */
-  header{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 0;transition:background .3s ease, padding .3s ease, box-shadow .3s ease;}
-  header.scrolled{background:rgba(31,32,53,0.92);backdrop-filter:blur(10px);padding:14px 0;box-shadow:0 4px 30px rgba(0,0,0,0.2);}
-  nav{display:flex;align-items:center;justify-content:space-between;}
-  .logo-mark{display:flex;align-items:center;gap:10px;color:var(--white);font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:0.02em;}
-  .logo-badge{width:34px;height:34px;border-radius:50%;border:2px solid var(--white);display:flex;align-items:center;justify-content:center;font-size:11px;position:relative;}
-  .nav-links{display:flex;gap:34px;}
-  .nav-links a{color:rgba(255,255,255,0.75);font-size:14px;font-weight:500;transition:color .2s ease;position:relative;}
-  .nav-links a:hover{color:var(--white);}
-  .nav-cta{display:flex;align-items:center;gap:18px;}
-  .nav-mobile-toggle{display:none;}
-  @media(max-width:860px){
-    .nav-links{display:none;}
-    .nav-cta .btn-outline{display:none;}
-  }
+  /* Header styling now lives entirely in components/Header.css */
 
   /* ===== HERO ===== */
   .hero{position:relative;background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);min-height:100vh;display:flex;align-items:center;padding-top:120px;overflow:hidden;color:var(--white);}
@@ -95,10 +81,10 @@
   .board-label::after{content:"";flex:1;height:1px;background:var(--line);}
   .board-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;}
   @media(max-width:900px){.board-grid{grid-template-columns:repeat(3,1fr);gap:24px 0;}}
-  @media(max-width:560px){.board-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:480px){.board-grid{grid-template-columns:repeat(2,1fr);}}
   .board-item{padding:0 24px;border-left:1px solid var(--line);}
   .board-item:first-child{border-left:none;padding-left:0;}
-  @media(max-width:760px){.board-item:nth-child(odd){border-left:none;padding-left:0;}}
+  @media(max-width:900px){.board-item:nth-child(odd){border-left:none;padding-left:0;}}
   .flap{font-family:var(--mono);font-weight:600;font-size:clamp(30px,4vw,42px);color:var(--gold);display:flex;letter-spacing:0.01em;}
   .board-item .cap{font-family:var(--mono);font-size:11.5px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.08em;margin-top:8px;}
 
@@ -164,14 +150,14 @@
 
   /* portal preview strip */
   .visa-photo-strip{margin-top:56px;background:var(--navy-soft);border:1px solid var(--line);border-radius:18px;padding:32px 34px;display:grid;grid-template-columns:1fr 1.1fr;gap:32px;align-items:center;}
-  @media(max-width:760px){.visa-photo-strip{grid-template-columns:1fr;}}
+  @media(max-width:900px){.visa-photo-strip{grid-template-columns:1fr;}}
   .visa-photo-text p{color:#fff;font-family:var(--display);font-size:19px;font-weight:600;margin-top:10px;line-height:1.35;}
   .visa-photo-frame{border-radius:14px;overflow:hidden;height:200px;}
   .visa-photo-frame img{width:100%;height:100%;object-fit:cover;object-position:center 30%;}
-  @media(max-width:760px){.visa-photo-frame{height:220px;}}
+  @media(max-width:900px){.visa-photo-frame{height:220px;}}
 
   .portal-preview{margin-top:32px;background:var(--navy-soft);border:1px solid var(--line);border-radius:18px;padding:32px 34px;display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;}
-  @media(max-width:760px){.portal-preview{grid-template-columns:1fr;}}
+  @media(max-width:900px){.portal-preview{grid-template-columns:1fr;}}
   .portal-preview h4{font-family:var(--display);font-size:19px;margin-bottom:10px;}
   .portal-preview p{font-size:13.5px;color:var(--ink-muted);margin-bottom:20px;}
   .portal-mock{background:var(--navy-deep);border:1px solid var(--line);border-radius:12px;padding:20px 22px;font-family:var(--mono);font-size:12.5px;}
@@ -229,7 +215,7 @@
   /* partners */
   .partners-section{padding:70px 0;border-top:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark);background:var(--paper);}
   .partners-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
-  @media(max-width:800px){.partners-grid{grid-template-columns:1fr;}}
+  @media(max-width:900px){.partners-grid{grid-template-columns:1fr;}}
   .partners-label{text-align:center;margin-bottom:34px;}
   .partners-row{display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap;}
   .partner-name{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);opacity:0.55;transition:opacity .3s ease, transform .3s ease;letter-spacing:-0.01em;}
@@ -256,14 +242,6 @@
   .final-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
 
   /* ===== FOOTER ===== */
-  footer{background:var(--navy-deep);color:rgba(255,255,255,0.6);padding:70px 0 30px;}
-  .footer-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:40px;margin-bottom:60px;}
-  @media(max-width:760px){.footer-grid{grid-template-columns:1fr 1fr;}}
-  .footer-brand .logo-mark{color:var(--white);margin-bottom:16px;}
-  .footer-brand p{font-size:13.5px;max-width:280px;line-height:1.6;}
-  .footer-col h5{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:18px;}
-  .footer-col li{margin-bottom:12px;font-size:14px;}
-  .footer-col a:hover{color:var(--gold);}
-  .footer-bottom{border-top:1px solid var(--line);padding-top:26px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12.5px;font-family:var(--mono);color:rgba(255,255,255,0.35);}
+  /* Footer styling now lives entirely in components/Footer.css */
 
   .placeholder-note{display:inline-block;font-family:var(--mono);font-size:10px;color:var(--gold);background:rgba(240,177,36,0.1);border:1px solid rgba(240,177,36,0.25);padding:2px 8px;border-radius:6px;margin-left:8px;letter-spacing:0.03em;vertical-align:middle;}

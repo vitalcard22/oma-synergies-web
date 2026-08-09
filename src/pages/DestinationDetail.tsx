@@ -26,14 +26,14 @@ export default function DestinationDetail() {
       <div className="hero-photo-tag">Sample Photo</div>
       <section className="dest-hero">
         <img src={d.img} alt={d.name} />
-        <div className="wrap dest-hero-inner">
+        <div className="wrap-narrow dest-hero-inner">
           <span className="eyebrow">{d.region}</span>
           <h1>Study & Travel to {d.name}</h1>
         </div>
       </section>
 
       <div className="stat-strip">
-        <div className="wrap stat-row">
+        <div className="wrap-narrow stat-row">
           <div className="stat-item"><div className="n">{d.processing}</div><div className="l">Avg. Visa Processing<span className="placeholder-note">Sample</span></div></div>
           <div className="stat-item"><div className="n">{d.region}</div><div className="l">Region</div></div>
           <div className="stat-item"><div className="n">7</div><div className="l">Services Available Here</div></div>
@@ -41,7 +41,7 @@ export default function DestinationDetail() {
       </div>
 
       <section>
-        <div className="wrap two-col">
+        <div className="wrap-narrow two-col">
           <div>
             <h2>Why {d.name}</h2>
             <p>{d.why}</p>
@@ -64,7 +64,7 @@ export default function DestinationDetail() {
       </section>
 
       <section className="final-cta">
-        <div className="wrap">
+        <div className="wrap-narrow">
           <span className="eyebrow">Ready to Start?</span>
           <h2>Let's map your path to {d.name}</h2>
           <p>Book a free consultation and we'll walk you through exactly what's needed.</p>

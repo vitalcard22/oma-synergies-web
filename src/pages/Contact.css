@@ -5,7 +5,6 @@
     --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
   }
 
-  .wrap{max-width:1100px;margin:0 auto;padding:0 32px;}
 
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:14px;padding:15px 26px;border-radius:100px;cursor:pointer;border:1px solid transparent;transition:all .25s ease;width:100%;}
@@ -15,12 +14,10 @@
 
   header{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 0;background:rgba(31,32,53,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
   nav{display:flex;align-items:center;justify-content:space-between;}
-  .logo-mark{display:flex;align-items:center;gap:10px;color:var(--white);font-family:var(--display);font-weight:700;font-size:15px;}
   .logo-mark img{height:32px;width:auto;}
   .nav-links{display:flex;gap:30px;}
   .nav-links a{color:rgba(255,255,255,0.7);font-size:13.5px;font-weight:500;}
   .nav-links a:hover{color:var(--white);}
-  @media(max-width:760px){.nav-links{display:none;}}
 
   .page-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:150px 0 60px;}
   .page-hero h1{color:var(--white);font-size:clamp(30px,4vw,46px);margin-top:16px;max-width:600px;}
@@ -39,7 +36,7 @@
   .form-row input:focus, .form-row select:focus, .form-row textarea:focus{outline:none;border-color:var(--gold);}
   .form-row textarea{resize:vertical;min-height:110px;}
   .form-two{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  @media(max-width:520px){.form-two{grid-template-columns:1fr;}}
+  @media(max-width:480px){.form-two{grid-template-columns:1fr;}}
   .success-msg{display:none;text-align:center;padding:40px 10px;}
   .success-msg .icon{width:56px;height:56px;border-radius:50%;background:rgba(240,177,36,0.15);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px;}
   .success-msg h3{font-size:19px;margin-bottom:8px;}
@@ -74,7 +71,6 @@
   .map-card{border-radius:18px;overflow:hidden;border:1px solid var(--line-dark);height:220px;background:var(--navy-soft);}
   .map-card iframe{display:block;}
 
-  footer{background:var(--navy-deep);color:rgba(255,255,255,0.55);padding:40px 0;border-top:1px solid var(--line);}
   .footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center;font-size:12.5px;font-family:var(--mono);}
   .footer-inner a:hover{color:var(--gold);}
 
