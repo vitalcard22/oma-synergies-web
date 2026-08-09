@@ -27,7 +27,7 @@ export default function Contact() {
         <div className="wrap">
           <span className="eyebrow">Get In Touch</span>
           <h1>Let's talk about your journey</h1>
-          <p>Whether it's admissions, visas, or travel, tell us what you need and our team will follow up personally.</p>
+          <p>Tell us what you need, admissions, visas, or travel, and our team will follow up personally.</p>
         </div>
       </section>
 

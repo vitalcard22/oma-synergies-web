@@ -116,7 +116,7 @@ export default function About() {
             <div className="section-head reveal">
               <span className="eyebrow">Our Team</span>
               <h2>Certified expertise you can verify</h2>
-              <p>Real credentials, not just claims.</p>
+              <p>Real credentials you can verify yourself.</p>
             </div>
             <div className="team-grid reveal">
               {TEAM.map((m) => (

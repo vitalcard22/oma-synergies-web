@@ -175,7 +175,7 @@ export const SERVICES: Service[] = [
     icon: '✈️',
     cluster: 'Travel',
     title: 'Comprehensive Flight Bookings & Travel Logistics',
-    tagline: 'Flights, visa-purpose reservations, and accommodation, handled seamlessly.',
+    tagline: 'Flight bookings, visa-purpose reservations, and accommodation, all handled in one place.',
     description:
       'Handling itinerary planning, competitive flight bookings, flight reservations for visa purposes, and hotel or short-let accommodations for corporate, family, or student travelers.',
     included: [
