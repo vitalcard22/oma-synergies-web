@@ -1,0 +1,161 @@
+.ptc-zone {
+  perspective: 1600px;
+  position: relative;
+}
+
+.ptc-tilt {
+  position: relative;
+  transition: transform 0.4s ease-out;
+  transform-style: preserve-3d;
+}
+
+.ptc-shadow {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: -16px;
+  height: 26px;
+  background: radial-gradient(ellipse, rgba(20, 21, 42, 0.28), transparent 70%);
+  filter: blur(7px);
+  transition: transform 0.45s ease, opacity 0.45s ease;
+  z-index: -1;
+}
+
+.ptc-shadow[data-folding='true'] {
+  transform: scaleX(0.85);
+  opacity: 0.55;
+}
+
+.ptc-flipper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  transform-style: preserve-3d;
+  transition: transform 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.ptc-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  background: var(--navy);
+  border-radius: 20px;
+  padding: 34px 38px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(240, 177, 36, 0.22);
+  animation: ptcGlow 5s ease-in-out infinite;
+}
+
+@keyframes ptcGlow {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(240, 177, 36, 0.18); }
+  50% { box-shadow: 0 0 0 1px rgba(240, 177, 36, 0.4); }
+}
+
+.ptc-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.ptc-label {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ptc-title {
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 600;
+  margin: 0 0 14px;
+  animation: ptcSettle 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes ptcSettle {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.ptc-body {
+  color: var(--ink-muted);
+  font-size: 14.5px;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 92%;
+}
+
+.ptc-fold {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.ptc-fold[data-side='0'] {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.35), transparent 45%);
+}
+
+.ptc-fold[data-side='1'] {
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.35), transparent 45%);
+}
+
+.ptc-fold[data-on='true'] {
+  opacity: 0.9;
+}
+
+.ptc-progress-track {
+  max-width: 220px;
+  margin: 26px auto 0;
+  height: 2px;
+  background: rgba(240, 177, 36, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ptc-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--gold);
+  animation: ptcFill 9s linear forwards;
+}
+
+@keyframes ptcFill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+.ptc-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.ptc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.ptc-dot.active {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ptc-face, .ptc-title, .ptc-progress-fill {
+    animation: none;
+  }
+}

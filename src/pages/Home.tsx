@@ -13,8 +13,7 @@ import wwdStaffDesk from '../assets/wwd-staff-desk.jpg';
 import wwdFamilyCart from '../assets/wwd-family-cart.jpg';
 import wwdCheckinHandoff from '../assets/wwd-checkin-handoff.jpg';
 import PhotoCrossfade from '../components/PhotoCrossfade';
-import RouteLine from '../components/RouteLine';
-import CurtainReveal from '../components/CurtainReveal';
+import PageTurnCard from '../components/PageTurnCard';
 import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
@@ -235,76 +234,58 @@ export default function Home() {
       {/* WHAT WE DO */}
       <section id="what-we-do">
         <div className="wrap">
-          <div className="wwd-parts-wrap">
-            <RouteLine />
-
-            {/* PART 1 */}
-            <div className="wwd-head-grid">
-              <div className="section-head reveal wwd-part">
-                <CurtainReveal>Start Your Journey</CurtainReveal>
-                <p>Dreaming of studying abroad, securing your visa, or taking the next step toward a global future? We make it happen. From choosing the right destination and school to expert visa guidance and personalized consultancy, we're with you every step of the way.</p>
-              </div>
-              <div className="wwd-photo reveal">
-                <PhotoCrossfade
-                  images={[wwdTeamPhoto, wwdStaffDesk, wwdFamilyCart, wwdCheckinHandoff]}
-                  alts={[
-                    'Student excited with passport and travel plans ready',
-                    'Oma Synergies staff member assisting a client',
-                    'Family traveling together with luggage at the airport',
-                    'Client handing over passport at the airline check-in counter',
-                  ]}
-                />
-                <div className="wwd-photo-badge">
-                  <div>
-                    <div className="num">2018</div>
-                    <div className="lbl">Guiding Journeys Since</div>
-                  </div>
+          <div className="wwd-head-grid">
+            <PageTurnCard />
+            <div className="wwd-photo reveal">
+              <PhotoCrossfade
+                images={[wwdTeamPhoto, wwdStaffDesk, wwdFamilyCart, wwdCheckinHandoff]}
+                alts={[
+                  'Student excited with passport and travel plans ready',
+                  'Oma Synergies staff member assisting a client',
+                  'Family traveling together with luggage at the airport',
+                  'Client handing over passport at the airline check-in counter',
+                ]}
+              />
+              <div className="wwd-photo-badge">
+                <div>
+                  <div className="num">2018</div>
+                  <div className="lbl">Guiding Journeys Since</div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="cluster reveal">
-              <div className="cluster-head">
-                <h3>Study Abroad & Visa</h3>
-                <span className="tag">Core Services</span>
-              </div>
-              <div className="service-grid stagger">
-                {SERVICES_CORE.map((s) => (
-                  <Link to={s.link} className="service-card" key={s.title}>
-                    <div className="service-icon">{s.icon}</div>
-                    <h4>{s.title}</h4>
-                    <p>{s.desc}</p>
-                    <span className="learn">Learn More →</span>
-                  </Link>
-                ))}
-              </div>
+          <div className="cluster reveal">
+            <div className="cluster-head">
+              <h3>Study Abroad & Visa</h3>
+              <span className="tag">Core Services</span>
             </div>
-
-            <div className="tear-divider" aria-hidden="true">
-              {Array.from({ length: 40 }).map((_, i) => <span key={i} />)}
+            <div className="service-grid stagger">
+              {SERVICES_CORE.map((s) => (
+                <Link to={s.link} className="service-card" key={s.title}>
+                  <div className="service-icon">{s.icon}</div>
+                  <h4>{s.title}</h4>
+                  <p>{s.desc}</p>
+                  <span className="learn">Learn More →</span>
+                </Link>
+              ))}
             </div>
+          </div>
 
-            {/* PART 2 */}
-            <div className="section-head reveal wwd-part wwd-part-2">
-              <CurtainReveal>Explore the World</CurtainReveal>
-              <p>Your journey doesn't end when your visa is approved, that's where the adventure begins. From unforgettable holidays and exciting tours to flights, accommodation, and destination experiences, we help you travel, explore, and create memories around the world.</p>
+          <div className="cluster reveal">
+            <div className="cluster-head">
+              <h3>Travel</h3>
+              <span className="tag secondary">Supporting Services</span>
             </div>
-
-            <div className="cluster reveal">
-              <div className="cluster-head">
-                <h3>Travel</h3>
-                <span className="tag secondary">Supporting Services</span>
-              </div>
-              <div className="service-grid stagger">
-                {SERVICES_TRAVEL.map((s) => (
-                  <Link to={s.link} className="service-card" key={s.title}>
-                    <div className="service-icon">{s.icon}</div>
-                    <h4>{s.title}</h4>
-                    <p>{s.desc}</p>
-                    <span className="learn">Learn More →</span>
-                  </Link>
-                ))}
-              </div>
+            <div className="service-grid stagger">
+              {SERVICES_TRAVEL.map((s) => (
+                <Link to={s.link} className="service-card" key={s.title}>
+                  <div className="service-icon">{s.icon}</div>
+                  <h4>{s.title}</h4>
+                  <p>{s.desc}</p>
+                  <span className="learn">Learn More →</span>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
