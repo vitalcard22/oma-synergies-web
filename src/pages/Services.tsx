@@ -17,7 +17,7 @@ export default function Services() {
       <section className="page-hero">
         <div className="wrap">
           <span className="eyebrow">Our Services</span>
-          <h1>Everything your journey abroad needs — under one roof</h1>
+          <h1>Everything your journey abroad needs, all under one roof</h1>
           <p>Study abroad and visa support are where we started, and where we're strongest. Travel services round out the journey once your plans are set.</p>
         </div>
       </section>

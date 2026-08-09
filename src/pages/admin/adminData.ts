@@ -13,7 +13,7 @@ export const ADMIN_CLIENTS = [
 export const ADMIN_INQUIRIES = [
   { name: 'Chinedu Obi', email: 'chinedu.o@email.com', service: 'Global Admissions Processing', destination: 'Canada', status: 'New' as const },
   { name: 'Amaka Eze', email: 'amaka.e@email.com', service: 'Study Loan Facilitation', destination: 'UK', status: 'New' as const },
-  { name: 'Femi Adeyemi', email: 'femi.a@email.com', service: 'Not sure — need guidance', destination: '—', status: 'Contacted' as const },
+  { name: 'Femi Adeyemi', email: 'femi.a@email.com', service: 'Not sure, need guidance', destination: '-', status: 'Contacted' as const },
   { name: 'Blessing Nwosu', email: 'blessing.n@email.com', service: 'Comprehensive Flight Bookings', destination: 'South Korea', status: 'Closed' as const },
 ];
 
@@ -42,14 +42,14 @@ export const ADMIN_TESTIMONIALS = [
   { client: 'Egwu A.', initials: 'E.A.', service: 'UK Study Visa', type: 'Text', live: true },
   { client: 'Stephen', initials: 'S.', service: 'France Tourist Visa', type: 'Text', live: true },
   { client: 'Gift A.', initials: 'G.A.', service: 'Canada Spousal Permit', type: 'Text', live: true },
-  { client: 'Video Testimonial', initials: '—', service: '—', type: 'Video', live: false },
+  { client: 'Video Testimonial', initials: '-', service: '-', type: 'Video', live: false },
 ];
 
 export const ADMIN_DESTINATIONS = [
-  { name: 'Canada', region: 'Americas', processing: '8–12 weeks', live: true },
-  { name: 'USA', region: 'Americas', processing: '6–10 weeks', live: true },
-  { name: 'United Kingdom', region: 'Europe', processing: '3–6 weeks', live: true },
-  { name: 'Ireland', region: 'Europe', processing: '4–8 weeks', live: true },
+  { name: 'Canada', region: 'Americas', processing: '8-12 weeks', live: true },
+  { name: 'USA', region: 'Americas', processing: '6-10 weeks', live: true },
+  { name: 'United Kingdom', region: 'Europe', processing: '3-6 weeks', live: true },
+  { name: 'Ireland', region: 'Europe', processing: '4-8 weeks', live: true },
 ];
 
 export const ADMIN_TOURS = [
@@ -60,10 +60,10 @@ export const ADMIN_TOURS = [
 ];
 
 export const ADMIN_STAFF = [
-  { name: 'Adaeze Ohazuruike', initials: 'A.O.', role: 'Founder & CEO', permission: 'Admin — Full Access', admin: true },
-  { name: 'Increase Uchechukwu', initials: 'I.U.', role: 'Writer — SOP & CV Specialist', permission: 'Staff — Content Only', admin: false },
-  { name: 'Ugwuoke Nnenna Juliet', initials: 'N.J.', role: 'Strategy and Operations Lead', permission: 'Admin — Full Access', admin: true },
-  { name: 'Awoniyi Joshua Ayodeji', initials: 'A.J.', role: 'Research Assistant', permission: 'Staff — View Only', admin: false },
+  { name: 'Adaeze Ohazuruike', initials: 'A.O.', role: 'Founder & CEO', permission: 'Admin: Full Access', admin: true },
+  { name: 'Increase Uchechukwu', initials: 'I.U.', role: 'Writer, SOP & CV Specialist', permission: 'Staff: Content Only', admin: false },
+  { name: 'Ugwuoke Nnenna Juliet', initials: 'N.J.', role: 'Strategy and Operations Lead', permission: 'Admin: Full Access', admin: true },
+  { name: 'Awoniyi Joshua Ayodeji', initials: 'A.J.', role: 'Research Assistant', permission: 'Staff: View Only', admin: false },
 ];
 
 export const ADMIN_ACTIVITY = [

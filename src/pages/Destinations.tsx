@@ -20,7 +20,7 @@ export default function Destinations() {
         <div className="wrap">
           <span className="eyebrow">Destinations</span>
           <h1>12 flagship destinations. Worldwide reach.</h1>
-          <p>Full admissions and visa guidance across our premium destinations in the Americas, Europe, Asia and Oceania — with support available for students and travelers headed anywhere else too.</p>
+          <p>Full admissions and visa guidance across our premium destinations in the Americas, Europe, Asia and Oceania, with support available for students and travelers headed anywhere else too.</p>
           <div className="filter-bar">
             {REGIONS.map((r) => (
               <button
@@ -53,7 +53,7 @@ export default function Destinations() {
           <div className="worldwide-note">
             <div>
               <h4>Headed somewhere not listed?</h4>
-              <p>Our flagship destinations get full guides, but we support students and travelers worldwide — reach out and we'll walk you through your specific country.</p>
+              <p>Our flagship destinations get full guides, but we support students and travelers worldwide. Reach out and we'll walk you through your specific country.</p>
             </div>
             <Link to="/contact" className="btn btn-outline-dark">Enquire About Another Destination →</Link>
           </div>

@@ -19,7 +19,7 @@ export default function Stories() {
         <div className="wrap">
           <span className="eyebrow">Success Stories</span>
           <h1>Real clients. Real outcomes.</h1>
-          <p>Shared with permission — photos withheld by client request.</p>
+          <p>Shared with permission. Photos withheld by client request.</p>
           <div className="filter-bar">
             {FILTERS.map((f) => (
               <button key={f} className={activeFilter === f ? 'filter-btn active' : 'filter-btn'} onClick={() => setActiveFilter(f)}>

@@ -12,7 +12,7 @@ export default function Privacy() {
           <h1>Privacy Policy</h1>
           <p>
             This page will explain how Oma Synergies Travels And Tours Ltd collects, uses, and protects your personal
-            data — including passports, academic transcripts, financial statements, and any information submitted
+            data, including passports, academic transcripts, financial statements, and any information submitted
             through our forms or client portal.
           </p>
           <div className="notice">

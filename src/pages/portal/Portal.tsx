@@ -14,7 +14,7 @@ const NAV: { id: ViewId; icon: string; label: string; badge?: number }[] = [
 ];
 
 const INITIAL_MESSAGES = [
-  { from: 'team' as const, text: "Hi Praise, we've reviewed your transcript and SOP — both look great. We just need your bank statement to move your visa file forward." },
+  { from: 'team' as const, text: "Hi Praise, we've reviewed your transcript and SOP, both look great. We just need your bank statement to move your visa file forward." },
   { from: 'client' as const, text: "Thank you! I'll upload it today." },
   { from: 'team' as const, text: 'Perfect, once that\'s in we can move to submission. You\'re doing great so far!' },
 ];
@@ -49,7 +49,7 @@ export default function Portal() {
             <div className="form-row"><label>Email</label><input type="email" placeholder="you@example.com" /></div>
             <div className="form-row"><label>Password</label><input type="password" placeholder="••••••••" /></div>
             <button className="login-btn" onClick={() => setLoggedIn(true)}>Log In</button>
-            <div className="login-note">Demo only — click Log In to preview the portal as a sample client.</div>
+            <div className="login-note">Demo only. Click Log In to preview the portal as a sample client.</div>
           </div>
         </div>
       </div>
@@ -58,7 +58,7 @@ export default function Portal() {
 
   return (
     <div className="portal-root">
-      <div className="demo-banner"><strong>PROTOTYPE</strong> — visual design only, using a fictional demo client. Not yet connected to a real backend or real client data.</div>
+      <div className="demo-banner"><strong>PROTOTYPE</strong>: visual design only, using a fictional demo client. Not yet connected to a real backend or real client data.</div>
 
       {mobileOpen && <div className="sidebar-overlay open" onClick={() => setMobileOpen(false)} />}
 
@@ -95,7 +95,7 @@ export default function Portal() {
             <div className="view active">
               <div className="welcome-card">
                 <h2>Welcome back, Praise</h2>
-                <p>Here's where things stand with your Canada study application. Everything is tracked in real time — no need to email us for an update.</p>
+                <p>Here's where things stand with your Canada study application. Everything is tracked in real time, no need to email us for an update.</p>
               </div>
               <div className="stat-cards">
                 <div className="stat-card"><div className="n">2</div><div className="l">Active Tracks</div></div>
@@ -107,9 +107,9 @@ export default function Portal() {
                 <div className="panel-head"><h3>Quick Summary</h3></div>
                 <div className="panel-body">
                   <div className="step-list">
-                    <div className="step-item"><div className="step-icon done">✓</div><div><h5>Admission — Consultation & Profile Evaluation</h5><p>Completed on your first call with our team.</p></div><span className="step-tag done">Done</span></div>
-                    <div className="step-item"><div className="step-icon active">●</div><div><h5>Visa — Document Review</h5><p>Our team is currently reviewing your submitted documents.</p></div><span className="step-tag active">In Progress</span></div>
-                    <div className="step-item"><div className="step-icon pending">○</div><div><h5>Visa — Application Submission</h5><p>Will begin once document review is complete.</p></div><span className="step-tag pending">Pending</span></div>
+                    <div className="step-item"><div className="step-icon done">✓</div><div><h5>Admission: Consultation & Profile Evaluation</h5><p>Completed on your first call with our team.</p></div><span className="step-tag done">Done</span></div>
+                    <div className="step-item"><div className="step-icon active">●</div><div><h5>Visa: Document Review</h5><p>Our team is currently reviewing your submitted documents.</p></div><span className="step-tag active">In Progress</span></div>
+                    <div className="step-item"><div className="step-icon pending">○</div><div><h5>Visa: Application Submission</h5><p>Will begin once document review is complete.</p></div><span className="step-tag pending">Pending</span></div>
                   </div>
                 </div>
               </div>
@@ -125,17 +125,17 @@ export default function Portal() {
               <div className="panel">
                 <div className="panel-body">
                   <div className="track-block">
-                    <div className="track-block-head"><h4>🎓 Admission — Canada, University Canada West</h4><span className="step-tag done">100% Complete</span></div>
+                    <div className="track-block-head"><h4>🎓 Admission: Canada, University Canada West</h4><span className="step-tag done">100% Complete</span></div>
                     <div className="track-progress-bar"><div className="track-progress-fill" style={{ width: '100%' }} /></div>
                     <div className="step-list">
                       <div className="step-item"><div className="step-icon done">✓</div><div><h5>Consultation & Profile Evaluation</h5><p>Goals and budget assessed, schools matched.</p></div><span className="step-tag done">Done</span></div>
                       <div className="step-item"><div className="step-icon done">✓</div><div><h5>School Admission & Document Prep</h5><p>SOP and CV completed, application submitted.</p></div><span className="step-tag done">Done</span></div>
-                      <div className="step-item"><div className="step-icon done">✓</div><div><h5>Offer Letter Received</h5><p>Admitted to your program — congratulations!</p></div><span className="step-tag done">Done</span></div>
+                      <div className="step-item"><div className="step-icon done">✓</div><div><h5>Offer Letter Received</h5><p>Admitted to your program, congratulations!</p></div><span className="step-tag done">Done</span></div>
                     </div>
                   </div>
 
                   <div className="track-block">
-                    <div className="track-block-head"><h4>🛂 Visa — Canada Study Permit</h4><span className="step-tag active">50% Complete</span></div>
+                    <div className="track-block-head"><h4>🛂 Visa: Canada Study Permit</h4><span className="step-tag active">50% Complete</span></div>
                     <div className="track-progress-bar"><div className="track-progress-fill" style={{ width: '50%' }} /></div>
                     <div className="step-list">
                       <div className="step-item"><div className="step-icon done">✓</div><div><h5>Document Compilation</h5><p>All required documents gathered and organized.</p></div><span className="step-tag done">Done</span></div>
@@ -146,7 +146,7 @@ export default function Portal() {
                   </div>
 
                   <div className="track-block">
-                    <div className="track-block-head"><h4>💳 Study Loan — Facilitation</h4><span className="step-tag pending">Not Started</span></div>
+                    <div className="track-block-head"><h4>💳 Study Loan: Facilitation</h4><span className="step-tag pending">Not Started</span></div>
                     <div className="track-progress-bar"><div className="track-progress-fill" style={{ width: '0%' }} /></div>
                     <div className="step-list">
                       <div className="step-item"><div className="step-icon pending">○</div><div><h5>Eligibility Check</h5><p>Will begin once you're ready to proceed.</p></div><span className="step-tag pending">Not Started</span></div>
@@ -166,7 +166,7 @@ export default function Portal() {
               <div className="dropzone">
                 <div className="ic">⬆</div>
                 <h4>Drag & drop a file, or tap to upload</h4>
-                <p>Accepted: PDF, JPG, PNG — max 10MB per file <span className="placeholder-note">Planned</span></p>
+                <p>Accepted: PDF, JPG, PNG, max 10MB per file <span className="placeholder-note">Planned</span></p>
               </div>
               <div className="doc-grid">
                 <div className="doc-card"><div className="doc-icon">🛂</div><div className="doc-info"><h5>Passport Scan</h5><div className="status approved">✓ Approved</div></div></div>

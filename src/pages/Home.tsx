@@ -24,7 +24,7 @@ const LEAD_TEXTS = [
 ];
 
 const SERVICES_CORE = [
-  { icon: '🎓', title: 'Global Admissions Processing', desc: 'We manage your entire university and college admission process across premium global destinations, including: Americas & Europe — Canada, USA, UK, Ireland, France, Italy, Sweden, and Austria. Asia & Oceania — South Korea, Philippines, China, and New Zealand.', link: '/services/admissions' },
+  { icon: '🎓', title: 'Global Admissions Processing', desc: 'We manage your entire university and college admission process across premium global destinations, including: Americas & Europe: Canada, USA, UK, Ireland, France, Italy, Sweden, and Austria. Asia & Oceania: South Korea, Philippines, China, and New Zealand.', link: '/services/admissions' },
   { icon: '🛂', title: 'Strategic Visa Application Support', desc: 'We provide end-to-end guidance for study permit and student visa applications. Our team oversees everything from initial file compilation to final submission, ensuring full compliance with immigration requirements.', link: '/services/visa' },
   { icon: '⚖️', title: 'Legal Document Review & Verification', desc: 'To maximize your approval success rate, our experts conduct rigorous reviews of all financial, academic, and legal documents to eliminate errors and strengthen your application profile.', link: '/services/document-review' },
   { icon: '💳', title: 'Educational Financing & Study Loan Support', desc: 'Through our trusted global funding partners, we facilitate access to study loans covering up to 65% of your tuition and living expenses, easing the financial burden of relocation.', link: '/services/study-loan' },
@@ -43,26 +43,26 @@ const TOURS = [
 ];
 
 const TESTIMONIALS = [
-  { initials: 'E.A.', name: 'Egwu A.', meta: 'Study — University of West Scotland, UK', quote: 'The entire process was smooth and professionally handled. From my admission to my UK study visa approval, I received excellent guidance every step of the way. I highly recommend their services.' },
-  { initials: 'S.', name: 'Stephen', meta: 'Tourist Visa — France', quote: 'My France tourist visa was processed quickly and efficiently. The team kept me informed throughout the application process, making everything stress-free.' },
-  { initials: 'O.J.', name: 'Okechukwu J.', meta: 'Business Visa — China', quote: 'Excellent service from start to finish. They helped me secure my China business visa without unnecessary delays and ensured all my documents were properly prepared.' },
-  { initials: 'E.I.', name: 'Emmanuel I.', meta: 'Study — Robert Gordon University, UK', quote: 'I appreciate the professionalism and attention to detail. Thanks to their support, I successfully obtained my UK study visa and can now pursue my education at Robert Gordon University.' },
-  { initials: 'C.E.', name: 'Chimazuru E.', meta: 'Study — University Canada West, Canada', quote: "I'm grateful for the outstanding support throughout my Canadian study visa application. Their expertise made the entire journey simple and successful." },
-  { initials: 'T.K.', name: 'Tochukwu K.', meta: 'Study — Ireland', quote: "The team was knowledgeable, responsive, and reliable. My Ireland study visa was approved, and I couldn't be happier with the service I received." },
-  { initials: 'W.O.', name: 'Walter O.', meta: 'Tourist Visa — South Korea', quote: 'A seamless and professional experience. My South Korea tourist visa was approved without complications, and the communication throughout the process was excellent.' },
-  { initials: 'G.N.', name: 'Goodluck N.', meta: 'Tourist Visa — Spain', quote: 'Thank you for making my Spain tourist visa application straightforward and stress-free. I truly appreciate your professionalism and dedication.' },
-  { initials: 'G.A.', name: 'Gift A.', meta: 'Spousal Open Work Permit — Canada', quote: 'The guidance and support I received were exceptional. My Canada Spousal Open Work Permit was approved successfully, and I highly recommend this team to anyone seeking immigration assistance.' },
+  { initials: 'E.A.', name: 'Egwu A.', meta: 'Study: University of West Scotland, UK', quote: 'The entire process was smooth and professionally handled. From my admission to my UK study visa approval, I received excellent guidance every step of the way. I highly recommend their services.' },
+  { initials: 'S.', name: 'Stephen', meta: 'Tourist Visa: France', quote: 'My France tourist visa was processed quickly and efficiently. The team kept me informed throughout the application process, making everything stress-free.' },
+  { initials: 'O.J.', name: 'Okechukwu J.', meta: 'Business Visa: China', quote: 'Excellent service from start to finish. They helped me secure my China business visa without unnecessary delays and ensured all my documents were properly prepared.' },
+  { initials: 'E.I.', name: 'Emmanuel I.', meta: 'Study: Robert Gordon University, UK', quote: 'I appreciate the professionalism and attention to detail. Thanks to their support, I successfully obtained my UK study visa and can now pursue my education at Robert Gordon University.' },
+  { initials: 'C.E.', name: 'Chimazuru E.', meta: 'Study: University Canada West, Canada', quote: "I'm grateful for the outstanding support throughout my Canadian study visa application. Their expertise made the entire journey simple and successful." },
+  { initials: 'T.K.', name: 'Tochukwu K.', meta: 'Study: Ireland', quote: "The team was knowledgeable, responsive, and reliable. My Ireland study visa was approved, and I couldn't be happier with the service I received." },
+  { initials: 'W.O.', name: 'Walter O.', meta: 'Tourist Visa: South Korea', quote: 'A seamless and professional experience. My South Korea tourist visa was approved without complications, and the communication throughout the process was excellent.' },
+  { initials: 'G.N.', name: 'Goodluck N.', meta: 'Tourist Visa: Spain', quote: 'Thank you for making my Spain tourist visa application straightforward and stress-free. I truly appreciate your professionalism and dedication.' },
+  { initials: 'G.A.', name: 'Gift A.', meta: 'Spousal Open Work Permit: Canada', quote: 'The guidance and support I received were exceptional. My Canada Spousal Open Work Permit was approved successfully, and I highly recommend this team to anyone seeking immigration assistance.' },
 ];
 
 const WHY_US = [
   { title: 'Direct School Partnerships', desc: 'We work directly with top schools and international partners, giving your application real global credibility and access to better course options.' },
-  { title: 'Guidance Built Just for You', desc: 'We study your unique background, career goals, and budget to give personal advice that fits your exact needs — never one-size-fits-all.' },
+  { title: 'Guidance Built Just for You', desc: 'We study your unique background, career goals, and budget to give personal advice that fits your exact needs, never one-size-fits-all.' },
   { title: 'Expert Reviews to Avoid Mistakes', desc: 'Before any application is submitted, our team double-checks every detail to eliminate errors and keep approval rates high.' },
   { title: 'Travel Experts You Can Truly Trust', desc: 'Honest, well-trained guidance that helps you save money and make the right choices from day one.' },
   { title: 'Strong Documentation & Branding Help', desc: 'We arrange your files perfectly, and write SOPs and CVs that stand out to visa officers.' },
-  { title: 'Stress-Free Visa & Flight Logistics', desc: 'From documents to flights and housing, we handle the heavy lifting — and with your client portal, you always know exactly what comes next.', featured: true },
+  { title: 'Stress-Free Visa & Flight Logistics', desc: 'From documents to flights and housing, we handle the heavy lifting, and with your client portal, you always know exactly what comes next.', featured: true },
   { title: 'Luxury Tours & Dream Vacations', desc: 'Beyond school runs, we plan luxury tour packages, honeymoons, solo getaways, and customized family vacations built around your comfort.' },
-  { title: 'Up-to-Date Travel Rules', desc: 'Immigration laws and school intakes change fast — we stay on top of it so you never worry about outdated information.' },
+  { title: 'Up-to-Date Travel Rules', desc: 'Immigration laws and school intakes change fast. We stay on top of it so you never worry about outdated information.' },
 ];
 
 const FAQS = [
@@ -173,7 +173,7 @@ export default function Home() {
         <div className="wrap hero-grid">
           <div>
             <div className="hero-eyebrow">
-              <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour — One Trusted Partner</span>
+              <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
             </div>
             <h1>
               Your{' '}
@@ -223,9 +223,9 @@ export default function Home() {
         <div className="wrap">
           <div className="membership-label">Registered & Recognized By</div>
           <div className="membership-row">
-            <div className="membership-badge"><span className="dot" />NANTA — National Association of Nigeria Travel Agencies</div>
-            <div className="membership-badge"><span className="dot" />NCAA — Nigeria Civil Aviation Authority</div>
-            <div className="membership-badge"><span className="dot" />ITPN — Institute for Tourism Professionals of Nigeria</div>
+            <div className="membership-badge"><span className="dot" />NANTA: National Association of Nigeria Travel Agencies</div>
+            <div className="membership-badge"><span className="dot" />NCAA: Nigeria Civil Aviation Authority</div>
+            <div className="membership-badge"><span className="dot" />ITPN: Institute for Tourism Professionals of Nigeria</div>
           </div>
         </div>
       </div>
@@ -236,7 +236,7 @@ export default function Home() {
           <div className="wwd-head-grid">
             <div className="section-head reveal">
               <span className="eyebrow">What We Do</span>
-              <h2>Everything your move abroad needs — under one roof</h2>
+              <h2>Everything your move abroad needs, all under one roof</h2>
               <p>Study abroad and visa support are where we started, and where we're strongest. Travel services round out the journey once your plans are set.</p>
             </div>
             <div className="wwd-photo reveal">
@@ -324,7 +324,7 @@ export default function Home() {
             <div className="section-head reveal">
               <span className="eyebrow">How It Works</span>
               <h2 style={{ color: '#fff' }}>Our simple 4-step process</h2>
-              <p style={{ color: 'var(--ink-muted)' }}>From your very first consultation to final approval, we provide continuous expert mentorship — with every stage visible in your client portal, not left to guesswork.</p>
+              <p style={{ color: 'var(--ink-muted)' }}>From your very first consultation to final approval, we provide continuous expert mentorship, with every stage visible in your client portal, not left to guesswork.</p>
             </div>
             <div className="timeline reveal">
               <div className="timeline-track" />
@@ -340,7 +340,7 @@ export default function Home() {
             <div className="visa-photo-strip reveal">
               <div className="visa-photo-text">
                 <span className="eyebrow">The Payoff</span>
-                <p>From application to approval — real visas, real stamps.</p>
+                <p>From application to approval: real visas, real stamps.</p>
               </div>
               <div className="visa-photo-frame">
                 <img src={visaPassportPhoto} alt="Visa application and approved passport stamps" />
@@ -371,7 +371,7 @@ export default function Home() {
           <div className="section-head reveal">
             <span className="eyebrow">Destinations</span>
             <h2>12 flagship destinations. Worldwide reach.</h2>
-            <p>Full admissions and visa guidance across our premium destinations in the Americas, Europe, Asia and Oceania — with support available for students and travelers headed anywhere else too.</p>
+            <p>Full admissions and visa guidance across our premium destinations in the Americas, Europe, Asia and Oceania, with support available for students and travelers headed anywhere else too.</p>
           </div>
           <div className="dest-grid reveal">
             {DESTINATIONS.map((d) => (
@@ -418,7 +418,7 @@ export default function Home() {
             <div className="section-head reveal">
               <span className="eyebrow">Success Stories</span>
               <h2 style={{ color: '#fff' }}>Real clients. Real outcomes.</h2>
-              <p style={{ color: 'var(--ink-muted)' }}>Shared with permission — photos withheld by client request.</p>
+              <p style={{ color: 'var(--ink-muted)' }}>Shared with permission. Photos withheld by client request.</p>
             </div>
             <div className="test-track reveal">
               {TESTIMONIALS.map((t) => (
@@ -489,7 +489,7 @@ export default function Home() {
       <section className="final-cta">
         <div className="wrap">
           <span className="eyebrow reveal">Ready When You Are</span>
-          <h2 className="reveal">Let's map out your path — together</h2>
+          <h2 className="reveal">Let's map out your path, together</h2>
           <p className="reveal">Book a free consultation and we'll walk you through exactly what your journey looks like.</p>
           <div className="final-actions reveal">
             <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>

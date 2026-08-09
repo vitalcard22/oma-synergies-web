@@ -49,7 +49,7 @@ export const SERVICES: Service[] = [
       },
       {
         q: 'How long does the admission process take?',
-        a: 'It varies by school and country, but is typically part of a 3–6 month overall study abroad timeline.',
+        a: 'It varies by school and country, but is typically part of a 3-6 month overall study abroad timeline.',
       },
     ],
     ctaHeadline: "Let's find your right school",
@@ -77,7 +77,7 @@ export const SERVICES: Service[] = [
     faqs: [
       {
         q: 'Do you write the SOP from scratch or edit mine?',
-        a: 'Both are available — we can write a tailored SOP from scratch, or review and strengthen a draft you already have.',
+        a: 'Both are available. We can write a tailored SOP from scratch, or review and strengthen a draft you already have.',
       },
     ],
     ctaHeadline: "Let's tell your story properly",
@@ -109,7 +109,7 @@ export const SERVICES: Service[] = [
       },
       {
         q: 'How long does visa processing take?',
-        a: "This depends on the destination country's current processing times — we'll give you a realistic estimate during consultation.",
+        a: "This depends on the destination country's current processing times. We'll give you a realistic estimate during consultation.",
       },
     ],
     ctaHeadline: "Let's get your visa right",
@@ -221,7 +221,7 @@ export const SERVICES: Service[] = [
     faqs: [
       {
         q: 'Does this service continue after my visa is approved?',
-        a: 'Yes — this is specifically post-visa support, covering housing, departure prep, and settling into your new community.',
+        a: 'Yes, this is specifically post-visa support, covering housing, departure prep, and settling into your new community.',
       },
     ],
     ctaHeadline: "Let's help you settle in",

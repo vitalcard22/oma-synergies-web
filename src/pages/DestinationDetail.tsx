@@ -51,13 +51,13 @@ export default function DestinationDetail() {
                 <span className="program-chip" key={p}>{p}</span>
               ))}
             </div>
-            <p style={{ marginTop: 10 }}><span className="placeholder-note">Sample list — actual programs depend on partner schools</span></p>
+            <p style={{ marginTop: 10 }}><span className="placeholder-note">Sample list, actual programs depend on partner schools</span></p>
           </div>
           <div className="side-card">
             <h4>Visa Overview</h4>
-            <p>{d.visaNote} This is a general overview, not legal advice — your consultation will cover the exact requirements for your situation.</p>
+            <p>{d.visaNote} This is a general overview, not legal advice. Your consultation will cover the exact requirements for your situation.</p>
             <h4>What's Included</h4>
-            <p>Admissions guidance, SOP/CV support, visa application support, document review, and — where applicable — study loan facilitation, all handled for your {d.name} application.</p>
+            <p>Admissions guidance, SOP/CV support, visa application support, document review, and, where applicable, study loan facilitation, all handled for your {d.name} application.</p>
             <Link to="/contact" className="btn btn-gold" style={{ width: '100%', justifyContent: 'center' }}>Start Your {d.name} Application</Link>
           </div>
         </div>

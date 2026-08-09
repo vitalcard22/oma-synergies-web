@@ -83,7 +83,7 @@ export default function Admin() {
             <div className="form-row"><label>Email</label><input type="email" placeholder="you@omasynergiestravel.com" /></div>
             <div className="form-row"><label>Password</label><input type="password" placeholder="••••••••" /></div>
             <button className="login-btn" onClick={() => setLoggedIn(true)}>Sign In</button>
-            <div className="login-note">Demo only — click Sign In to preview the panel. No real authentication yet.</div>
+            <div className="login-note">Demo only. Click Sign In to preview the panel. No real authentication yet.</div>
           </div>
         </div>
       </div>
@@ -92,7 +92,7 @@ export default function Admin() {
 
   return (
     <div className="admin-root">
-      <div className="demo-banner"><strong>PROTOTYPE</strong> — visual design only, using sample data. Not yet connected to a real backend.</div>
+      <div className="demo-banner"><strong>PROTOTYPE</strong>: visual design only, using sample data. Not yet connected to a real backend.</div>
 
       {mobileOpen && <div className="sidebar-overlay open" onClick={() => setMobileOpen(false)} />}
 
@@ -301,7 +301,7 @@ export default function Admin() {
                   </tbody>
                 </table>
               </div>
-              <div className="upload-note"><strong>Selar Integration</strong>These transactions will sync automatically once Selar checkout is wired up on the live site — for now this table reflects manually recorded sample data.</div>
+              <div className="upload-note"><strong>Selar Integration</strong>These transactions will sync automatically once Selar checkout is wired up on the live site. For now this table reflects manually recorded sample data.</div>
             </div>
           )}
 
@@ -326,7 +326,7 @@ export default function Admin() {
                   </tbody>
                 </table>
               </div>
-              <div className="upload-note"><strong>Upload behavior (planned)</strong>Phone-friendly upload, real file size shown before upload, progress bar during, size warnings over limit, and confirmation of optimized size after — as previously specified.</div>
+              <div className="upload-note"><strong>Upload behavior (planned)</strong>Phone-friendly upload, real file size shown before upload, progress bar during, size warnings over limit, and confirmation of optimized size after, as previously specified.</div>
             </div>
           )}
 
@@ -349,7 +349,7 @@ export default function Admin() {
                         <td className="row-actions"><button className="icon-btn">✎</button></td>
                       </tr>
                     ))}
-                    <tr><td className="cell-name">+ 8 more destinations</td><td colSpan={3} style={{ color: 'var(--slate)' }}>Same pattern — edit any country's details inline</td></tr>
+                    <tr><td className="cell-name">+ 8 more destinations</td><td colSpan={3} style={{ color: 'var(--slate)' }}>Same pattern, edit any country's details inline</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -402,7 +402,7 @@ export default function Admin() {
                   </tbody>
                 </table>
               </div>
-              <div className="upload-note"><strong>Permission levels (planned)</strong>Admin — full access to everything. Staff (Content Only) — can manage testimonials, destinations, tours. Staff (View Only) — can view clients/inquiries but not edit case status.</div>
+              <div className="upload-note"><strong>Permission levels (planned)</strong>Admin: full access to everything. Staff (Content Only): can manage testimonials, destinations, tours. Staff (View Only): can view clients/inquiries but not edit case status.</div>
             </div>
           )}
         </main>

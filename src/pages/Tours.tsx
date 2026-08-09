@@ -35,7 +35,7 @@ export default function Tours() {
         <div className="wrap">
           <span className="eyebrow">Tours & Packages</span>
           <h1>Travel should feel like a breath of fresh air</h1>
-          <p>Beyond school runs — luxury tour packages, romantic honeymoons, solo getaways, and customized family vacations designed around your comfort.</p>
+          <p>Beyond school runs: luxury tour packages, romantic honeymoons, solo getaways, and customized family vacations designed around your comfort.</p>
           <div className="cat-bar">
             {CATEGORIES.map((c) => (
               <button key={c} className={activeCat === c ? 'cat-btn active' : 'cat-btn'} onClick={() => setActiveCat(c)}>
@@ -68,7 +68,7 @@ export default function Tours() {
           <div className="custom-cta">
             <div>
               <h3>Don't see what you're looking for?</h3>
-              <p>Every trip can be fully customized — tell us your dates, budget, and vibe, and we'll build something just for you.</p>
+              <p>Every trip can be fully customized, tell us your dates, budget, and vibe, and we'll build something just for you.</p>
             </div>
             <Link to="/contact" className="btn btn-gold">Request a Custom Trip</Link>
           </div>

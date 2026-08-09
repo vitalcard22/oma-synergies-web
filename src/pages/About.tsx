@@ -10,8 +10,8 @@ import whoWeAreTeam from '../assets/who-we-are-team.jpg';
 import './About.css';
 
 const TEAM = [
-  { photo: adaezePhoto, name: 'Adaeze Ohazuruike', role: 'Founder & CEO', credential: { title: 'Certified UK Knowledge Agent & Counsellor', sub: 'British Council, via ApplyBoard — Valid until 05/2028' } },
-  { photo: increasePhoto, name: 'Increase Uchechukwu', role: 'Writer — SOP & CV Specialist' },
+  { photo: adaezePhoto, name: 'Adaeze Ohazuruike', role: 'Founder & CEO', credential: { title: 'Certified UK Knowledge Agent & Counsellor', sub: 'British Council, via ApplyBoard, valid until 05/2028' } },
+  { photo: increasePhoto, name: 'Increase Uchechukwu', role: 'Writer, SOP & CV Specialist' },
   { photo: nnennaPhoto, name: 'Ugwuoke Nnenna Juliet', role: 'Strategy and Operations Lead' },
   { photo: joshuaPhoto, name: 'Awoniyi Joshua Ayodeji', role: 'Research Assistant' },
 ];
@@ -34,7 +34,7 @@ export default function About() {
           <span className="eyebrow">About Us</span>
           <h1>Your trusted bridge to global opportunities</h1>
           <p>
-            Oma Synergies Travels and Tours Ltd is committed to guiding students and travelers toward their global goals —
+            Oma Synergies Travels and Tours Ltd is committed to guiding students and travelers toward their global goals,
             from the classroom to the departure gate. Our experienced team combines deep expertise in international
             admissions, visa processing, and immigration support with a genuine passion for travel, giving every client
             personalized attention from first consultation to final approval.
@@ -49,7 +49,7 @@ export default function About() {
             <h2 style={{ margin: '14px 0 22px' }}>Guiding you from admission to arrival</h2>
             <p>
               We offer end-to-end support for admission processing, SOP and CV development, visa applications, legal
-              document review, and study loan guidance — helping students navigate the path to studying abroad with
+              document review, and study loan guidance, helping students navigate the path to studying abroad with
               clarity and confidence.
             </p>
             <p>
@@ -58,7 +58,7 @@ export default function About() {
               solutions.
             </p>
             <p>
-              Whatever stage of the journey you're on — applying, relocating, or simply planning your next trip — Oma
+              Whatever stage of the journey you're on, applying, relocating, or simply planning your next trip, Oma
               Synergies is the trusted partner guiding you every step of the way.
             </p>
           </div>
@@ -145,9 +145,9 @@ export default function About() {
           <div className="creds-block">
             <div className="creds-label">Registered & Recognized By</div>
             <div className="creds-row">
-              <div className="membership-badge"><span className="dot" />NANTA — National Association of Nigeria Travel Agencies</div>
-              <div className="membership-badge"><span className="dot" />NCAA — Nigeria Civil Aviation Authority</div>
-              <div className="membership-badge"><span className="dot" />ITPN — Institute for Tourism Professionals of Nigeria</div>
+              <div className="membership-badge"><span className="dot" />NANTA: National Association of Nigeria Travel Agencies</div>
+              <div className="membership-badge"><span className="dot" />NCAA: Nigeria Civil Aviation Authority</div>
+              <div className="membership-badge"><span className="dot" />ITPN: Institute for Tourism Professionals of Nigeria</div>
             </div>
           </div>
           <div className="creds-block">
@@ -164,7 +164,7 @@ export default function About() {
       <section className="about-cta">
         <div className="wrap">
           <span className="eyebrow reveal">Ready When You Are</span>
-          <h2 className="reveal">Let's map out your path — together</h2>
+          <h2 className="reveal">Let's map out your path, together</h2>
           <p className="reveal">Book a free consultation and we'll walk you through exactly what your journey looks like.</p>
           <div className="about-cta-actions reveal">
             <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
