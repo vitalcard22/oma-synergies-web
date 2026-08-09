@@ -30,6 +30,7 @@ export default function PhotoCrossfade({ images, alts, holdMs = 4500 }: Props) {
           key={src}
           src={src}
           alt={alts[i] || ''}
+          loading="lazy"
           className={
             i === active
               ? `pcf-slide active ${zoomIn ? 'zoom-in' : 'zoom-out'}`

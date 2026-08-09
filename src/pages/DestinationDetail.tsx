@@ -25,7 +25,7 @@ export default function DestinationDetail() {
 
       <div className="hero-photo-tag">Sample Photo</div>
       <section className="dest-hero">
-        <img src={d.img} alt={d.name} />
+        <img src={d.img} alt={d.name} loading="eager" />
         <div className="wrap-narrow dest-hero-inner">
           <span className="eyebrow">{d.region}</span>
           <h1>Study & Travel to {d.name}</h1>

@@ -40,7 +40,7 @@ export default function Destinations() {
           <div className="dest-grid">
             {filtered.map((d) => (
               <Link to={`/destinations/${d.slug}`} className="dest-card" key={d.slug}>
-                <img src={d.img} alt={d.name} />
+                <img src={d.img} alt={d.name} loading="lazy" />
                 <div className="dest-overlay">
                   <div className="region">{d.region}</div>
                   <h4>{d.name}</h4>

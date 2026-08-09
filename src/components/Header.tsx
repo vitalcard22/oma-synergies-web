@@ -38,7 +38,7 @@ export default function Header() {
       <div className="wrap">
         <nav>
           <Link to="/" className="logo-mark">
-            <img src={logoIcon} alt="Oma Synergies" />
+            <img src={logoIcon} alt="Oma Synergies" loading="eager" />
             OMA SYNERGIES
           </Link>
           <ul className="nav-links">

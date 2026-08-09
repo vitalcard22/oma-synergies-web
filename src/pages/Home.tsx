@@ -7,6 +7,7 @@ import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { useCountUp } from '../hooks/useCountUp';
 import logoIcon from '../assets/logo-icon.png';
 import { DESTINATIONS } from '../data/destinations';
+import { TESTIMONIALS } from '../data/testimonials';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import wwdTeamPhoto from '../assets/wwd-team.jpg';
 import wwdStaffDesk from '../assets/wwd-staff-desk.jpg';
@@ -43,17 +44,6 @@ const TOURS = [
   { name: 'Istanbul Discovery', meta: '5 Days · From ₦730,000' },
 ];
 
-const TESTIMONIALS = [
-  { initials: 'E.A.', name: 'Egwu A.', meta: 'Study: University of West Scotland, UK', quote: 'The entire process was smooth and professionally handled. From my admission to my UK study visa approval, I received excellent guidance every step of the way. I highly recommend their services.' },
-  { initials: 'S.', name: 'Stephen', meta: 'Tourist Visa: France', quote: 'My France tourist visa was processed quickly and efficiently. The team kept me informed throughout the application process, making everything stress-free.' },
-  { initials: 'O.J.', name: 'Okechukwu J.', meta: 'Business Visa: China', quote: 'Excellent service from start to finish. They helped me secure my China business visa without unnecessary delays and ensured all my documents were properly prepared.' },
-  { initials: 'E.I.', name: 'Emmanuel I.', meta: 'Study: Robert Gordon University, UK', quote: 'I appreciate the professionalism and attention to detail. Thanks to their support, I successfully obtained my UK study visa and can now pursue my education at Robert Gordon University.' },
-  { initials: 'C.E.', name: 'Chimazuru E.', meta: 'Study: University Canada West, Canada', quote: "I'm grateful for the outstanding support throughout my Canadian study visa application. Their expertise made the entire journey simple and successful." },
-  { initials: 'T.K.', name: 'Tochukwu K.', meta: 'Study: Ireland', quote: "The team was knowledgeable, responsive, and reliable. My Ireland study visa was approved, and I couldn't be happier with the service I received." },
-  { initials: 'W.O.', name: 'Walter O.', meta: 'Tourist Visa: South Korea', quote: 'A seamless and professional experience. My South Korea tourist visa was approved without complications, and the communication throughout the process was excellent.' },
-  { initials: 'G.N.', name: 'Goodluck N.', meta: 'Tourist Visa: Spain', quote: 'Thank you for making my Spain tourist visa application straightforward and stress-free. I truly appreciate your professionalism and dedication.' },
-  { initials: 'G.A.', name: 'Gift A.', meta: 'Spousal Open Work Permit: Canada', quote: 'The guidance and support I received were exceptional. My Canada Spousal Open Work Permit was approved successfully, and I highly recommend this team to anyone seeking immigration assistance.' },
-];
 
 const WHY_US = [
   { title: 'Direct School Partnerships', desc: 'We work directly with top schools and international partners, giving your application real global credibility and access to better course options.' },
@@ -199,7 +189,7 @@ export default function Home() {
           <div className="orbit-stage">
             <div className="orbit-ring r1" />
             <div className="orbit-ring r2" />
-            <div className="orbit-core"><img src={logoIcon} alt="Oma Synergies" /></div>
+            <div className="orbit-core"><img src={logoIcon} alt="Oma Synergies" loading="eager" /></div>
           </div>
         </div>
         <div className="hero-scroll-cue"><div className="scroll-line" />SCROLL</div>
@@ -306,7 +296,7 @@ export default function Home() {
               </div>
             </div>
             <div className="partners-photo reveal">
-              <img src={kcOverseasTeam} alt="Our KC Overseas partner team" />
+              <img src={kcOverseasTeam} alt="Our KC Overseas partner team" loading="lazy" />
               <span className="partners-photo-caption">Our KC Overseas Education partner team</span>
             </div>
           </div>
@@ -340,7 +330,7 @@ export default function Home() {
                 <p>From application to approval: real visas, real stamps.</p>
               </div>
               <div className="visa-photo-frame">
-                <img src={visaPassportPhoto} alt="Visa application and approved passport stamps" />
+                <img src={visaPassportPhoto} alt="Visa application and approved passport stamps" loading="lazy" />
               </div>
             </div>
 
@@ -373,7 +363,7 @@ export default function Home() {
           <div className="dest-grid reveal">
             {DESTINATIONS.map((d) => (
               <Link to={`/destinations/${d.slug}`} className="dest-card" key={d.slug}>
-                <img src={d.img} alt={d.name} />
+                <img src={d.img} alt={d.name} loading="lazy" />
                 <div className="dest-overlay">
                   <h4>{d.name}</h4>
                   <div className="stat">Avg. processing: {d.processing} <span className="placeholder-note">Sample</span></div>
@@ -422,7 +412,7 @@ export default function Home() {
                 <div className="test-card" key={t.name}>
                   <div className="test-top">
                     <div className="initial-badge">{t.initials}</div>
-                    <div><div className="test-name">{t.name}</div><div className="test-meta">{t.meta}</div></div>
+                    <div><div className="test-name">{t.name}</div><div className="test-meta">{t.serviceTag}: {t.meta}</div></div>
                   </div>
                   <p className="test-quote">"{t.quote}"</p>
                 </div>

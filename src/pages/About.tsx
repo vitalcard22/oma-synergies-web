@@ -63,7 +63,7 @@ export default function About() {
             </p>
           </div>
           <div className="who-photo reveal">
-            <img src={whoWeAreTeam} alt="The Oma Synergies team at our Abuja office" />
+            <img src={whoWeAreTeam} alt="The Oma Synergies team at our Abuja office" loading="lazy" />
           </div>
         </div>
       </section>
@@ -121,7 +121,7 @@ export default function About() {
             <div className="team-grid reveal">
               {TEAM.map((m) => (
                 <div className="team-card" key={m.name}>
-                  <div className="team-avatar"><img src={m.photo} alt={m.name} /></div>
+                  <div className="team-avatar"><img src={m.photo} alt={m.name} loading="lazy" /></div>
                   <h4>{m.name}</h4>
                   <div className="team-role">{m.role}</div>
                   {m.credential && (

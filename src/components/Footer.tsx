@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="wrap">
         <div className="footer-grid">
           <div className="footer-brand">
-            <img src={logoIcon} alt="Oma Synergies" />
+            <img src={logoIcon} alt="Oma Synergies" loading="lazy" />
             <p>Guiding students and travelers toward international education and travel goals, with clarity, confidence, and expert support.</p>
           </div>
           <div className="footer-col">

@@ -52,7 +52,7 @@ export default function Tours() {
             {filtered.map((t) => (
               <div className="tour-card" key={t.name}>
                 <div className="tour-img">
-                  <img src={t.img} alt={t.name} />
+                  <img src={t.img} alt={t.name} loading="lazy" />
                   <span className="tour-tag">Sample Package</span>
                 </div>
                 <div className="tour-body">

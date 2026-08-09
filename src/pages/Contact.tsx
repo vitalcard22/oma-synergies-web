@@ -122,7 +122,7 @@ export default function Contact() {
             </div>
 
             <div className="office-photo-card">
-              <img src={officePhoto} alt="Our Oma Synergies office in Abuja" />
+              <img src={officePhoto} alt="Our Oma Synergies office in Abuja" loading="lazy" />
               <span className="office-photo-caption">Visit us at our Abuja office</span>
             </div>
 
