@@ -7,7 +7,6 @@
 
 
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
-  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;padding:14px 26px;border-radius:100px;cursor:pointer;border:1px solid transparent;transition:all .25s ease;}
   .btn-gold{background:var(--gold);color:var(--navy-deep);}
   .btn-gold:hover{background:var(--gold-soft);}
   .btn-outline{border-color:rgba(255,255,255,0.35);color:var(--white);}
@@ -24,7 +23,6 @@
   .cat-btn:hover{border-color:var(--gold);color:var(--white);}
   .cat-btn.active{background:var(--gold);color:var(--navy-deep);border-color:var(--gold);}
 
-  section{padding:80px 0;}
   .tour-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;}
   .tour-card{background:var(--white);border:1px solid var(--line-dark);border-radius:18px;overflow:hidden;transition:transform .3s ease, box-shadow .3s ease;}
   .tour-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(31,32,53,0.1);}

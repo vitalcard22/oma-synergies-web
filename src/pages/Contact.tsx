@@ -80,7 +80,7 @@ export default function Contact() {
                   <label htmlFor="message">Message</label>
                   <textarea id="message" required placeholder="Tell us a bit about what you need help with..." />
                 </div>
-                <button type="submit" className="btn btn-gold" disabled={sending}>
+                <button type="submit" className="btn btn-gold" disabled={sending} style={{ width: '100%', justifyContent: 'center' }}>
                   {sending ? 'Sending...' : 'Send Inquiry'}
                 </button>
               </form>
