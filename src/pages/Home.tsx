@@ -13,9 +13,8 @@ import wwdStaffDesk from '../assets/wwd-staff-desk.jpg';
 import wwdFamilyCart from '../assets/wwd-family-cart.jpg';
 import wwdCheckinHandoff from '../assets/wwd-checkin-handoff.jpg';
 import PhotoCrossfade from '../components/PhotoCrossfade';
-import SplitFlap from '../components/SplitFlap';
-import WordReveal from '../components/WordReveal';
 import RouteLine from '../components/RouteLine';
+import CurtainReveal from '../components/CurtainReveal';
 import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
@@ -242,11 +241,7 @@ export default function Home() {
             {/* PART 1 */}
             <div className="wwd-head-grid">
               <div className="section-head reveal wwd-part">
-                <div className="flight-tag">
-                  <SplitFlap text="OS-01 · ABV → WORLD" />
-                  <div className="flight-tag-sub">STUDY / VISA / CONSULTANCY</div>
-                </div>
-                <h2><WordReveal text="Start Your Journey" /></h2>
+                <CurtainReveal>Start Your Journey</CurtainReveal>
                 <p>Dreaming of studying abroad, securing your visa, or taking the next step toward a global future? We make it happen. From choosing the right destination and school to expert visa guidance and personalized consultancy, we're with you every step of the way.</p>
               </div>
               <div className="wwd-photo reveal">
@@ -291,11 +286,7 @@ export default function Home() {
 
             {/* PART 2 */}
             <div className="section-head reveal wwd-part wwd-part-2">
-              <div className="flight-tag">
-                <SplitFlap text="OS-02 · ABV → WORLD" />
-                <div className="flight-tag-sub">TRAVEL / TOURISM</div>
-              </div>
-              <h2><WordReveal text="Explore the World" /></h2>
+              <CurtainReveal>Explore the World</CurtainReveal>
               <p>Your journey doesn't end when your visa is approved, that's where the adventure begins. From unforgettable holidays and exciting tours to flights, accommodation, and destination experiences, we help you travel, explore, and create memories around the world.</p>
             </div>
 

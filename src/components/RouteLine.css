@@ -22,9 +22,9 @@
 
 .route-plane {
   position: absolute;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   pointer-events: none;
   filter: drop-shadow(0 0 6px rgba(240, 177, 36, 0.5));
-  transition: left 0.15s linear, top 0.15s linear;
+  transition: left 0.15s linear, top 0.15s linear, transform 0.3s ease-out;
 }

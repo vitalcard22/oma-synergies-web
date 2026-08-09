@@ -1,47 +1,62 @@
 import { useEffect, useRef, useState } from 'react';
 import './RouteLine.css';
 
+// Key points the plane travels through, as percentages of the container (x, y)
+const KEY_POINTS: [number, number][] = [
+  [30, 2],
+  [55, 20],
+  [20, 40],
+  [45, 60],
+  [65, 80],
+  [35, 98],
+];
+
+function pointOnPath(progress: number): { x: number; y: number } {
+  const segments = KEY_POINTS.length - 1;
+  const scaled = Math.min(0.9999, Math.max(0, progress)) * segments;
+  const i = Math.floor(scaled);
+  const t = scaled - i;
+  const [x1, y1] = KEY_POINTS[i];
+  const [x2, y2] = KEY_POINTS[Math.min(i + 1, segments)];
+  return { x: x1 + (x2 - x1) * t, y: y1 + (y2 - y1) * t };
+}
+
+function buildSvgPath(): string {
+  return KEY_POINTS.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]},${p[1] * 6}`).join(' ');
+}
+
 export default function RouteLine() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  const [planeStyle, setPlaneStyle] = useState({ left: '0%', top: '0%', rotate: 90 });
+  const [pos, setPos] = useState({ x: 30, y: 2 });
+  const [angle, setAngle] = useState(120);
   const mouseOffset = useRef({ x: 0, y: 0 });
-  const scrollPoint = useRef({ x: 0, y: 0 });
+  const basePos = useRef({ x: 30, y: 2 });
 
   useEffect(() => {
     const container = containerRef.current;
-    const path = pathRef.current;
-    if (!container || !path) return;
-
-    const totalLength = path.getTotalLength();
+    if (!container) return;
     let rafId: number;
 
     const computeFromScroll = () => {
       const rect = container.getBoundingClientRect();
       const vh = window.innerHeight;
-      // progress 0 -> 1 as the container travels through the viewport
       const raw = (vh - rect.top) / (vh + rect.height);
       const progress = Math.min(1, Math.max(0, raw));
-
-      const point = path.getPointAtLength(progress * totalLength);
-      const viewBox = path.ownerSVGElement!.viewBox.baseVal;
-
-      const xPct = (point.x / viewBox.width) * 100;
-      const yPct = (point.y / viewBox.height) * 100;
-
-      scrollPoint.current = { x: xPct, y: yPct };
+      const point = pointOnPath(progress);
+      const ahead = pointOnPath(Math.min(1, progress + 0.02));
+      const dx = ahead.x - point.x;
+      const dy = (ahead.y - point.y) * 6;
+      const rad = Math.atan2(dy, dx);
+      basePos.current = point;
+      setAngle((rad * 180) / Math.PI + 90);
       applyPosition();
     };
 
     const applyPosition = () => {
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const magnetX = prefersReduced ? 0 : mouseOffset.current.x;
-      const magnetY = prefersReduced ? 0 : mouseOffset.current.y;
-      setPlaneStyle({
-        left: `${scrollPoint.current.x + magnetX}%`,
-        top: `${scrollPoint.current.y + magnetY}%`,
-        rotate: 100,
-      });
+      const mx = prefersReduced ? 0 : mouseOffset.current.x;
+      const my = prefersReduced ? 0 : mouseOffset.current.y;
+      setPos({ x: basePos.current.x + mx, y: basePos.current.y + my });
     };
 
     const onScroll = () => {
@@ -54,18 +69,19 @@ export default function RouteLine() {
       const rect = container.getBoundingClientRect();
       const relX = ((e.clientX - rect.left) / rect.width) * 100;
       const relY = ((e.clientY - rect.top) / rect.height) * 100;
-      // small magnetic pull toward cursor, clamped
-      const dx = Math.max(-3, Math.min(3, (relX - scrollPoint.current.x) * 0.06));
-      const dy = Math.max(-3, Math.min(3, (relY - scrollPoint.current.y) * 0.06));
+      const dx = Math.max(-2.5, Math.min(2.5, (relX - basePos.current.x) * 0.05));
+      const dy = Math.max(-2.5, Math.min(2.5, (relY - basePos.current.y) * 0.05));
       mouseOffset.current = { x: dx, y: dy };
       applyPosition();
     };
 
     computeFromScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
     container.addEventListener('mousemove', onMouseMove);
     return () => {
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
       container.removeEventListener('mousemove', onMouseMove);
       cancelAnimationFrame(rafId);
     };
@@ -75,22 +91,21 @@ export default function RouteLine() {
     <div className="route-line" ref={containerRef}>
       <svg viewBox="0 0 100 600" preserveAspectRatio="none">
         <path
-          ref={pathRef}
-          d="M20,10 C60,120 10,240 40,360 C65,460 15,540 30,590"
+          d={buildSvgPath()}
           fill="none"
           stroke="#F0B124"
           strokeWidth="1.2"
           strokeDasharray="1 8"
           strokeLinecap="round"
-          opacity="0.55"
+          opacity="0.5"
         />
       </svg>
       <div
         className="route-plane"
-        style={{ left: planeStyle.left, top: planeStyle.top, transform: `translate(-50%,-50%) rotate(${planeStyle.rotate}deg)` }}
+        style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: `translate(-50%,-50%) rotate(${angle}deg)` }}
       >
-        <svg width="18" height="18" viewBox="0 0 20 20">
-          <path d="M0 0 L 7 -2 L 10 -8 L 12 -8 L 11 -1 L 18 1 L 18 3 L 11 4 L 10 11 L 8 11 L 7 3 Z" fill="#F0B124" transform="translate(1,8)" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#F0B124">
+          <path d="M21 6.5L3 12.8L9.8 14.1L11.5 21L14.2 15.3L21 6.5Z" />
         </svg>
       </div>
     </div>
