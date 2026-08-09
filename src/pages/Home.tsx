@@ -190,6 +190,11 @@ export default function Home() {
             <div className="orbit-ring r1" />
             <div className="orbit-ring r2" />
             <div className="orbit-core"><img src={logoIcon} alt="Oma Synergies" loading="eager" /></div>
+            <div className="orbit-plane">
+              <svg viewBox="0 0 20 20" width="16" height="16">
+                <path d="M0 0 L 7 -2 L 10 -8 L 12 -8 L 11 -1 L 18 1 L 18 3 L 11 4 L 10 11 L 8 11 L 7 3 Z" fill="#F0B124" />
+              </svg>
+            </div>
           </div>
         </div>
         <div className="hero-scroll-cue"><div className="scroll-line" />SCROLL</div>
