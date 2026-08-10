@@ -16,6 +16,7 @@ import wwdCheckinHandoff from '../assets/wwd-checkin-handoff.jpg';
 import PhotoCrossfade from '../components/PhotoCrossfade';
 import PageTurnCard from '../components/PageTurnCard';
 import HeroPhotoBackdrop from '../components/HeroPhotoBackdrop';
+import OrbitDestinations from '../components/OrbitDestinations';
 import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
@@ -270,6 +271,7 @@ export default function Home() {
           >
             <div className="orbit-ring r1" />
             <div className="orbit-ring r2" />
+            <OrbitDestinations radius={115} />
             <div className="orbit-core"><img src={logoIcon} alt="Oma Synergies" loading="eager" /></div>
           </div>
         </div>

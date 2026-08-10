@@ -1,0 +1,43 @@
+.orbit-destinations {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.orbit-dest-point {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px rgba(240, 177, 36, 0.85);
+  will-change: transform;
+}
+
+.orbit-dest-label {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.orbit-dest-label.showing {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Desktop keeps its existing orbit composition untouched. */
+@media (min-width: 901px) {
+  .orbit-destinations { display: none; }
+}
