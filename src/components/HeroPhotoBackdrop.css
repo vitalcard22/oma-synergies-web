@@ -1,0 +1,40 @@
+.hero-photo-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hpb-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 2.2s ease;
+}
+
+.hpb-slide.active {
+  opacity: 0.17;
+}
+
+.hpb-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    165deg,
+    rgba(31, 32, 53, 0.72) 0%,
+    rgba(20, 21, 42, 0.86) 55%,
+    rgba(20, 21, 42, 0.94) 100%
+  );
+}
+
+@media (min-width: 901px) {
+  .hero-photo-backdrop { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hpb-slide { transition: none; }
+}

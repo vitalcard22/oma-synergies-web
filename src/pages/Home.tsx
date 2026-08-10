@@ -15,10 +15,17 @@ import wwdFamilyCart from '../assets/wwd-family-cart.jpg';
 import wwdCheckinHandoff from '../assets/wwd-checkin-handoff.jpg';
 import PhotoCrossfade from '../components/PhotoCrossfade';
 import PageTurnCard from '../components/PageTurnCard';
+import HeroPhotoBackdrop from '../components/HeroPhotoBackdrop';
 import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
 const HEADLINE_WORDS = ['journey to world-class education', 'visa journey', 'journey to unforgettable destinations', 'journey to explore the world'];
+
+// Mobile hero backdrop: a small subset of real destination photos, kept to 4 to
+// limit image weight on mobile data. Rendered far back at low opacity under a veil.
+const HERO_BACKDROP_PHOTOS = ['uk', 'canada', 'italy', 'south-korea']
+  .map((slug) => DESTINATIONS.find((d) => d.slug === slug)?.img)
+  .filter((src): src is string => Boolean(src));
 const LEAD_TEXTS = [
   'From admission and visa processing to flights, tours, and accommodation Oma Synergies guides you end to end, with real-time tracking every step of the way.',
   'Admissions. Visas. Flights. Tours. Accommodation. One trusted partner tracked in real time from application to arrival.',
@@ -158,6 +165,7 @@ export default function Home() {
 
       {/* HERO */}
       <section className="hero">
+        <HeroPhotoBackdrop images={HERO_BACKDROP_PHOTOS} />
         <div className="hero-map-layer">
           <svg viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" stroke="#F0B124" strokeWidth="1.4" strokeDasharray="1 7" strokeLinecap="round">
