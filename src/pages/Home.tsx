@@ -83,7 +83,6 @@ export default function Home() {
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [orbitPulse, setOrbitPulse] = useState(false);
   const [serviceIdx, setServiceIdx] = useState(0);
-  const [serviceVisible, setServiceVisible] = useState(true);
 
   useEffect(() => {
     const t = setTimeout(() => setHeroLoaded(true), 80);
@@ -99,12 +98,8 @@ export default function Home() {
     if (reduced.matches || !mq.matches) return;
 
     const t = setInterval(() => {
-      setServiceVisible(false);
-      setTimeout(() => {
-        setServiceIdx((i) => (i + 1) % SERVICE_WORDS.length);
-        setServiceVisible(true);
-      }, 320);
-    }, 2800);
+      setServiceIdx((i) => (i + 1) % SERVICE_WORDS.length);
+    }, 3200);
     return () => clearInterval(t);
   }, []);
 
@@ -227,11 +222,12 @@ export default function Home() {
         </div>
         <div className={heroLoaded ? 'wrap hero-grid hero-in' : 'wrap hero-grid'}>
           <div className="hero-eyebrow-mobile hero-rise" style={{ transitionDelay: '80ms' }}>
-            <span className="eyebrow" style={{ margin: 0 }}>
-              <span className="svc-cycle" style={{ opacity: serviceVisible ? 1 : 0 }}>{SERVICE_WORDS[serviceIdx]}</span>
-              <span className="svc-sep">·</span>
-              <span className="svc-anchor">One Trusted Partner</span>
-            </span>
+            <div className="svc-block">
+              <span key={serviceIdx} className="svc-word">
+                {SERVICE_WORDS[serviceIdx]}
+              </span>
+              <span className="svc-anchor">handled by one partner</span>
+            </div>
           </div>
           <div className="hero-content">
             <div className="hero-eyebrow hero-rise" style={{ transitionDelay: '80ms' }}>

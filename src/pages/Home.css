@@ -54,10 +54,41 @@
   @media(max-width:900px){
     .hero-grid{grid-template-columns:1fr;align-self:stretch;}
     .hero-grid .hero-eyebrow-mobile{order:1;display:flex;justify-content:center;margin-bottom:20px;}
-    .hero-grid .hero-eyebrow-mobile .eyebrow{display:inline-flex;align-items:center;gap:9px;background:rgba(240,177,36,0.1);border:1px solid rgba(240,177,36,0.3);padding:11px 22px;border-radius:100px;text-align:center;font-size:14.5px;letter-spacing:0.1em;}
-    .svc-cycle{display:inline-block;min-width:62px;text-align:right;transition:opacity .32s ease;font-weight:700;}
-    .svc-sep{opacity:.55;}
-    .svc-anchor{white-space:nowrap;}
+    /* Service statement: the cycling word is the point, so it gets roughly 2x
+       the size of the supporting phrase and sits on its own line. On one line
+       the longer phrase visually outweighs the short word at any size. */
+    .svc-block{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;overflow:hidden;}
+    .svc-word{
+      display:block;
+      font-family:var(--display);
+      font-size:29px;
+      font-weight:700;
+      line-height:1.05;
+      letter-spacing:0.01em;
+      color:var(--gold);
+      text-transform:uppercase;
+      animation:svcSlideIn .55s cubic-bezier(.34,1.56,.64,1);
+      will-change:transform;
+    }
+    /* Keyed remount on each word change means this fires fresh every cycle:
+       the new word slides up into place with a slight overshoot so it lands
+       with a beat rather than simply appearing. */
+    @keyframes svcSlideIn{
+      0%{transform:translateY(105%);opacity:0;}
+      60%{opacity:1;}
+      100%{transform:translateY(0);opacity:1;}
+    }
+    .svc-anchor{
+      font-family:var(--mono);
+      font-size:11.5px;
+      letter-spacing:0.13em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,0.5);
+      white-space:nowrap;
+    }
+    @media(prefers-reduced-motion:reduce){
+      .svc-word{animation:none;}
+    }
     .hero-grid .orbit-stage{order:2;margin-bottom:10px;}
     .hero-grid .hero-content{order:3;}
     .hero-grid .hero-content .hero-eyebrow{display:none;}
@@ -70,8 +101,10 @@
   .hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:56px;}
   @media(max-width:480px){
     /* Keep the enlarged badge from overflowing on narrow phones (320-375px). */
-    .hero-grid .hero-eyebrow-mobile .eyebrow{font-size:13px;padding:10px 18px;gap:8px;letter-spacing:0.08em;}
-    .svc-cycle{min-width:56px;}
+    /* Scale the service statement down on narrow phones so the supporting
+       line can't wrap or overflow. */
+    .svc-word{font-size:25px;}
+    .svc-anchor{font-size:10.5px;letter-spacing:0.1em;}
     .hero-actions{flex-direction:column;margin-bottom:28px;}
     .hero h1{margin-bottom:16px;position:relative;}
     /* Accent moment: a single slow gold sweep every 11s so the hero has a
@@ -111,7 +144,8 @@
     .hero-grid .orbit-stage .orbit-core{z-index:3;}
     .hero h1{text-shadow:0 2px 18px rgba(20,21,42,0.55);}
     .hero p.lead{text-shadow:0 1px 12px rgba(20,21,42,0.5);}
-    .hero-grid .hero-eyebrow-mobile .eyebrow{background:rgba(31,32,53,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+    .svc-word{text-shadow:0 2px 16px rgba(20,21,42,0.6);}
+    .svc-anchor{text-shadow:0 1px 10px rgba(20,21,42,0.6);}
     .hero-actions .btn{width:100%;justify-content:center;}
   }
   .hero-mini-trust{display:flex;gap:28px;flex-wrap:wrap;}
