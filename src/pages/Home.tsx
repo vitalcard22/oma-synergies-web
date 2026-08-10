@@ -69,12 +69,30 @@ export default function Home() {
   useScrollReveal();
   useStaggerReveal('.service-grid.stagger', '.service-card');
   const statsRef = useCountUp();
+  const heroStatsRef = useCountUp();
 
   const [headlineIdx, setHeadlineIdx] = useState(0);
   const [leadIdx, setLeadIdx] = useState(0);
   const [headlineVisible, setHeadlineVisible] = useState(true);
   const [leadVisible, setLeadVisible] = useState(true);
   const [openFaq, setOpenFaq] = useState(0);
+  const [heroLoaded, setHeroLoaded] = useState(false);
+  const [orbitPulse, setOrbitPulse] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setHeroLoaded(true), 80);
+    return () => clearTimeout(t);
+  }, []);
+
+  const scrollToNext = () => {
+    const board = document.querySelector('.board-section') || document.querySelector('#what-we-do');
+    board?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const pulseOrbit = () => {
+    setOrbitPulse(true);
+    setTimeout(() => setOrbitPulse(false), 900);
+  };
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -182,41 +200,50 @@ export default function Home() {
             </g>
           </svg>
         </div>
-        <div className="wrap hero-grid">
-          <div className="hero-eyebrow-mobile">
+        <div className={heroLoaded ? 'wrap hero-grid hero-in' : 'wrap hero-grid'}>
+          <div className="hero-eyebrow-mobile hero-rise" style={{ transitionDelay: '80ms' }}>
             <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
           </div>
           <div className="hero-content">
-            <div className="hero-eyebrow">
+            <div className="hero-eyebrow hero-rise" style={{ transitionDelay: '80ms' }}>
               <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
             </div>
-            <h1>
+            <h1 className="hero-rise" style={{ transitionDelay: '340ms' }}>
               Your{' '}
               <span className="cycle" style={{ opacity: headlineVisible ? 1 : 0 }}>
                 {HEADLINE_WORDS[headlineIdx]}
               </span>{' '}
               starts here.
             </h1>
-            <p className="lead" style={{ opacity: leadVisible ? 1 : 0, transition: 'opacity .4s ease' }}>
-              {LEAD_TEXTS[leadIdx]}
+            <p className="lead hero-rise" style={{ transitionDelay: '440ms' }}>
+              <span style={{ opacity: leadVisible ? 1 : 0, transition: 'opacity .4s ease', display: 'inline-block' }}>
+                {LEAD_TEXTS[leadIdx]}
+              </span>
             </p>
-            <div className="hero-actions">
+            <div className="hero-actions hero-rise" style={{ transitionDelay: '540ms' }}>
               <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
               <Link to="/destinations" className="btn btn-outline">Explore Destinations</Link>
             </div>
-            <div className="hero-mini-trust">
+            <div className="hero-mini-trust hero-rise" style={{ transitionDelay: '640ms' }} ref={heroStatsRef}>
               <div className="mini-stat"><span className="n">2018</span><span className="l">Established</span></div>
-              <div className="mini-stat"><span className="n">12</span><span className="l">Flagship Destinations</span></div>
-              <div className="mini-stat"><span className="n">7</span><span className="l">Services, One Roof</span></div>
+              <div className="mini-stat"><span className="n flap-val" data-target="12">0</span><span className="l">Flagship Destinations</span></div>
+              <div className="mini-stat"><span className="n flap-val" data-target="7">0</span><span className="l">Services, One Roof</span></div>
             </div>
           </div>
-          <div className="orbit-stage">
+          <div
+            className={orbitPulse ? 'orbit-stage hero-rise pulsing' : 'orbit-stage hero-rise'}
+            style={{ transitionDelay: '200ms' }}
+            onClick={pulseOrbit}
+            role="presentation"
+          >
             <div className="orbit-ring r1" />
             <div className="orbit-ring r2" />
             <div className="orbit-core"><img src={logoIcon} alt="Oma Synergies" loading="eager" /></div>
           </div>
         </div>
-        <div className="hero-scroll-cue"><div className="scroll-line" />SCROLL</div>
+        <button className={heroLoaded ? 'hero-scroll-cue hero-rise hero-rise-in' : 'hero-scroll-cue hero-rise'} style={{ transitionDelay: '740ms' }} onClick={scrollToNext} aria-label="Scroll to next section">
+          <div className="scroll-line" />SCROLL
+        </button>
       </section>
 
       {/* TRUST BOARD */}
