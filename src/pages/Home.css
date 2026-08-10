@@ -54,7 +54,10 @@
   @media(max-width:900px){
     .hero-grid{grid-template-columns:1fr;align-self:stretch;}
     .hero-grid .hero-eyebrow-mobile{order:1;display:flex;justify-content:center;margin-bottom:20px;}
-    .hero-grid .hero-eyebrow-mobile .eyebrow{display:inline-flex;align-items:center;background:rgba(240,177,36,0.1);border:1px solid rgba(240,177,36,0.3);padding:7px 14px;border-radius:100px;text-align:center;}
+    .hero-grid .hero-eyebrow-mobile .eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(240,177,36,0.1);border:1px solid rgba(240,177,36,0.3);padding:7px 16px;border-radius:100px;text-align:center;}
+    .svc-cycle{display:inline-block;min-width:52px;text-align:right;transition:opacity .32s ease;}
+    .svc-sep{opacity:.55;}
+    .svc-anchor{white-space:nowrap;}
     .hero-grid .orbit-stage{order:2;margin-bottom:10px;}
     .hero-grid .hero-content{order:3;}
     .hero-grid .hero-content .hero-eyebrow{display:none;}
@@ -67,7 +70,28 @@
   .hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:56px;}
   @media(max-width:480px){
     .hero-actions{flex-direction:column;margin-bottom:28px;}
-    .hero h1{margin-bottom:16px;}
+    .hero h1{margin-bottom:16px;position:relative;}
+    /* Accent moment: a single slow gold sweep every 11s so the hero has a
+       heartbeat rather than only uniform ambient motion. Uses an inset
+       clipping wrapper rather than overflow:hidden on the h1 itself, which
+       would clip descenders on words like "journey". */
+    .hero h1::after{
+      content:"";position:absolute;top:0;bottom:0;left:0;right:0;
+      background:linear-gradient(100deg,transparent 42%,rgba(255,255,255,0.10) 50%,transparent 58%);
+      background-size:260% 100%;
+      background-repeat:no-repeat;
+      background-position:-60% 0;
+      animation:heroSweep 11s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes heroSweep{
+      0%{background-position:-60% 0;}
+      18%{background-position:160% 0;}
+      100%{background-position:160% 0;}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .hero h1::after{animation:none;opacity:0;}
+    }
     .hero p.lead{margin-bottom:24px;}
     .hero-actions .btn{width:100%;justify-content:center;}
   }

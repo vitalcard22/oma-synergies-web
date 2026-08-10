@@ -20,6 +20,8 @@ import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
 const HEADLINE_WORDS = ['journey to world-class education', 'visa journey', 'journey to unforgettable destinations', 'journey to explore the world'];
+
+const SERVICE_WORDS = ['Study', 'Visa', 'Travel', 'Tour'];
 const LEAD_TEXTS = [
   'From admission and visa processing to flights, tours, and accommodation Oma Synergies guides you end to end, with real-time tracking every step of the way.',
   'Admissions. Visas. Flights. Tours. Accommodation. One trusted partner tracked in real time from application to arrival.',
@@ -79,10 +81,30 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState(0);
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [orbitPulse, setOrbitPulse] = useState(false);
+  const [serviceIdx, setServiceIdx] = useState(0);
+  const [serviceVisible, setServiceVisible] = useState(true);
 
   useEffect(() => {
     const t = setTimeout(() => setHeroLoaded(true), 80);
     return () => clearTimeout(t);
+  }, []);
+
+  // Cycles the service word inside the mobile badge (Study -> Visa -> Travel -> Tour).
+  // Mobile-only and motion-safe: desktop shows the full static list, and anyone
+  // with reduced-motion enabled sees "Study" held steady rather than cycling.
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mq = window.matchMedia('(max-width: 900px)');
+    if (reduced.matches || !mq.matches) return;
+
+    const t = setInterval(() => {
+      setServiceVisible(false);
+      setTimeout(() => {
+        setServiceIdx((i) => (i + 1) % SERVICE_WORDS.length);
+        setServiceVisible(true);
+      }, 320);
+    }, 2800);
+    return () => clearInterval(t);
   }, []);
 
   const scrollToNext = () => {
@@ -204,7 +226,11 @@ export default function Home() {
         </div>
         <div className={heroLoaded ? 'wrap hero-grid hero-in' : 'wrap hero-grid'}>
           <div className="hero-eyebrow-mobile hero-rise" style={{ transitionDelay: '80ms' }}>
-            <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
+            <span className="eyebrow" style={{ margin: 0 }}>
+              <span className="svc-cycle" style={{ opacity: serviceVisible ? 1 : 0 }}>{SERVICE_WORDS[serviceIdx]}</span>
+              <span className="svc-sep">·</span>
+              <span className="svc-anchor">One Trusted Partner</span>
+            </span>
           </div>
           <div className="hero-content">
             <div className="hero-eyebrow hero-rise" style={{ transitionDelay: '80ms' }}>

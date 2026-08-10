@@ -10,18 +10,26 @@
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center;
-  opacity: 0.17;
+  background-position: center 35%;
+  opacity: 0.42;
 }
 
+/*
+ * Veil is deliberately uneven: lighter across the upper area where the orbit
+ * and badge sit (so the photo actually reads), heavier from the headline down
+ * so text contrast stays strong. Opacity and veil compound, so the slide
+ * opacity above is higher than the final perceived strength.
+ */
 .hpb-veil {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    165deg,
-    rgba(31, 32, 53, 0.72) 0%,
-    rgba(20, 21, 42, 0.86) 55%,
-    rgba(20, 21, 42, 0.94) 100%
+    180deg,
+    rgba(31, 32, 53, 0.58) 0%,
+    rgba(28, 29, 48, 0.62) 26%,
+    rgba(20, 21, 42, 0.86) 52%,
+    rgba(20, 21, 42, 0.95) 72%,
+    rgba(20, 21, 42, 0.97) 100%
   );
 }
 
