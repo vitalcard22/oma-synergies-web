@@ -2,49 +2,27 @@ import { useEffect, useState } from 'react';
 import './HeroPhotoBackdrop.css';
 
 interface Props {
-  images: string[];
-  holdMs?: number;
+  image: string;
 }
 
-export default function HeroPhotoBackdrop({ images, holdMs = 5000 }: Props) {
-  const [active, setActive] = useState(0);
+export default function HeroPhotoBackdrop({ image }: Props) {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    // Only run on mobile widths — desktop keeps its existing hero untouched.
+    // Only mount on mobile widths — desktop keeps its existing hero untouched
+    // and pays no image cost at all.
     const mq = window.matchMedia('(max-width: 900px)');
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-
     const sync = () => setEnabled(mq.matches);
     sync();
     mq.addEventListener('change', sync);
-
-    if (reduced.matches) {
-      return () => mq.removeEventListener('change', sync);
-    }
-
-    const t = setInterval(() => {
-      if (!mq.matches || document.hidden) return;
-      setActive((i) => (i + 1) % images.length);
-    }, holdMs);
-
-    return () => {
-      mq.removeEventListener('change', sync);
-      clearInterval(t);
-    };
-  }, [images.length, holdMs]);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
 
   if (!enabled) return null;
 
   return (
     <div className="hero-photo-backdrop" aria-hidden="true">
-      {images.map((src, i) => (
-        <div
-          key={src}
-          className={i === active ? 'hpb-slide active' : 'hpb-slide'}
-          style={{ backgroundImage: `url(${src})` }}
-        />
-      ))}
+      <div className="hpb-slide active" style={{ backgroundImage: `url(${image})` }} />
       <div className="hpb-veil" />
     </div>
   );
