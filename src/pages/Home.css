@@ -54,8 +54,8 @@
   @media(max-width:900px){
     .hero-grid{grid-template-columns:1fr;align-self:stretch;}
     .hero-grid .hero-eyebrow-mobile{order:1;display:flex;justify-content:center;margin-bottom:20px;}
-    .hero-grid .hero-eyebrow-mobile .eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(240,177,36,0.1);border:1px solid rgba(240,177,36,0.3);padding:7px 16px;border-radius:100px;text-align:center;}
-    .svc-cycle{display:inline-block;min-width:52px;text-align:right;transition:opacity .32s ease;}
+    .hero-grid .hero-eyebrow-mobile .eyebrow{display:inline-flex;align-items:center;gap:9px;background:rgba(240,177,36,0.1);border:1px solid rgba(240,177,36,0.3);padding:11px 22px;border-radius:100px;text-align:center;font-size:14.5px;letter-spacing:0.1em;}
+    .svc-cycle{display:inline-block;min-width:62px;text-align:right;transition:opacity .32s ease;font-weight:700;}
     .svc-sep{opacity:.55;}
     .svc-anchor{white-space:nowrap;}
     .hero-grid .orbit-stage{order:2;margin-bottom:10px;}
@@ -69,6 +69,9 @@
   .hero p.lead{font-size:17px;color:var(--ink-muted);max-width:480px;margin-bottom:34px;}
   .hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:56px;}
   @media(max-width:480px){
+    /* Keep the enlarged badge from overflowing on narrow phones (320-375px). */
+    .hero-grid .hero-eyebrow-mobile .eyebrow{font-size:13px;padding:10px 18px;gap:8px;letter-spacing:0.08em;}
+    .svc-cycle{min-width:56px;}
     .hero-actions{flex-direction:column;margin-bottom:28px;}
     .hero h1{margin-bottom:16px;position:relative;}
     /* Accent moment: a single slow gold sweep every 11s so the hero has a
