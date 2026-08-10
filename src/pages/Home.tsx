@@ -228,6 +228,10 @@ export default function Home() {
               <div className="mini-stat"><span className="n">2018</span><span className="l">Established</span></div>
               <div className="mini-stat"><span className="n flap-val" data-target="12">0</span><span className="l">Flagship Destinations</span></div>
               <div className="mini-stat"><span className="n flap-val" data-target="7">0</span><span className="l">Services, One Roof</span></div>
+              <button className="mini-scroll" onClick={scrollToNext} aria-label="Scroll to next section">
+                <span className="arrow">↓</span>
+                <span className="lbl">Scroll</span>
+              </button>
             </div>
           </div>
           <div
