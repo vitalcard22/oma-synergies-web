@@ -162,23 +162,23 @@ export default function Home() {
           </svg>
         </div>
         <div className="hero-map-layer-mobile">
-          <svg viewBox="0 0 400 950" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" stroke="#F0B124" strokeWidth="1.4" strokeDasharray="1 7" strokeLinecap="round">
-              <path className="flight-path" d="M180,480 Q140,330 105,190" opacity="0.55" />
-              <path className="flight-path" d="M180,480 Q280,400 345,300" opacity="0.5" />
-              <path className="flight-path" d="M180,480 Q250,590 330,660" opacity="0.5" />
-              <path className="flight-path" d="M180,480 Q110,600 60,730" opacity="0.45" />
+              <path className="flight-path" d="M300,180 Q220,80 140,40" opacity="0.55" />
+              <path className="flight-path" d="M300,180 Q340,60 380,20" opacity="0.5" />
+              <path className="flight-path" d="M300,180 Q220,280 130,355" opacity="0.5" />
+              <path className="flight-path" d="M300,180 Q370,220 390,300" opacity="0.45" />
             </g>
             <g fill="#F0B124">
-              <circle cx="180" cy="480" r="4" opacity="0.9" />
-              <circle cx="105" cy="190" r="3" opacity="0.7" />
-              <circle cx="345" cy="300" r="3" opacity="0.7" />
-              <circle cx="330" cy="660" r="3" opacity="0.7" />
-              <circle cx="60" cy="730" r="3" opacity="0.7" />
+              <circle cx="300" cy="180" r="4" opacity="0.9" />
+              <circle cx="140" cy="40" r="3" opacity="0.7" />
+              <circle cx="380" cy="20" r="3" opacity="0.7" />
+              <circle cx="130" cy="355" r="3" opacity="0.7" />
+              <circle cx="390" cy="300" r="3" opacity="0.7" />
             </g>
             <g>
               <path d="M0 0 L 7 -2 L 10 -8 L 12 -8 L 11 -1 L 18 1 L 18 3 L 11 4 L 10 11 L 8 11 L 7 3 Z" fill="#F0B124" />
-              <animateMotion dur="7s" repeatCount="indefinite" path="M180,480 Q140,330 105,190" rotate="auto" />
+              <animateMotion dur="7s" repeatCount="indefinite" path="M300,180 Q220,80 140,40" rotate="auto" />
             </g>
           </svg>
         </div>
