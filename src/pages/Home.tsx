@@ -183,7 +183,10 @@ export default function Home() {
           </svg>
         </div>
         <div className="wrap hero-grid">
-          <div>
+          <div className="hero-eyebrow-mobile">
+            <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
+          </div>
+          <div className="hero-content">
             <div className="hero-eyebrow">
               <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
             </div>
