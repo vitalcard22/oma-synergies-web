@@ -54,7 +54,7 @@
   @media(max-width:900px){
     .hero-grid{grid-template-columns:1fr;align-self:stretch;}
     .hero-grid .orbit-stage{order:1;margin-bottom:8px;}
-    .hero-grid .hero-eyebrow-mobile{order:2;display:flex;justify-content:center;margin-bottom:20px;}
+    .hero-grid .hero-eyebrow-mobile{order:2;display:flex;justify-content:center;margin-bottom:10px;}
     .hero-grid .hero-eyebrow-mobile .eyebrow{display:inline-flex;align-items:center;background:rgba(240,177,36,0.1);border:1px solid rgba(240,177,36,0.3);padding:7px 14px;border-radius:100px;text-align:center;}
     .hero-grid .hero-content{order:3;}
     .hero-grid .hero-content .hero-eyebrow{display:none;}
