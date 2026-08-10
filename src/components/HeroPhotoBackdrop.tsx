@@ -1,28 +1,19 @@
-import { useEffect, useState } from 'react';
 import './HeroPhotoBackdrop.css';
 
 interface Props {
   image: string;
 }
 
+/**
+ * Stationary photo backdrop for the mobile hero.
+ * Visibility is handled entirely in CSS (hidden at >=901px) rather than a JS
+ * media-query gate — fewer moving parts, and no risk of a timing/hydration
+ * issue leaving it unrendered on mobile.
+ */
 export default function HeroPhotoBackdrop({ image }: Props) {
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    // Only mount on mobile widths — desktop keeps its existing hero untouched
-    // and pays no image cost at all.
-    const mq = window.matchMedia('(max-width: 900px)');
-    const sync = () => setEnabled(mq.matches);
-    sync();
-    mq.addEventListener('change', sync);
-    return () => mq.removeEventListener('change', sync);
-  }, []);
-
-  if (!enabled) return null;
-
   return (
     <div className="hero-photo-backdrop" aria-hidden="true">
-      <div className="hpb-slide active" style={{ backgroundImage: `url(${image})` }} />
+      <div className="hpb-slide" style={{ backgroundImage: `url(${image})` }} />
       <div className="hpb-veil" />
     </div>
   );
