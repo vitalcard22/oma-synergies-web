@@ -292,10 +292,10 @@ export default function Home() {
           <div className="board-label">Track Record</div>
           <div className="board-grid">
             <div className="board-item"><div className="flap"><span className="flap-val" data-target="1" data-suffix="K+">0</span></div><div className="cap">Happy Clients</div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="97" data-suffix="%">0</span></div><div className="cap">Client Satisfaction</div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="97" data-suffix="%">0</span></div><div className="cap"><span className="cap-full">Client Satisfaction</span><span className="cap-short">Satisfaction</span></div></div>
             <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap">E-Visas</div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="2" data-suffix="K+">0</span></div><div className="cap">Flights Booked</div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap">Hotels Booked</div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="2" data-suffix="K+">0</span></div><div className="cap"><span className="cap-full">Flights Booked</span><span className="cap-short">Flights</span></div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap"><span className="cap-full">Hotels Booked</span><span className="cap-short">Hotels</span></div></div>
           </div>
         </div>
       </div>
