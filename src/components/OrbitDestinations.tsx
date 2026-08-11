@@ -7,15 +7,28 @@ const STEP = 360 / DESTINATIONS.length;
 const REVEAL_ANGLE = 270; // top of the circle
 const LAP_MS = 40000; // one lap per 40s, matching the ring spin
 
-interface Props {
-  /** Orbit radius in px — should match the ring the points sit on. */
-  radius: number;
-}
-
-export default function OrbitDestinations({ radius }: Props) {
+export default function OrbitDestinations() {
   const [angle, setAngle] = useState(0);
   const [label, setLabel] = useState<string | null>(null);
+  const [scaledRadius, setScaledRadius] = useState(190);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Desktop's orbit ring is much larger than mobile's, so the points need to
+  // sit on a correspondingly larger circle to stay on the ring.
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 900px)');
+    const small = window.matchMedia('(max-width: 480px)');
+    const sync = () => {
+      setScaledRadius(small.matches ? 100 : mq.matches ? 115 : 190);
+    };
+    sync();
+    mq.addEventListener('change', sync);
+    small.addEventListener('change', sync);
+    return () => {
+      mq.removeEventListener('change', sync);
+      small.removeEventListener('change', sync);
+    };
+  }, []);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -93,8 +106,8 @@ export default function OrbitDestinations({ radius }: Props) {
     <div className="orbit-destinations" ref={containerRef} aria-hidden="true">
       {DESTINATIONS.map((name, i) => {
         const a = ((angle + i * STEP) % 360) * (Math.PI / 180);
-        const x = Math.cos(a) * radius;
-        const y = Math.sin(a) * radius;
+        const x = Math.cos(a) * scaledRadius;
+        const y = Math.sin(a) * scaledRadius;
         return (
           <span
             key={name}

@@ -89,13 +89,10 @@ export default function Home() {
     return () => clearTimeout(t);
   }, []);
 
-  // Cycles the service word inside the mobile badge (Study -> Visa -> Travel -> Tour).
-  // Mobile-only and motion-safe: desktop shows the full static list, and anyone
-  // with reduced-motion enabled sees "Study" held steady rather than cycling.
+  // Cycles the service word (Study -> Visa -> Travel -> Tour) on all screen
+  // sizes. Motion-safe: reduced-motion users see a steady word.
   useEffect(() => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const mq = window.matchMedia('(max-width: 900px)');
-    if (reduced.matches || !mq.matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const t = setInterval(() => {
       setServiceIdx((i) => (i + 1) % SERVICE_WORDS.length);
@@ -221,7 +218,7 @@ export default function Home() {
           </svg>
         </div>
         <div className={heroLoaded ? 'wrap hero-grid hero-in' : 'wrap hero-grid'}>
-          <div className="hero-eyebrow-mobile hero-rise" style={{ transitionDelay: '80ms' }}>
+          <div className="hero-service hero-rise" style={{ transitionDelay: '80ms' }}>
             <div className="svc-block">
               <span key={serviceIdx} className="svc-word">
                 {SERVICE_WORDS[serviceIdx]}
@@ -230,9 +227,6 @@ export default function Home() {
             </div>
           </div>
           <div className="hero-content">
-            <div className="hero-eyebrow hero-rise" style={{ transitionDelay: '80ms' }}>
-              <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
-            </div>
             <h1 className="hero-rise" style={{ transitionDelay: '340ms' }}>
               Your{' '}
               <span className="cycle" style={{ opacity: headlineVisible ? 1 : 0 }}>
@@ -267,7 +261,7 @@ export default function Home() {
           >
             <div className="orbit-ring r1" />
             <div className="orbit-ring r2" />
-            <OrbitDestinations radius={115} />
+            <OrbitDestinations />
             <div className="orbit-core"><img src={logoIcon} alt="Oma Synergies" loading="eager" /></div>
           </div>
         </div>
