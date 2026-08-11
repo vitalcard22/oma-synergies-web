@@ -95,7 +95,13 @@
   }
   .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(240,177,36,0.1);border:1px solid rgba(240,177,36,0.3);padding:7px 14px;border-radius:100px;margin-bottom:26px;}
   .hero-eyebrow-mobile{display:none;}
-  .hero h1{font-size:clamp(38px,5.2vw,62px);line-height:1.06;margin-bottom:22px;}
+  /* Reserve height for the tallest rotating phrase so the hero doesn't expand
+     and contract as the headline cycles. A hidden sizer renders the longest
+     phrase so the reserved height is always correct, at any breakpoint and
+     font size, without hardcoding a line count that could be wrong. */
+  .hero h1{font-size:clamp(38px,5.2vw,62px);line-height:1.06;margin-bottom:22px;position:relative;}
+  .hero h1 .h1-sizer{visibility:hidden;pointer-events:none;display:block;}
+  .hero h1 .h1-live{position:absolute;inset:0;}
   .hero h1 .cycle{color:var(--gold);display:inline-block;}
   .hero p.lead{font-size:17px;color:var(--ink-muted);max-width:480px;margin-bottom:34px;}
   .hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:56px;}

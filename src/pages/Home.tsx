@@ -22,6 +22,9 @@ import './Home.css';
 
 const HEADLINE_WORDS = ['journey to world-class education', 'visa journey', 'journey to unforgettable destinations', 'journey to explore the world'];
 
+// Derived, not hardcoded, so the reserved height stays correct if the phrases change.
+const LONGEST_HEADLINE = HEADLINE_WORDS.reduce((a, b) => (b.length > a.length ? b : a));
+
 const SERVICE_WORDS = ['Study', 'Visa', 'Travel', 'Tour'];
 const LEAD_TEXTS = [
   'From admission and visa processing to flights, tours, and accommodation Oma Synergies guides you end to end, with real-time tracking every step of the way.',
@@ -234,11 +237,18 @@ export default function Home() {
               <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
             </div>
             <h1 className="hero-rise" style={{ transitionDelay: '340ms' }}>
-              Your{' '}
-              <span className="cycle" style={{ opacity: headlineVisible ? 1 : 0 }}>
-                {HEADLINE_WORDS[headlineIdx]}
-              </span>{' '}
-              starts here.
+              {/* Invisible sizer: reserves height for the longest phrase so the
+                  hero doesn't jump as the headline rotates. */}
+              <span className="h1-sizer" aria-hidden="true">
+                Your {LONGEST_HEADLINE} starts here.
+              </span>
+              <span className="h1-live">
+                Your{' '}
+                <span className="cycle" style={{ opacity: headlineVisible ? 1 : 0 }}>
+                  {HEADLINE_WORDS[headlineIdx]}
+                </span>{' '}
+                starts here.
+              </span>
             </h1>
             <p className="lead hero-rise" style={{ transitionDelay: '440ms' }}>
               <span style={{ opacity: leadVisible ? 1 : 0, transition: 'opacity .4s ease', display: 'inline-block' }}>
