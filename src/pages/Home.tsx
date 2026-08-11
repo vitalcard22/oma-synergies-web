@@ -112,7 +112,7 @@ export default function Home() {
   }, []);
 
   const scrollToNext = () => {
-    const board = document.querySelector('.board-section') || document.querySelector('#what-we-do');
+    const board = document.querySelector('#what-we-do') || document.querySelector('.board-section');
     board?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
@@ -271,8 +271,11 @@ export default function Home() {
             </div>
             <div className="hero-mini-trust hero-rise" style={{ transitionDelay: '640ms' }} ref={heroStatsRef}>
               <div className="mini-stat"><span className="n">2018</span><span className="l">Established</span></div>
-              <div className="mini-stat"><span className="n flap-val" data-target="12">0</span><span className="l">Flagship Destinations</span></div>
-              <div className="mini-stat"><span className="n flap-val" data-target="7">0</span><span className="l">Services, One Roof</span></div>
+              <div className="mini-stat"><span className="n flap-val" data-target="1" data-suffix="K+">0</span><span className="l">Clients</span></div>
+              <div className="mini-stat"><span className="n flap-val" data-target="97" data-suffix="%">0</span><span className="l">Satisfied</span></div>
+              <div className="mini-stat"><span className="n flap-val" data-target="200" data-suffix="+">0</span><span className="l">E-Visas</span></div>
+              <div className="mini-stat"><span className="n flap-val" data-target="2" data-suffix="K+">0</span><span className="l">Flights</span></div>
+              <div className="mini-stat"><span className="n flap-val" data-target="200" data-suffix="+">0</span><span className="l">Hotels</span></div>
             </div>
           </div>
           <div

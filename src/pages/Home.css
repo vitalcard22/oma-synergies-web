@@ -221,11 +221,29 @@
   .hero-scroll-cue{position:absolute;bottom:28px;left:50%;margin-left:-40px;width:80px;background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--ink-muted);font-family:var(--mono);font-size:11px;letter-spacing:0.1em;transition:color .25s ease;}
   .hero-scroll-cue:hover{color:var(--gold);}
   @media(max-width:900px){
-    .hero-scroll-cue{position:static;transform:none;margin:4px auto 0;width:auto;}
-    /* Hidden on mobile: the Track Record section directly below carries far
-       stronger numbers (1K+ clients, 97% satisfaction) and having both meant
-       eight figures stacked in quick succession, which blurred together. */
-    .hero-mini-trust{display:none;}
+    /* Removed on mobile: the hero no longer fills the screen and now ends on
+       the stats, so an arrow pointing at nothing is redundant. */
+    .hero-scroll-cue{display:none;}
+    /* Stats now close the hero, sitting directly under the CTAs on the same
+       background. Reads as proof supporting the ask rather than a separate
+       section the visitor has to scroll to find. Track Record below is hidden
+       on mobile so the same six figures don't appear twice in one scroll. */
+    .hero-mini-trust{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px 0;
+      margin-top:14px;
+      padding-top:11px;
+      border-top:1px solid var(--line);
+    }
+    .hero-mini-trust .mini-stat{text-align:center;position:relative;padding:0 2px;}
+    .hero-mini-trust .mini-stat:not(:nth-child(3n+1))::before{
+      content:"";position:absolute;left:0;top:12%;bottom:12%;width:1px;background:var(--line);
+    }
+    .hero-mini-trust .mini-stat .n{font-size:15px;display:block;}
+    .hero-mini-trust .mini-stat .l{font-size:7.5px;letter-spacing:0.05em;display:block;margin-top:2px;line-height:1.2;}
+    /* Track Record section is redundant now the hero carries the same figures. */
+    .board-section{display:none;}
   }
   .scroll-line{width:1px;height:34px;background:linear-gradient(var(--gold),transparent);animation:pulse 2s ease-in-out infinite;}
   @media(max-width:900px){.scroll-line{height:22px;}.hero-scroll-cue{gap:5px;}}
