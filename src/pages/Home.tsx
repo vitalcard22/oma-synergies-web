@@ -263,6 +263,11 @@ export default function Home() {
               </span>
             </h1>
             <p className="lead hero-rise" style={{ transitionDelay: '440ms' }}>
+              <span className="lead-sizers" aria-hidden="true">
+                {LEAD_TEXTS.map((t) => (
+                  <span className="lead-sizer" key={t}>{t}</span>
+                ))}
+              </span>
               <span className="lead-full" style={{ opacity: leadVisible ? 1 : 0 }}>
                 {LEAD_TEXTS[leadIdx]}
               </span>

@@ -79,10 +79,12 @@
       color:rgba(255,255,255,0.25);
       display:inline-block;
     }
+    /* Weight stays constant: bolding the active word changes its rendered
+       width, which shifts every other word sideways on each cycle. Colour and
+       transform are safe because neither affects layout. */
     .svc-item.active{
       color:var(--gold);
-      font-weight:700;
-      transform:scale(1.1);
+      transform:scale(1.12);
     }
     .svc-anchor{
       font-family:var(--mono);
@@ -120,9 +122,20 @@
   .hero p.lead{font-size:17px;color:var(--ink-muted);max-width:480px;margin-bottom:34px;}
   /* display + transition live here rather than as inline styles, so the mobile
      hide below can actually win the cascade. */
-  .lead-full{display:inline-block;transition:opacity .4s ease;}
+  /* Same sizer-stack approach as the headline: the three rotating variants are
+     119-155 chars and wrap to different line counts, so without reserved height
+     the paragraph pushes everything below it up and down on each cycle. */
+  .hero p.lead{display:grid;}
+  .hero p.lead .lead-sizers,
+  .hero p.lead .lead-full,
+  .hero p.lead .lead-short{grid-area:1 / 1;}
+  .lead-sizers{visibility:hidden;pointer-events:none;display:grid;}
+  .lead-sizers .lead-sizer{grid-area:1 / 1;}
+  .lead-full{transition:opacity .4s ease;}
   .lead-short{display:none;}
   @media(max-width:900px){
+    /* Mobile shows one static line, so no sizer is needed. */
+    .lead-sizers{display:none;}
     .lead-full{display:none;}
     .lead-short{display:inline;}
   }
