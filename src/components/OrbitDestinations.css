@@ -37,4 +37,7 @@
   transform: translateX(-50%) translateY(0);
 }
 
-/* Shared by desktop and mobile — the radius prop scales it to each orbit size. */
+/* Desktop keeps its existing orbit composition untouched. */
+@media (min-width: 901px) {
+  .orbit-destinations { display: none; }
+}
