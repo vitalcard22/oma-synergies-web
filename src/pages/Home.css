@@ -133,7 +133,7 @@
        wrapped lines, which compounds since the h1 reserves height for the
        longest rotating phrase. */
     .hero h1{font-size:28px;margin-bottom:14px;position:relative;}
-    .hero p.lead{font-size:15px;}
+    .hero p.lead{font-size:13.5px;line-height:1.5;}
     /* Accent moment: a single slow gold sweep every 11s so the hero has a
        heartbeat rather than only uniform ambient motion. Uses an inset
        clipping wrapper rather than overflow:hidden on the h1 itself, which

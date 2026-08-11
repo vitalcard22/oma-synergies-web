@@ -32,10 +32,12 @@ const LEAD_TEXTS = [
   'From admission to arrival, we guide every step, visas, flights, tours, accommodation, with real-time updates you can log in and see for yourself.',
 ];
 
-// Mobile gets one short, stable line instead. The full versions above run to
-// five wrapped lines on a phone and rotate, making them the hardest element on
-// the screen to actually finish reading.
-const LEAD_MOBILE = 'From admission to arrival, guided end to end.';
+// Mobile shows the shortest of the three variants, static rather than rotating.
+// The longer versions run past five wrapped lines on a phone, and rotating a
+// paragraph that long makes it hard to finish reading. This keeps all six
+// things the originals communicate: admissions, visas, flights, tours,
+// accommodation, and real-time tracking.
+const LEAD_MOBILE = 'Admissions. Visas. Flights. Tours. Accommodation. One trusted partner tracked in real time from application to arrival.';
 
 const SERVICES_CORE = [
   { icon: '🎓', title: 'Global Admissions Processing', desc: 'We manage your entire university and college admission process across premium global destinations, including: Americas & Europe: Canada, USA, UK, Ireland, France, Italy, Sweden, and Austria. Asia & Oceania: South Korea, Philippines, China, and New Zealand.', link: '/services/admissions' },
