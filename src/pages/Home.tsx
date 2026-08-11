@@ -17,6 +17,9 @@ import PhotoCrossfade from '../components/PhotoCrossfade';
 import PageTurnCard from '../components/PageTurnCard';
 import HeroPhotoBackdrop from '../components/HeroPhotoBackdrop';
 import OrbitDestinations from '../components/OrbitDestinations';
+import nantaLogo from '../assets/accreditations/nanta.png';
+import ncaaLogo from '../assets/accreditations/ncaa.png';
+import itpnLogo from '../assets/accreditations/itpn.png';
 import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
@@ -24,6 +27,12 @@ const HEADLINE_WORDS = ['journey to world-class education', 'visa journey', 'jou
 
 
 const SERVICE_WORDS = ['Study', 'Visa', 'Travel', 'Tour'];
+
+const ACCREDITATIONS = [
+  { code: 'NANTA', logo: nantaLogo },
+  { code: 'NCAA', logo: ncaaLogo },
+  { code: 'ITPN', logo: itpnLogo },
+];
 const LEAD_TEXTS = [
   'From admission and visa processing to flights, tours, and accommodation Oma Synergies guides you end to end, with real-time tracking every step of the way.',
   'Admissions. Visas. Flights. Tours. Accommodation. One trusted partner tracked in real time from application to arrival.',
@@ -325,6 +334,16 @@ export default function Home() {
             <div className="membership-badge"><span className="dot" />NANTA: National Association of Nigeria Travel Agencies</div>
             <div className="membership-badge"><span className="dot" />NCAA: Nigeria Civil Aviation Authority</div>
             <div className="membership-badge"><span className="dot" />ITPN: Institute for Tourism Professionals of Nigeria</div>
+          </div>
+          <div className="accred-row">
+            {ACCREDITATIONS.map((a) => (
+              <div className="accred-item" key={a.code}>
+                <div className="accred-tile">
+                  <img src={a.logo} alt={`${a.code} logo`} loading="lazy" />
+                </div>
+                <span className="accred-code">{a.code}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
