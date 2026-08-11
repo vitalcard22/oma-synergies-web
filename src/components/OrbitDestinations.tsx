@@ -7,15 +7,21 @@ const STEP = 360 / DESTINATIONS.length;
 const REVEAL_ANGLE = 270; // top of the circle
 const LAP_MS = 40000; // one lap per 40s, matching the ring spin
 
-interface Props {
-  /** Orbit radius in px — should match the ring the points sit on. */
-  radius: number;
-}
-
-export default function OrbitDestinations({ radius }: Props) {
+export default function OrbitDestinations() {
   const [angle, setAngle] = useState(0);
   const [label, setLabel] = useState<string | null>(null);
+  const [radius, setRadius] = useState(92);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // The ring shrinks at 480px, so a fixed radius would leave the points
+  // orbiting outside it on small phones.
+  useEffect(() => {
+    const small = window.matchMedia('(max-width: 480px)');
+    const sync = () => setRadius(small.matches ? 82 : 92);
+    sync();
+    small.addEventListener('change', sync);
+    return () => small.removeEventListener('change', sync);
+  }, []);
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;

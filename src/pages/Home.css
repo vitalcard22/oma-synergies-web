@@ -38,7 +38,7 @@
   /* ===== HERO ===== */
   .hero{position:relative;background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);min-height:100vh;display:flex;align-items:center;padding-top:120px;overflow:hidden;color:var(--white);}
   @media(max-width:900px){
-    .hero{flex-direction:column;padding-bottom:12px;padding-top:72px;}
+    .hero{flex-direction:column;padding-bottom:12px;padding-top:66px;}
   }
   .hero-map-layer{position:absolute;inset:0;z-index:0;opacity:0.9;pointer-events:none;mask-image:radial-gradient(85% 85% at 60% 45%, black 40%, transparent 85%);-webkit-mask-image:radial-gradient(85% 85% at 60% 45%, black 40%, transparent 85%);}
   @media(max-width:900px){.hero-map-layer{display:none;}}
@@ -162,7 +162,7 @@
     @media(prefers-reduced-motion:reduce){
       .hero h1::after{animation:none;opacity:0;}
     }
-    .hero p.lead{margin-bottom:18px;}
+    .hero p.lead{margin-bottom:14px;}
     /* Depth pass: with the backdrop photo now more visible, give the orbit its
        own soft pool of light so it reads as a distinct plane in front of the
        photo, and lift the text slightly so it never competes with the imagery. */
@@ -184,7 +184,6 @@
   }
   .hero-mini-trust{display:flex;gap:28px;flex-wrap:wrap;}
   .mini-stat{font-family:var(--mono);}
-  .mini-scroll{display:none;}
 
   /* entrance stagger */
   .hero-rise{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.19,1,.22,1),transform .7s cubic-bezier(.19,1,.22,1);}
