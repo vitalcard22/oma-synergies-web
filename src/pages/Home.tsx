@@ -260,7 +260,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="lead hero-rise" style={{ transitionDelay: '440ms' }}>
-              <span className="lead-full" style={{ opacity: leadVisible ? 1 : 0, transition: 'opacity .4s ease', display: 'inline-block' }}>
+              <span className="lead-full" style={{ opacity: leadVisible ? 1 : 0 }}>
                 {LEAD_TEXTS[leadIdx]}
               </span>
               <span className="lead-short">{LEAD_MOBILE}</span>
