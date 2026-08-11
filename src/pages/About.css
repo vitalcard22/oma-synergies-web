@@ -22,7 +22,6 @@
   .reveal.in{opacity:1;transform:translateY(0);}
 
   /* nav */
-  .logo-mark img{height:32px;width:auto;}
   .nav-links a{color:rgba(255,255,255,0.7);font-size:13.5px;font-weight:500;}
   .nav-links a:hover{color:var(--white);}
 
