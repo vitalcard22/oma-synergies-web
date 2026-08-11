@@ -61,8 +61,11 @@
     /* All four services stay visible at once, with one highlighting in turn.
        Showing a single cycling word made the business look like whichever one
        happened to be on screen, since most visitors never see a full cycle. */
-    .svc-row{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;}
+    /* nowrap: with flex-wrap the scaled active word could push the row from
+       one line to two and back as the highlight cycles. */
+    .svc-row{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:nowrap;}
     .svc-item{
+      display:inline-block;
       font-family:var(--display);
       font-size:16px;
       font-weight:600;
