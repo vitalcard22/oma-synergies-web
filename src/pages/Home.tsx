@@ -32,6 +32,11 @@ const LEAD_TEXTS = [
   'From admission to arrival, we guide every step, visas, flights, tours, accommodation, with real-time updates you can log in and see for yourself.',
 ];
 
+// Mobile gets one short, stable line instead. The full versions above run to
+// five wrapped lines on a phone and rotate, making them the hardest element on
+// the screen to actually finish reading.
+const LEAD_MOBILE = 'From admission to arrival, guided end to end.';
+
 const SERVICES_CORE = [
   { icon: '🎓', title: 'Global Admissions Processing', desc: 'We manage your entire university and college admission process across premium global destinations, including: Americas & Europe: Canada, USA, UK, Ireland, France, Italy, Sweden, and Austria. Asia & Oceania: South Korea, Philippines, China, and New Zealand.', link: '/services/admissions' },
   { icon: '🛂', title: 'Strategic Visa Application Support', desc: 'We provide end-to-end guidance for study permit and student visa applications. Our team oversees everything from initial file compilation to final submission, ensuring full compliance with immigration requirements.', link: '/services/visa' },
@@ -102,7 +107,7 @@ export default function Home() {
 
     const t = setInterval(() => {
       setServiceIdx((i) => (i + 1) % SERVICE_WORDS.length);
-    }, 3200);
+    }, 2000);
     return () => clearInterval(t);
   }, []);
 
@@ -226,8 +231,12 @@ export default function Home() {
         <div className={heroLoaded ? 'wrap hero-grid hero-in' : 'wrap hero-grid'}>
           <div className="hero-eyebrow-mobile hero-rise" style={{ transitionDelay: '80ms' }}>
             <div className="svc-block">
-              <span key={serviceIdx} className="svc-word">
-                {SERVICE_WORDS[serviceIdx]}
+              <span className="svc-row">
+                {SERVICE_WORDS.map((word, i) => (
+                  <span key={word} className={i === serviceIdx ? 'svc-item active' : 'svc-item'}>
+                    {word}
+                  </span>
+                ))}
               </span>
               <span className="svc-anchor">handled by one partner</span>
             </div>
@@ -251,9 +260,10 @@ export default function Home() {
               </span>
             </h1>
             <p className="lead hero-rise" style={{ transitionDelay: '440ms' }}>
-              <span style={{ opacity: leadVisible ? 1 : 0, transition: 'opacity .4s ease', display: 'inline-block' }}>
+              <span className="lead-full" style={{ opacity: leadVisible ? 1 : 0, transition: 'opacity .4s ease', display: 'inline-block' }}>
                 {LEAD_TEXTS[leadIdx]}
               </span>
+              <span className="lead-short">{LEAD_MOBILE}</span>
             </p>
             <div className="hero-actions hero-rise" style={{ transitionDelay: '540ms' }}>
               <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
@@ -263,10 +273,6 @@ export default function Home() {
               <div className="mini-stat"><span className="n">2018</span><span className="l">Established</span></div>
               <div className="mini-stat"><span className="n flap-val" data-target="12">0</span><span className="l">Flagship Destinations</span></div>
               <div className="mini-stat"><span className="n flap-val" data-target="7">0</span><span className="l">Services, One Roof</span></div>
-              <button className="mini-scroll" onClick={scrollToNext} aria-label="Scroll to next section">
-                <span className="arrow">↓</span>
-                <span className="lbl">Scroll</span>
-              </button>
             </div>
           </div>
           <div
