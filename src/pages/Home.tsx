@@ -277,7 +277,7 @@ export default function Home() {
           >
             <div className="orbit-ring r1" />
             <div className="orbit-ring r2" />
-            <OrbitDestinations radius={115} />
+            <OrbitDestinations radius={92} />
             <div className="orbit-core"><img src={logoIcon} alt="Oma Synergies" loading="eager" /></div>
           </div>
         </div>
