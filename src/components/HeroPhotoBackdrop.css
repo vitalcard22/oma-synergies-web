@@ -15,10 +15,10 @@
 }
 
 /*
- * Veil is deliberately uneven: lighter across the upper area where the orbit
- * and badge sit (so the photo actually reads), heavier from the headline down
- * so text contrast stays strong. Opacity and veil compound, so the slide
- * opacity above is higher than the final perceived strength.
+ * Mobile veil is vertical to match the stacked layout: lighter across the upper
+ * area where the orbit and badge sit (so the photo reads), heavier from the
+ * headline down so text contrast stays strong. Opacity and veil compound, so
+ * the slide opacity above is higher than the final perceived strength.
  */
 .hpb-veil {
   position: absolute;
@@ -33,6 +33,25 @@
   );
 }
 
+/*
+ * Desktop is a two-column layout (text left, orbit right), so the veil runs
+ * horizontally instead: heavy over the text column for contrast, lighter on
+ * the right where the photo can show through behind the orbit. The photo is
+ * also held back further here so it doesn't compete with the flight paths and
+ * dotted rings, which need flat dark space to read cleanly.
+ */
 @media (min-width: 901px) {
-  .hero-photo-backdrop { display: none; }
+  .hpb-slide {
+    opacity: 0.3;
+    background-position: center 30%;
+  }
+  .hpb-veil {
+    background: linear-gradient(
+      100deg,
+      rgba(20, 21, 42, 0.96) 0%,
+      rgba(20, 21, 42, 0.93) 32%,
+      rgba(28, 29, 48, 0.82) 58%,
+      rgba(31, 32, 53, 0.72) 100%
+    );
+  }
 }
