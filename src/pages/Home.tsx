@@ -329,7 +329,7 @@ export default function Home() {
           <div className="cluster reveal">
             <div className="cluster-head">
               <h3>Study Abroad & Visa</h3>
-              <span className="tag">Core Services</span>
+              <span className="tag">Study &amp; Visa</span>
             </div>
             <div className="service-grid stagger">
               {SERVICES_CORE.map((s) => (
@@ -345,8 +345,8 @@ export default function Home() {
 
           <div className="cluster reveal">
             <div className="cluster-head">
-              <h3>Travel</h3>
-              <span className="tag secondary">Supporting Services</span>
+              <h3>Travel &amp; Tour</h3>
+              <span className="tag">Travel &amp; Tour</span>
             </div>
             <div className="service-grid stagger">
               {SERVICES_TRAVEL.map((s) => (

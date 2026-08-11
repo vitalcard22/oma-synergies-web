@@ -18,7 +18,7 @@ export default function Services() {
         <div className="wrap">
           <span className="eyebrow">Our Services</span>
           <h1>Everything your journey abroad needs, all under one roof</h1>
-          <p>Study abroad and visa support are where we started, and where we're strongest. Travel services round out the journey once your plans are set.</p>
+          <p>Study, visa guidance, travel, and tour. Four core services, handled end to end by one trusted partner.</p>
         </div>
       </section>
 
@@ -27,7 +27,7 @@ export default function Services() {
           <div className="svc-cluster reveal">
             <div className="svc-cluster-head">
               <h3>Study Abroad & Visa</h3>
-              <span className="svc-tag">Core Services</span>
+              <span className="svc-tag">Study &amp; Visa</span>
             </div>
             <div className="svc-grid">
               {coreServices.map((s) => (
@@ -43,8 +43,8 @@ export default function Services() {
 
           <div className="svc-cluster reveal">
             <div className="svc-cluster-head">
-              <h3>Travel</h3>
-              <span className="svc-tag secondary">Supporting Services</span>
+              <h3>Travel &amp; Tour</h3>
+              <span className="svc-tag">Travel &amp; Tour</span>
             </div>
             <div className="svc-grid">
               {travelServices.map((s) => (
