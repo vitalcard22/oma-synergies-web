@@ -22,8 +22,6 @@ import './Home.css';
 
 const HEADLINE_WORDS = ['journey to world-class education', 'visa journey', 'journey to new destinations', 'journey to explore the world'];
 
-// Derived, not hardcoded, so the reserved height stays correct if the phrases change.
-const LONGEST_HEADLINE = HEADLINE_WORDS.reduce((a, b) => (b.length > a.length ? b : a));
 
 const SERVICE_WORDS = ['Study', 'Visa', 'Travel', 'Tour'];
 const LEAD_TEXTS = [
@@ -248,11 +246,14 @@ export default function Home() {
               <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
             </div>
             <h1 className="hero-rise" style={{ transitionDelay: '340ms' }}>
-              {/* Invisible sizer: reserves height for the longest phrase so the
-                  hero doesn't jump as the headline rotates. */}
-              <span className="h1-sizer" aria-hidden="true">
-                Your {LONGEST_HEADLINE} starts here.
-              </span>
+              {/* Invisible sizers: one per phrase, all stacked in the same grid
+                  cell. The h1 sizes to whichever actually wraps tallest, which
+                  isn't necessarily the longest by character count. */}
+              {HEADLINE_WORDS.map((phrase) => (
+                <span className="h1-sizer" aria-hidden="true" key={phrase}>
+                  Your {phrase} starts here.
+                </span>
+              ))}
               <span className="h1-live">
                 Your{' '}
                 <span className="cycle" style={{ opacity: headlineVisible ? 1 : 0 }}>
