@@ -63,6 +63,17 @@
   animation: ptcGlow 5s ease-in-out infinite;
 }
 
+/*
+ * box-shadow is not a compositor-only property, so animating it forces a
+ * repaint every frame. Running that continuously on both faces at the same
+ * time as the 1.1s 3D rotateY transform - especially mid-rotation, when both
+ * faces are being rendered edge-on - is a known cause of stutter/tearing on
+ * mobile. Pausing the glow for the full flip window fixes it.
+ */
+.ptc-flipper[data-folding='true'] .ptc-face {
+  animation-play-state: paused;
+}
+
 @media (max-width: 900px) {
   .ptc-face {
     padding: 28px 26px;

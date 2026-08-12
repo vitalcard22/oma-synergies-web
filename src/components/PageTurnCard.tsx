@@ -34,6 +34,7 @@ export default function PageTurnCard() {
   const [foldOn, setFoldOn] = useState(false);
   const [progressKey, setProgressKey] = useState(0);
   const [settleKey, setSettleKey] = useState(0);
+  const [isFlipping, setIsFlipping] = useState(false);
   const zoneRef = useRef<HTMLDivElement>(null);
   const tiltRef = useRef<HTMLDivElement>(null);
   const cooldownRef = useRef(false);
@@ -46,12 +47,16 @@ export default function PageTurnCard() {
     cooldownRef.current = true;
     setState((s) => (s === 0 ? 1 : 0));
     setFoldOn(true);
+    setIsFlipping(true);
     setProgressKey((k) => k + 1);
     setTimeout(() => {
       setFoldOn(false);
       setSettleKey((k) => k + 1);
     }, 550);
-    setTimeout(() => { cooldownRef.current = false; }, 1300);
+    setTimeout(() => {
+      cooldownRef.current = false;
+      setIsFlipping(false);
+    }, 1300);
   };
 
   const resetTimer = () => {
@@ -116,7 +121,7 @@ export default function PageTurnCard() {
     <div className="ptc-zone reveal" ref={zoneRef}>
       <div className="ptc-tilt" ref={tiltRef}>
         <div className="ptc-shadow" data-folding={foldOn} />
-        <div className="ptc-flipper" style={{ transform: state === 1 ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
+        <div className="ptc-flipper" data-folding={isFlipping} style={{ transform: state === 1 ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
           {FACES.map((f, i) => (
             <div
               key={i}
