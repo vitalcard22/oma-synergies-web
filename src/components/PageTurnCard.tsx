@@ -51,12 +51,16 @@ export default function PageTurnCard() {
     setProgressKey((k) => k + 1);
     setTimeout(() => {
       setFoldOn(false);
-      setSettleKey((k) => k + 1);
     }, 550);
     setTimeout(() => {
+      // Settle bounce must start after the 1.1s flip transform actually
+      // finishes, not at the fold's 550ms midpoint. Firing it earlier meant
+      // the title was bouncing/scaling while the card was still visibly
+      // rotating in 3D space.
+      setSettleKey((k) => k + 1);
       cooldownRef.current = false;
       setIsFlipping(false);
-    }, 1300);
+    }, 1150);
   };
 
   const resetTimer = () => {
