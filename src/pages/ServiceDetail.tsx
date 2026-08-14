@@ -64,8 +64,10 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
             <div className="process-steps" style={{ '--step-count': service.steps.length } as CSSProperties}>
               {service.steps.map((step, i) => (
                 <div className="p-step" key={step.title}>
-                  <div className="p-num">{String(i + 1).padStart(2, '0')}</div>
-                  <h4>{step.title}</h4>
+                  <div className="p-step-head">
+                    <div className="p-num">{String(i + 1).padStart(2, '0')}</div>
+                    <h4>{step.title}</h4>
+                  </div>
                   <p>{step.desc}</p>
                 </div>
               ))}

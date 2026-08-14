@@ -61,9 +61,17 @@
   .p-step{padding-right:20px;}
   @media(max-width:900px){.p-step{padding-right:0;}}
   .p-num{font-family:var(--mono);font-size:13px;color:var(--gold);width:44px;height:44px;border:1px solid rgba(240,177,36,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
-  @media(max-width:900px){.p-num{width:36px;height:36px;font-size:12px;margin-bottom:10px;}}
   .p-step h4{font-family:var(--display);font-size:15.5px;margin-bottom:8px;}
   .p-step p{font-size:13px;color:var(--ink-muted);}
+  /* Mobile: number badge sits inline with the title instead of stacked above
+     it, removing an entire row of vertical space per step - the earlier fix
+     of shrinking the badge only saved ~14px per step because the badge was
+     never really the height driver, the extra row it occupied was. */
+  @media(max-width:900px){
+    .p-step-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+    .p-num{width:34px;height:34px;font-size:11.5px;margin-bottom:0;flex-shrink:0;}
+    .p-step h4{margin-bottom:0;}
+  }
 
   .faq-item{border-bottom:1px solid var(--line-dark);}
   .faq-q{
