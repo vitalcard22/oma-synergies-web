@@ -603,9 +603,9 @@ export default function Home() {
       {/* FINAL CTA */}
       <section className="final-cta">
         <div className="wrap">
-          <span className="eyebrow reveal">Ready When You Are</span>
+          <span className="eyebrow reveal">One Trusted Partner</span>
           <h2 className="reveal">Let's map out your path, together</h2>
-          <p className="reveal">Book a free consultation and we'll walk you through exactly what your journey looks like.</p>
+          <p className="reveal">Tell us where you're headed, study, visa, or travel, and we'll take it from there.</p>
           <div className="final-actions reveal">
             <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
             <Link to="/contact" className="btn btn-outline">Send an Inquiry</Link>

@@ -164,9 +164,9 @@ export default function About() {
 
       <section className="about-cta">
         <div className="wrap">
-          <span className="eyebrow reveal">Ready When You Are</span>
-          <h2 className="reveal">Let's map out your path, together</h2>
-          <p className="reveal">Book a free consultation and we'll walk you through exactly what your journey looks like.</p>
+          <span className="eyebrow reveal">Let's Talk</span>
+          <h2 className="reveal">You've read our story. Let's start yours.</h2>
+          <p className="reveal">One conversation is all it takes to find out where you stand.</p>
           <div className="about-cta-actions reveal">
             <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
             <Link to="/" className="btn btn-outline">Back to Home</Link>

@@ -83,9 +83,9 @@ export default function DestinationDetail() {
 
       <section className="final-cta">
         <div className="wrap-narrow">
-          <span className="eyebrow">Ready to Start?</span>
+          <span className="eyebrow">Your Next Move</span>
           <h2>Let's map your path to {d.name}</h2>
-          <p>Book a free consultation and we'll walk you through exactly what's needed.</p>
+          <p>Every {d.name} application is different. Let's talk about yours.</p>
           <div className="final-actions">
             <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
             <Link to="/destinations" className="btn btn-outline">View All Destinations</Link>

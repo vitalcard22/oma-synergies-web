@@ -63,9 +63,9 @@ export default function Services() {
 
       <section className="final-cta">
         <div className="wrap">
-          <span className="eyebrow reveal">Ready When You Are</span>
+          <span className="eyebrow reveal">Still Deciding?</span>
           <h2 className="reveal">Not sure which service you need?</h2>
-          <p className="reveal">Book a free consultation and we'll map out exactly what your journey requires.</p>
+          <p className="reveal">Tell us your goal, we'll match you to the right service in one call.</p>
           <div className="final-actions reveal">
             <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
             <Link to="/" className="btn btn-outline">Back to Home</Link>
