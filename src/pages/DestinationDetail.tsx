@@ -40,7 +40,7 @@ export default function DestinationDetail() {
         </div>
       </div>
 
-      <section>
+      <section className="dest-content">
         <div className="wrap-narrow two-col">
           <div>
             <h2>Why {d.name}</h2>
