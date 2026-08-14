@@ -46,7 +46,7 @@ export default function Tours() {
         </div>
       </section>
 
-      <section>
+      <section className="tours-content">
         <div className="wrap">
           <div className="tour-grid">
             {filtered.map((t) => (

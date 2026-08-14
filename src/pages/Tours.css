@@ -15,6 +15,7 @@
 
 
   .page-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:150px 0 60px;}
+  @media(max-width:900px){.page-hero{padding:88px 0 40px;}}
   .page-hero h1{color:var(--white);font-size:clamp(32px,4.4vw,50px);margin-top:16px;max-width:640px;}
   .page-hero p{margin-top:16px;font-size:16px;color:var(--ink-muted);max-width:560px;}
 
@@ -24,6 +25,7 @@
   .cat-btn.active{background:var(--gold);color:var(--navy-deep);border-color:var(--gold);}
 
   .tour-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;}
+  @media(max-width:900px){.tours-content{padding:56px 0;}}
   .tour-card{background:var(--white);border:1px solid var(--line-dark);border-radius:18px;overflow:hidden;transition:transform .3s ease, box-shadow .3s ease;}
   .tour-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(31,32,53,0.1);}
   .tour-img{height:190px;position:relative;overflow:hidden;}
@@ -39,6 +41,7 @@
   .tour-book-btn:hover{background:var(--gold);border-color:var(--gold);}
 
   .custom-cta{margin-top:60px;background:var(--navy);color:var(--white);border-radius:20px;padding:50px 44px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
+  @media(max-width:900px){.custom-cta{margin-top:36px;padding:32px 26px;}}
   .custom-cta h3{font-size:22px;margin-bottom:8px;}
   .custom-cta p{color:var(--ink-muted);font-size:14.5px;max-width:440px;}
 
