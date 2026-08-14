@@ -30,6 +30,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
 
       <section className="service-hero">
         <div className="wrap-narrow">
+          <Link to="/services" className="svc-back">← All Services</Link>
           <div className="icon-badge">{service.icon}</div>
           <span className="eyebrow">{service.cluster}</span>
           <h1>{service.title}</h1>
@@ -77,14 +78,34 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
         <div className="wrap-narrow">
           <div className="section-inner">
             <h2>Frequently Asked</h2>
-            {service.faqs.map((f, i) => (
-              <div className="faq-item" key={f.q}>
-                <div className="faq-q" onClick={() => setOpenFaq(openFaq === i ? -1 : i)} style={{ cursor: 'pointer' }}>
-                  {f.q}
+            {service.faqs.map((f, i) => {
+              const isOpen = openFaq === i;
+              const panelId = `faq-panel-${i}`;
+              const buttonId = `faq-button-${i}`;
+              return (
+                <div className="faq-item" key={f.q}>
+                  <button
+                    id={buttonId}
+                    className="faq-q"
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                    onClick={() => setOpenFaq(isOpen ? -1 : i)}
+                  >
+                    <span>{f.q}</span>
+                    <span className={isOpen ? 'faq-chevron open' : 'faq-chevron'} aria-hidden="true">▾</span>
+                  </button>
+                  <div
+                    id={panelId}
+                    role="region"
+                    aria-labelledby={buttonId}
+                    className={isOpen ? 'faq-panel open' : 'faq-panel'}
+                  >
+                    <p>{f.a}</p>
+                  </div>
                 </div>
-                {openFaq === i && <p>{f.a}</p>}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -98,6 +119,9 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
             <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
             <Link to="/services" className="btn btn-outline">View All Services</Link>
           </div>
+          <a href="https://wa.me/2348067696464" target="_blank" rel="noopener noreferrer" className="svc-whatsapp">
+            Prefer WhatsApp? Message us →
+          </a>
         </div>
       </section>
 
