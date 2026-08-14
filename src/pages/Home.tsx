@@ -554,7 +554,7 @@ export default function Home() {
       </div>
 
       {/* WHY CHOOSE US */}
-      <section>
+      <section className="why-choose-section">
         <div className="wrap">
           <div className="section-head reveal">
             <span className="eyebrow">Why Choose Us</span>

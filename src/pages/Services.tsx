@@ -22,7 +22,7 @@ export default function Services() {
         </div>
       </section>
 
-      <section>
+      <section className="svc-hub-content">
         <div className="wrap">
           <div className="svc-cluster reveal">
             <div className="svc-cluster-head">

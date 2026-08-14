@@ -379,6 +379,7 @@
 
   /* ===== TIMELINE ===== */
   .timeline-wrap{background:var(--navy);color:var(--white);position:relative;overflow:hidden;}
+  @media(max-width:900px){.timeline-wrap section{padding:56px 0;}}
   .timeline-wrap > section, .test-wrap > section{position:relative;z-index:1;}
   .flight-bg{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0.5;mask-image:radial-gradient(90% 90% at 70% 40%, black 30%, transparent 80%);-webkit-mask-image:radial-gradient(90% 90% at 70% 40%, black 30%, transparent 80%);}
   .flight-bg .arc{fill:none;stroke:var(--gold);stroke-width:1.2;stroke-dasharray:1 8;stroke-linecap:round;animation:dashFlow 7s linear infinite;}
@@ -439,6 +440,12 @@
 
   /* ===== TESTIMONIALS ===== */
   .test-wrap{background:var(--navy);color:var(--white);position:relative;overflow:hidden;}
+  @media(max-width:900px){.test-wrap section{padding:56px 0;}}
+  /* Was previously a bare <section> relying entirely on the global
+     section{padding:100px 0} default - preserved that exact value here so
+     desktop is visually unchanged, only adding a tighter mobile override. */
+  .why-choose-section{padding:100px 0;}
+  @media(max-width:900px){.why-choose-section{padding:56px 0;}}
   .test-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;}
   .test-card{min-width:340px;scroll-snap-align:start;background:var(--navy-soft);border:1px solid var(--line);border-radius:16px;padding:30px;flex-shrink:0;}
   .test-top{display:flex;align-items:center;gap:14px;margin-bottom:18px;}

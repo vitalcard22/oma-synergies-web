@@ -19,6 +19,7 @@
 
 
   .page-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:150px 0 80px;}
+  @media(max-width:900px){.page-hero{padding:88px 0 44px;}.svc-hub-content{padding:56px 0;}}
   .page-hero h1{color:var(--white);font-size:clamp(32px,4.4vw,50px);margin-top:16px;max-width:680px;}
   .page-hero p{margin-top:16px;font-size:16px;color:var(--ink-muted);max-width:560px;}
 

@@ -30,7 +30,7 @@ export default function Stories() {
         </div>
       </section>
 
-      <section>
+      <section className="stories-grid-section">
         <div className="wrap">
           <div className="story-grid">
             {filtered.map((t) => (
