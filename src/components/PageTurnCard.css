@@ -35,6 +35,9 @@
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   transition: transform 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+  /* Explicit layer-promotion hint rather than relying on Safari to notice
+     the animated transform implicitly, which has been inconsistent. */
+  will-change: transform;
 }
 
 @media (max-width: 900px) {
@@ -69,6 +72,16 @@
   inset: 0;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+  /*
+   * A completely content-less element (no background, no paint of any kind)
+   * has been reported to be inconsistently promoted to its own compositing
+   * layer in Safari, which can make backface-visibility unreliable on it.
+   * will-change forces the promotion explicitly instead of leaving it
+   * implicit, and background:transparent gives Safari something to actually
+   * paint rather than a truly empty box.
+   */
+  will-change: transform;
+  background: transparent;
 }
 
 .ptc-face-inner {
