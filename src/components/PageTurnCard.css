@@ -51,18 +51,29 @@
 }
 
 /*
- * iOS Safari has long-standing, well-documented reliability issues with
- * unprefixed backface-visibility, especially combined with overflow:hidden
- * and an active CSS animation on the same element (all three of which
- * .ptc-face has). Without the -webkit- prefix, the hidden back face can
- * bleed through during the 3D rotation - the mirrored, overlapping title
- * text seen on iPhone was exactly this failure mode.
+ * iOS Safari has a well-documented bug: an element combining border-radius,
+ * overflow:hidden, and backface-visibility:hidden can force a masking layer
+ * that breaks backface-visibility, letting the "hidden" back face bleed
+ * through mid-rotation. The mirrored, overlapping title text seen on iPhone
+ * was this exact failure mode - the -webkit- prefixes alone weren't enough
+ * because the real conflict is the rounded-corner clipping itself.
+ *
+ * Fix: split responsibilities. .ptc-face handles only 3D positioning and
+ * backface-visibility, nothing else. All visual styling - the rounded
+ * corners, the clip, the background, the glow animation - moves to
+ * .ptc-face-inner, a plain 2D element with no 3D transform of its own to
+ * conflict with.
  */
 .ptc-face {
   position: absolute;
   inset: 0;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+}
+
+.ptc-face-inner {
+  position: absolute;
+  inset: 0;
   background: var(--navy);
   border-radius: 20px;
   padding: 34px 38px;
@@ -82,18 +93,18 @@
  * faces are being rendered edge-on - is a known cause of stutter/tearing on
  * mobile. Pausing the glow for the full flip window fixes it.
  */
-.ptc-flipper[data-folding='true'] .ptc-face {
+.ptc-flipper[data-folding='true'] .ptc-face-inner {
   animation-play-state: paused;
 }
 
 @media (max-width: 900px) {
-  .ptc-face {
+  .ptc-face-inner {
     padding: 28px 26px;
   }
 }
 
 @media (max-width: 480px) {
-  .ptc-face {
+  .ptc-face-inner {
     padding: 24px 20px;
     border-radius: 16px;
   }
@@ -211,7 +222,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ptc-face, .ptc-title, .ptc-progress-fill {
+  .ptc-face-inner, .ptc-title, .ptc-progress-fill {
     animation: none;
   }
 }

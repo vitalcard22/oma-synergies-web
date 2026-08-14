@@ -132,15 +132,17 @@ export default function PageTurnCard() {
               className="ptc-face"
               style={i === 1 ? { transform: 'rotateY(180deg)' } : undefined}
             >
-              <div className="ptc-label-row">
-                {f.icon === 'study' ? <GraduationCapIcon size={14} /> : <CompassIcon size={14} />}
-                <span className="ptc-label">{f.label}</span>
+              <div className="ptc-face-inner">
+                <div className="ptc-label-row">
+                  {f.icon === 'study' ? <GraduationCapIcon size={14} /> : <CompassIcon size={14} />}
+                  <span className="ptc-label">{f.label}</span>
+                </div>
+                <h2 key={`${i}-${settleKey}`} className="ptc-title" style={{ color: f.titleColor }}>
+                  {f.title}
+                </h2>
+                <p className="ptc-body">{f.body}</p>
+                <div className="ptc-fold" data-side={i} data-on={foldOn} />
               </div>
-              <h2 key={`${i}-${settleKey}`} className="ptc-title" style={{ color: f.titleColor }}>
-                {f.title}
-              </h2>
-              <p className="ptc-body">{f.body}</p>
-              <div className="ptc-fold" data-side={i} data-on={foldOn} />
             </div>
           ))}
         </div>
