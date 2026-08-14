@@ -332,6 +332,10 @@
   /* ===== WHAT WE DO ===== */
   .wwd-head-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;margin-bottom:64px;}
   @media(max-width:900px){.wwd-head-grid{grid-template-columns:1fr;}}
+  /* Gap after Memberships was 146px on mobile: 46px from .membership-strip's
+     own bottom padding plus 100px from the global section top-padding rule
+     stacking on top of it. Scoped to this one section, not a global change. */
+  @media(max-width:900px){#what-we-do{padding-top:36px;}}
   .wwd-head-grid .section-head{margin-bottom:0;}
   .wwd-photo{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:3/2;}
   .wwd-photo.in img{transform:scale(1);}
