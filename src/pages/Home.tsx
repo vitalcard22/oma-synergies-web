@@ -312,6 +312,28 @@ export default function Home() {
         </button>
       </section>
 
+      {/* MEMBERSHIPS */}
+      <div className="membership-strip">
+        <div className="wrap">
+          <div className="membership-label">Registered & Recognized By</div>
+          <div className="membership-row">
+            <div className="membership-badge"><span className="dot" />NANTA: National Association of Nigeria Travel Agencies</div>
+            <div className="membership-badge"><span className="dot" />NCAA: Nigeria Civil Aviation Authority</div>
+            <div className="membership-badge"><span className="dot" />ITPN: Institute for Tourism Professionals of Nigeria</div>
+          </div>
+          <div className="accred-row">
+            {ACCREDITATIONS.map((a) => (
+              <div className="accred-item" key={a.code}>
+                <div className="accred-tile">
+                  <img src={a.logo} alt={`${a.code} logo`} loading="lazy" />
+                </div>
+                <span className="accred-code">{a.code}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* WHAT WE DO */}
       <section id="what-we-do">
         <div className="wrap">
@@ -431,28 +453,6 @@ export default function Home() {
             <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap">E-Visas</div></div>
             <div className="board-item"><div className="flap"><span className="flap-val" data-target="2" data-suffix="K+">0</span></div><div className="cap"><span className="cap-full">Flights Booked</span><span className="cap-short">Flights</span></div></div>
             <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap"><span className="cap-full">Hotels Booked</span><span className="cap-short">Hotels</span></div></div>
-          </div>
-        </div>
-      </div>
-
-      {/* MEMBERSHIPS */}
-      <div className="membership-strip">
-        <div className="wrap">
-          <div className="membership-label">Registered & Recognized By</div>
-          <div className="membership-row">
-            <div className="membership-badge"><span className="dot" />NANTA: National Association of Nigeria Travel Agencies</div>
-            <div className="membership-badge"><span className="dot" />NCAA: Nigeria Civil Aviation Authority</div>
-            <div className="membership-badge"><span className="dot" />ITPN: Institute for Tourism Professionals of Nigeria</div>
-          </div>
-          <div className="accred-row">
-            {ACCREDITATIONS.map((a) => (
-              <div className="accred-item" key={a.code}>
-                <div className="accred-tile">
-                  <img src={a.logo} alt={`${a.code} logo`} loading="lazy" />
-                </div>
-                <span className="accred-code">{a.code}</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>
