@@ -35,7 +35,7 @@ export default function Destinations() {
         </div>
       </section>
 
-      <section>
+      <section className="dest-content">
         <div className="wrap">
           <div className="dest-grid">
             {filtered.map((d) => (
