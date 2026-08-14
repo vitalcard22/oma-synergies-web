@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -60,7 +60,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
             <div className="section-inner">
               <h2 style={{ color: '#fff' }}>Our Process</h2>
             </div>
-            <div className="process-steps" style={{ gridTemplateColumns: `repeat(${service.steps.length}, 1fr)` }}>
+            <div className="process-steps" style={{ '--step-count': service.steps.length } as CSSProperties}>
               {service.steps.map((step, i) => (
                 <div className="p-step" key={step.title}>
                   <div className="p-num">{String(i + 1).padStart(2, '0')}</div>

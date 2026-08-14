@@ -30,7 +30,13 @@
   .included-item span.txt{font-size:14.5px;color:var(--navy);}
 
   .process-wrap{background:var(--navy);color:var(--white);}
-  .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:20px;}
+  /* Column count comes from a --step-count custom property set inline (since
+     it varies per service), rather than grid-template-columns being set
+     inline directly. Custom properties carry no layout specificity of their
+     own, so the mobile media query below can still win normally - a direct
+     inline grid-template-columns would always beat it regardless of media
+     query, which was silently forcing 3+ columns on mobile before. */
+  .process-steps{display:grid;grid-template-columns:repeat(var(--step-count, 4), 1fr);gap:0;margin-top:20px;}
   @media(max-width:900px){.process-steps{grid-template-columns:1fr;gap:32px;}}
   .p-step{padding-right:20px;}
   .p-num{font-family:var(--mono);font-size:13px;color:var(--gold);width:44px;height:44px;border:1px solid rgba(240,177,36,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
