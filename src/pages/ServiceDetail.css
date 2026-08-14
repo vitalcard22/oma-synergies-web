@@ -31,6 +31,16 @@
   .included-item span.txt{font-size:14.5px;color:var(--navy);}
 
   .process-wrap{background:var(--navy);color:var(--white);}
+  /* svc-included, .process-wrap section, and svc-faq were previously bare
+     <section> tags with no class, so they inherited the site-wide global
+     section{padding:100px 0} rule untouched - only .service-hero and
+     .final-cta had their own classes to override it with a mobile value.
+     These three carried the full 100px on mobile the whole time. */
+  @media(max-width:900px){
+    .svc-included{padding:56px 0;}
+    .process-wrap section{padding:56px 0;}
+    .svc-faq{padding:56px 0;}
+  }
   /* Column count comes from a --step-count custom property set inline (since
      it varies per service), rather than grid-template-columns being set
      inline directly. Custom properties carry no layout specificity of their

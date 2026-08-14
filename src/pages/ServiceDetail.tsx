@@ -37,7 +37,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
         </div>
       </section>
 
-      <section>
+      <section className="svc-included">
         <div className="wrap-narrow">
           <div className="section-inner">
             <h2>What's Included</h2>
@@ -73,7 +73,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
         </section>
       </div>
 
-      <section>
+      <section className="svc-faq">
         <div className="wrap-narrow">
           <div className="section-inner">
             <h2>Frequently Asked</h2>
