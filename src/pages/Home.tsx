@@ -312,6 +312,20 @@ export default function Home() {
         </button>
       </section>
 
+      {/* TRUST BOARD */}
+      <div className="board-section" ref={statsRef}>
+        <div className="wrap">
+          <div className="board-label">Track Record</div>
+          <div className="board-grid">
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="1" data-suffix="K+">0</span></div><div className="cap">Happy Clients</div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="97" data-suffix="%">0</span></div><div className="cap"><span className="cap-full">Client Satisfaction</span><span className="cap-short">Satisfaction</span></div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap">E-Visas</div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="2" data-suffix="K+">0</span></div><div className="cap"><span className="cap-full">Flights Booked</span><span className="cap-short">Flights</span></div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap"><span className="cap-full">Hotels Booked</span><span className="cap-short">Hotels</span></div></div>
+          </div>
+        </div>
+      </div>
+
       {/* MEMBERSHIPS */}
       <div className="membership-strip">
         <div className="wrap">
@@ -441,20 +455,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </div>
-
-      {/* TRUST BOARD */}
-      <div className="board-section" ref={statsRef}>
-        <div className="wrap">
-          <div className="board-label">Track Record</div>
-          <div className="board-grid">
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="1" data-suffix="K+">0</span></div><div className="cap">Happy Clients</div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="97" data-suffix="%">0</span></div><div className="cap"><span className="cap-full">Client Satisfaction</span><span className="cap-short">Satisfaction</span></div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap">E-Visas</div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="2" data-suffix="K+">0</span></div><div className="cap"><span className="cap-full">Flights Booked</span><span className="cap-short">Flights</span></div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap"><span className="cap-full">Hotels Booked</span><span className="cap-short">Hotels</span></div></div>
-          </div>
-        </div>
       </div>
 
       {/* PARTNERS */}
