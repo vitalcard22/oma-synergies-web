@@ -31,7 +31,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <section>
+      <section className="contact-content">
         <div className="wrap-narrow contact-grid">
           <div className="form-card">
             {!submitted ? (

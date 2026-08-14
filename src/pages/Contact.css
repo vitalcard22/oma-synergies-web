@@ -15,13 +15,15 @@
   .nav-links a:hover{color:var(--white);}
 
   .page-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:150px 0 60px;}
+  @media(max-width:900px){.page-hero{padding:88px 0 40px;}}
   .page-hero h1{color:var(--white);font-size:clamp(30px,4vw,46px);margin-top:16px;max-width:600px;}
   .page-hero p{margin-top:14px;font-size:15.5px;color:var(--ink-muted);max-width:540px;}
 
   .contact-grid{display:grid;grid-template-columns:1fr 0.85fr;gap:50px;align-items:start;}
-  @media(max-width:900px){.contact-grid{grid-template-columns:1fr;}}
+  @media(max-width:900px){.contact-grid{grid-template-columns:1fr;}.contact-content{padding:56px 0;}}
 
   .form-card{background:var(--white);border:1px solid var(--line-dark);border-radius:18px;padding:38px;}
+  @media(max-width:900px){.form-card{padding:26px 22px;}}
   .form-row{margin-bottom:20px;}
   .form-row label{display:block;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate);margin-bottom:8px;}
   .form-row input, .form-row select, .form-row textarea{
