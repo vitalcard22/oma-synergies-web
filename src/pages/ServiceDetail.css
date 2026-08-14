@@ -16,7 +16,7 @@
 
 
   .service-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:150px 0 70px;}
-  @media(max-width:900px){.service-hero{padding:88px 0 50px;}}
+  @media(max-width:900px){.service-hero{padding:88px 0 30px;}}
   .service-hero .icon-badge{width:56px;height:56px;border-radius:14px;background:rgba(240,177,36,0.12);border:1px solid rgba(240,177,36,0.3);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;}
   .service-hero h1{color:var(--white);font-size:clamp(28px,3.8vw,44px);max-width:680px;}
   .service-hero p{margin-top:16px;font-size:16px;color:var(--ink-muted);max-width:600px;}
@@ -37,7 +37,7 @@
      .final-cta had their own classes to override it with a mobile value.
      These three carried the full 100px on mobile the whole time. */
   @media(max-width:900px){
-    .svc-included{padding:56px 0;}
+    .svc-included{padding:28px 0 56px;}
     .process-wrap section{padding:56px 0;}
     .svc-faq{padding:56px 0;}
   }
