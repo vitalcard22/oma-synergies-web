@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import { GlobeIcon, PlaneIcon, GraduationCapIcon } from '../components/Icons';
 import adaezePhoto from '../assets/team/adaeze.jpg';
 import increasePhoto from '../assets/team/increase.jpg';
 import nnennaPhoto from '../assets/team/nnenna.jpg';
@@ -77,12 +78,12 @@ export default function About() {
             </div>
             <div className="vm-grid reveal">
               <div className="vm-card">
-                <div className="vm-icon">🌍</div>
+                <div className="vm-icon"><GlobeIcon size={22} /></div>
                 <h3>Vision</h3>
                 <p>To be the trusted bridge connecting people to global opportunities through seamless travel and study experiences.</p>
               </div>
               <div className="vm-card">
-                <div className="vm-icon">✈️</div>
+                <div className="vm-icon"><PlaneIcon size={22} /></div>
                 <h3>Mission</h3>
                 <p>To simplify travel and international transitions by providing reliable guidance, personalized support, and efficient solutions, helping our clients move, study, and explore the world with confidence.</p>
               </div>
@@ -126,7 +127,7 @@ export default function About() {
                   <div className="team-role">{m.role}</div>
                   {m.credential && (
                     <div className="cred-badge">
-                      <span className="cb-icon">🎓</span>
+                      <span className="cb-icon"><GraduationCapIcon size={16} /></span>
                       <div>
                         <div className="cb-title">{m.credential.title}</div>
                         <div className="cb-sub">{m.credential.sub}</div>

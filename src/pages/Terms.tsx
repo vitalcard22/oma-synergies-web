@@ -1,5 +1,6 @@
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { ScaleIcon } from '../components/Icons';
 import './Terms.css';
 
 const SECTIONS = [
@@ -73,7 +74,7 @@ export default function Terms() {
       <div className="legal-body">
         <div className="wrap">
           <div className="disclaimer-box">
-            <span className="icon">⚖️</span>
+            <span className="icon"><ScaleIcon size={20} /></span>
             <div>
               <strong>Legal review recommended</strong>
               <p>This document was drafted for Oma Synergies Travels and Tours Ltd. It has not yet been reviewed by a licensed attorney. We recommend legal review before this page is relied upon for binding client agreements, particularly around liability limitations, refund policy, and data protection compliance in your jurisdiction.</p>

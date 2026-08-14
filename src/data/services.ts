@@ -1,3 +1,5 @@
+import type { ServiceIconKey } from '../components/ServiceIcon';
+
 export interface ServiceStep {
   title: string;
   desc: string;
@@ -10,7 +12,7 @@ export interface ServiceFaq {
 
 export interface Service {
   slug: string;
-  icon: string;
+  icon: ServiceIconKey;
   cluster: 'Study Abroad & Visa' | 'Travel';
   title: string;
   tagline: string;
@@ -24,7 +26,7 @@ export interface Service {
 export const SERVICES: Service[] = [
   {
     slug: 'admissions',
-    icon: '🎓',
+    icon: 'graduation',
     cluster: 'Study Abroad & Visa',
     title: 'Global Admissions Processing',
     tagline: 'Securing university and college admissions across top destinations worldwide.',
@@ -56,7 +58,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'branding',
-    icon: '✍️',
+    icon: 'pen',
     cluster: 'Study Abroad & Visa',
     title: 'Professional Academic & Career Branding',
     tagline: 'SOPs, Letters of Intent, and CVs that stand out to admission boards and visa officers.',
@@ -84,7 +86,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'visa',
-    icon: '🛂',
+    icon: 'passport',
     cluster: 'Study Abroad & Visa',
     title: 'End-to-End Visa Application Support',
     tagline: 'Comprehensive management of student visas and study permits, start to finish.',
@@ -116,7 +118,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'document-review',
-    icon: '⚖️',
+    icon: 'scale',
     cluster: 'Study Abroad & Visa',
     title: 'Document Review & Profile Verification',
     tagline: 'Rigorous review to eliminate errors and strengthen your application.',
@@ -144,7 +146,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'study-loan',
-    icon: '💳',
+    icon: 'card',
     cluster: 'Study Abroad & Visa',
     title: 'Study Loan Facilitation',
     tagline: 'Funding support covering up to 65% of tuition and living expenses.',
@@ -172,7 +174,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'flights',
-    icon: '✈️',
+    icon: 'plane',
     cluster: 'Travel',
     title: 'Comprehensive Flight Bookings & Travel Logistics',
     tagline: 'Flight bookings, visa-purpose reservations, and accommodation, all handled in one place.',
@@ -200,7 +202,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: 'relocation',
-    icon: '🏠',
+    icon: 'home',
     cluster: 'Travel',
     title: 'Relocation & Destination Assistance',
     tagline: 'Settling in safely, from housing to your first days abroad.',

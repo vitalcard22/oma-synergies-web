@@ -86,3 +86,73 @@ export function CompassIcon({ size = 18, className }: IconProps) {
     </svg>
   );
 }
+
+export function PenIcon({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+      <path d="M4 20L4.8 16.5L15.5 5.8C16.1 5.2 17.1 5.2 17.7 5.8L18.2 6.3C18.8 6.9 18.8 7.9 18.2 8.5L7.5 19.2L4 20Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M14 7.5L16.5 10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function PassportIcon({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+      <rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="10" r="2.4" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8.5 15.5C8.5 14.4 10 13.5 12 13.5C14 13.5 15.5 14.4 15.5 15.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function ScaleIcon({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+      <path d="M12 3V19" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M5 21H19" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M4 7H10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M14 7H20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M4 7L2 11.5C2 13 3.5 14 5 14C6.5 14 8 13 8 11.5L6 7" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M20 7L18 11.5C18 13 19.5 14 21 14C22.5 14 24 13 24 11.5L22 7" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function CardIcon({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+      <rect x="3" y="5.5" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M3 9.5H21" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M6.5 14.5H10.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function PlaneIcon({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+      <path d="M13 3L21 11L17.5 11.5L13.5 8.5L11 15L13 17L13 18.5L9.5 17L8 19L6.5 18.5L7.5 16L5.5 13.5L3.5 14L3 12.5L5.5 10.5L11.5 9L8.5 5.5L9 3L10.5 3.5L13 6.5L13 3Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" fill="currentColor" fillOpacity="0.1" />
+    </svg>
+  );
+}
+
+export function HomeIcon({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+      <path d="M4 11L12 4L20 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M6 9.5V19C6 19.5523 6.44772 20 7 20H17C17.5523 20 18 19.5523 18 19V9.5" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M10 20V15C10 14.4477 10.4477 14 11 14H13C13.5523 14 14 14.4477 14 15V20" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function GlobeIcon({ size = 18, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M3 12H21" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M12 3C14.5 5.5 15.8 8.6 15.8 12C15.8 15.4 14.5 18.5 12 21C9.5 18.5 8.2 15.4 8.2 12C8.2 8.6 9.5 5.5 12 3Z" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  );
+}

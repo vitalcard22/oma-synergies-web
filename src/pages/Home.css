@@ -372,7 +372,7 @@
   .service-card:hover .service-icon{background:var(--gold);transform:scale(1.12) rotate(-8deg);}
   .service-card:hover p{color:var(--ink-muted);}
   .service-card:hover .learn{transform:translateX(4px);}
-  .service-icon{width:42px;height:42px;border-radius:10px;background:var(--paper);border:1px solid var(--line-dark);display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:background .35s ease, transform .35s cubic-bezier(.34,1.56,.64,1);}
+  .service-icon{width:42px;height:42px;border-radius:10px;background:var(--paper);border:1px solid var(--line-dark);display:flex;align-items:center;justify-content:center;color:var(--navy);margin-bottom:20px;transition:background .35s ease, transform .35s cubic-bezier(.34,1.56,.64,1);}
   .service-card h4{font-family:var(--display);font-size:17px;font-weight:600;margin-bottom:10px;}
   .service-card p{font-size:14px;color:var(--slate);transition:color .3s ease;margin-bottom:16px;}
   .service-card .learn{font-family:var(--mono);font-size:12px;color:var(--gold);display:inline-block;transition:transform .3s ease;}

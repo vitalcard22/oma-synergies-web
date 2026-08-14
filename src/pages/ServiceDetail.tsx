@@ -2,6 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ServiceIcon from '../components/ServiceIcon';
 import { getServiceBySlug } from '../data/services';
 import './ServiceDetail.css';
 
@@ -31,7 +32,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
       <section className="service-hero">
         <div className="wrap-narrow">
           <Link to="/services" className="svc-back">← All Services</Link>
-          <div className="icon-badge">{service.icon}</div>
+          <div className="icon-badge"><ServiceIcon icon={service.icon} /></div>
           <span className="eyebrow">{service.cluster}</span>
           <h1>{service.title}</h1>
           <p>{service.tagline}</p>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import FlightBg from '../components/FlightBg';
+import ServiceIcon from '../components/ServiceIcon';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { useCountUp } from '../hooks/useCountUp';
 import logoIcon from '../assets/logo-icon.png';
@@ -47,15 +48,15 @@ const LEAD_TEXTS = [
 const LEAD_MOBILE = 'Admissions. Visas. Flights. Tours. Accommodation. One trusted partner tracked in real time from application to arrival.';
 
 const SERVICES_CORE = [
-  { icon: '🎓', title: 'Global Admissions Processing', desc: 'We manage your entire university and college admission process across premium global destinations, including: Americas & Europe: Canada, USA, UK, Ireland, France, Italy, Sweden, and Austria. Asia & Oceania: South Korea, Philippines, China, and New Zealand.', link: '/services/admissions' },
-  { icon: '🛂', title: 'Strategic Visa Application Support', desc: 'We provide end-to-end guidance for study permit and student visa applications. Our team oversees everything from initial file compilation to final submission, ensuring full compliance with immigration requirements.', link: '/services/visa' },
-  { icon: '⚖️', title: 'Legal Document Review & Verification', desc: 'To maximize your approval success rate, our experts conduct rigorous reviews of all financial, academic, and legal documents to eliminate errors and strengthen your application profile.', link: '/services/document-review' },
-  { icon: '💳', title: 'Educational Financing & Study Loan Support', desc: 'Through our trusted global funding partners, we facilitate access to study loans covering up to 65% of your tuition and living expenses, easing the financial burden of relocation.', link: '/services/study-loan' },
-  { icon: '🧭', title: 'Comprehensive End-to-End Guidance', desc: 'From your very first consultation and school selection to the final visa approval, we provide continuous expert mentorship at every stage of your international education journey.', link: '/services' },
+  { icon: 'graduation' as const, title: 'Global Admissions Processing', desc: 'We manage your entire university and college admission process across premium global destinations, including: Americas & Europe: Canada, USA, UK, Ireland, France, Italy, Sweden, and Austria. Asia & Oceania: South Korea, Philippines, China, and New Zealand.', link: '/services/admissions' },
+  { icon: 'passport' as const, title: 'Strategic Visa Application Support', desc: 'We provide end-to-end guidance for study permit and student visa applications. Our team oversees everything from initial file compilation to final submission, ensuring full compliance with immigration requirements.', link: '/services/visa' },
+  { icon: 'scale' as const, title: 'Legal Document Review & Verification', desc: 'To maximize your approval success rate, our experts conduct rigorous reviews of all financial, academic, and legal documents to eliminate errors and strengthen your application profile.', link: '/services/document-review' },
+  { icon: 'card' as const, title: 'Educational Financing & Study Loan Support', desc: 'Through our trusted global funding partners, we facilitate access to study loans covering up to 65% of your tuition and living expenses, easing the financial burden of relocation.', link: '/services/study-loan' },
+  { icon: 'compass' as const, title: 'Comprehensive End-to-End Guidance', desc: 'From your very first consultation and school selection to the final visa approval, we provide continuous expert mentorship at every stage of your international education journey.', link: '/services' },
 ];
 
 const SERVICES_TRAVEL = [
-  { icon: '🏠', title: 'Relocation & Accommodation Assistance', desc: 'Our services extend beyond visa approvals. We assist students in securing safe, comfortable housing and offer essential guidance to help them settle smoothly into their new host countries.', link: '/services/relocation' },
+  { icon: 'home' as const, title: 'Relocation & Accommodation Assistance', desc: 'Our services extend beyond visa approvals. We assist students in securing safe, comfortable housing and offer essential guidance to help them settle smoothly into their new host countries.', link: '/services/relocation' },
 ];
 
 const TOURS = [
@@ -380,7 +381,7 @@ export default function Home() {
             <div className="service-grid stagger">
               {SERVICES_CORE.map((s) => (
                 <Link to={s.link} className="service-card" key={s.title}>
-                  <div className="service-icon">{s.icon}</div>
+                  <div className="service-icon"><ServiceIcon icon={s.icon} /></div>
                   <h4>{s.title}</h4>
                   <p>{s.desc}</p>
                   <span className="learn">Learn More →</span>
@@ -397,7 +398,7 @@ export default function Home() {
             <div className="service-grid stagger">
               {SERVICES_TRAVEL.map((s) => (
                 <Link to={s.link} className="service-card" key={s.title}>
-                  <div className="service-icon">{s.icon}</div>
+                  <div className="service-icon"><ServiceIcon icon={s.icon} /></div>
                   <h4>{s.title}</h4>
                   <p>{s.desc}</p>
                   <span className="learn">Learn More →</span>

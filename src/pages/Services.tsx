@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ServiceIcon from '../components/ServiceIcon';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { SERVICES } from '../data/services';
 import './Services.css';
@@ -32,7 +33,7 @@ export default function Services() {
             <div className="svc-grid">
               {coreServices.map((s) => (
                 <Link to={`/services/${s.slug}`} className="svc-card" key={s.slug}>
-                  <div className="svc-icon">{s.icon}</div>
+                  <div className="svc-icon"><ServiceIcon icon={s.icon} /></div>
                   <h4>{s.title}</h4>
                   <p>{s.tagline}</p>
                   <span className="learn">View Service →</span>
@@ -49,7 +50,7 @@ export default function Services() {
             <div className="svc-grid">
               {travelServices.map((s) => (
                 <Link to={`/services/${s.slug}`} className="svc-card" key={s.slug}>
-                  <div className="svc-icon">{s.icon}</div>
+                  <div className="svc-icon"><ServiceIcon icon={s.icon} /></div>
                   <h4>{s.title}</h4>
                   <p>{s.tagline}</p>
                   <span className="learn">View Service →</span>
