@@ -24,6 +24,12 @@
 
 html {
   scroll-behavior: smooth;
+  /* overflow-x:hidden on body alone is not fully reliable cross-browser -
+     some browsers (Chrome/mobile included) apply horizontal scroll at the
+     html root rather than body, so body-only suppression doesn't always
+     work. Needs setting on both. */
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -32,6 +38,7 @@ body {
   background: var(--paper);
   line-height: 1.6;
   overflow-x: hidden;
+  width: 100%;
 }
 
 a {
