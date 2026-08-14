@@ -42,7 +42,7 @@ export default function About() {
         </div>
       </section>
 
-      <section>
+      <section className="who-section">
         <div className="wrap who-grid">
           <div className="who-copy reveal">
             <span className="eyebrow">Who We Are</span>
@@ -69,7 +69,7 @@ export default function About() {
       </section>
 
       <div className="vm-wrap">
-        <section style={{ padding: '90px 0' }}>
+        <section className="vm-section">
           <div className="wrap">
             <div className="section-head reveal">
               <span className="eyebrow">What Drives Us</span>
@@ -91,7 +91,7 @@ export default function About() {
         </section>
       </div>
 
-      <section>
+      <section className="story-section">
         <div className="wrap">
           <div className="section-head reveal">
             <span className="eyebrow">Our Story</span>
@@ -111,7 +111,7 @@ export default function About() {
       </section>
 
       <div className="team-wrap">
-        <section>
+        <section className="team-section">
           <div className="wrap">
             <div className="section-head reveal">
               <span className="eyebrow">Our Team</span>
