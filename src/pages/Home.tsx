@@ -312,42 +312,6 @@ export default function Home() {
         </button>
       </section>
 
-      {/* TRUST BOARD */}
-      <div className="board-section" ref={statsRef}>
-        <div className="wrap">
-          <div className="board-label">Track Record</div>
-          <div className="board-grid">
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="1" data-suffix="K+">0</span></div><div className="cap">Happy Clients</div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="97" data-suffix="%">0</span></div><div className="cap"><span className="cap-full">Client Satisfaction</span><span className="cap-short">Satisfaction</span></div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap">E-Visas</div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="2" data-suffix="K+">0</span></div><div className="cap"><span className="cap-full">Flights Booked</span><span className="cap-short">Flights</span></div></div>
-            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap"><span className="cap-full">Hotels Booked</span><span className="cap-short">Hotels</span></div></div>
-          </div>
-        </div>
-      </div>
-
-      {/* MEMBERSHIPS */}
-      <div className="membership-strip">
-        <div className="wrap">
-          <div className="membership-label">Registered & Recognized By</div>
-          <div className="membership-row">
-            <div className="membership-badge"><span className="dot" />NANTA: National Association of Nigeria Travel Agencies</div>
-            <div className="membership-badge"><span className="dot" />NCAA: Nigeria Civil Aviation Authority</div>
-            <div className="membership-badge"><span className="dot" />ITPN: Institute for Tourism Professionals of Nigeria</div>
-          </div>
-          <div className="accred-row">
-            {ACCREDITATIONS.map((a) => (
-              <div className="accred-item" key={a.code}>
-                <div className="accred-tile">
-                  <img src={a.logo} alt={`${a.code} logo`} loading="lazy" />
-                </div>
-                <span className="accred-code">{a.code}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* WHAT WE DO */}
       <section id="what-we-do">
         <div className="wrap">
@@ -408,28 +372,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PARTNERS */}
-      <section className="partners-section">
-        <div className="wrap">
-          <div className="partners-grid">
-            <div className="reveal">
-              <span className="eyebrow">Partners</span>
-              <h2 style={{ fontSize: 26, marginTop: 12 }}>Trusted Global Partners</h2>
-              <p style={{ color: 'var(--slate)', marginTop: 10, fontSize: 14.5, maxWidth: 420 }}>We work with recognized international partners to give your application stronger credibility and better outcomes.</p>
-              <div className="partners-row" style={{ marginTop: 30, justifyContent: 'flex-start' }}>
-                <span className="partner-name">ApplyBoard</span>
-                <span className="partner-name">KC Overseas Education</span>
-                <span className="partner-name">BorderPass</span>
-              </div>
-            </div>
-            <div className="partners-photo reveal">
-              <img src={kcOverseasTeam} alt="Our KC Overseas partner team" loading="lazy" />
-              <span className="partners-photo-caption">Our KC Overseas Education partner team</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* HOW IT WORKS */}
       <div className="timeline-wrap" id="how-it-works">
         <FlightBg />
@@ -478,6 +420,64 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      {/* TRUST BOARD */}
+      <div className="board-section" ref={statsRef}>
+        <div className="wrap">
+          <div className="board-label">Track Record</div>
+          <div className="board-grid">
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="1" data-suffix="K+">0</span></div><div className="cap">Happy Clients</div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="97" data-suffix="%">0</span></div><div className="cap"><span className="cap-full">Client Satisfaction</span><span className="cap-short">Satisfaction</span></div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap">E-Visas</div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="2" data-suffix="K+">0</span></div><div className="cap"><span className="cap-full">Flights Booked</span><span className="cap-short">Flights</span></div></div>
+            <div className="board-item"><div className="flap"><span className="flap-val" data-target="200" data-suffix="+">0</span></div><div className="cap"><span className="cap-full">Hotels Booked</span><span className="cap-short">Hotels</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      {/* MEMBERSHIPS */}
+      <div className="membership-strip">
+        <div className="wrap">
+          <div className="membership-label">Registered & Recognized By</div>
+          <div className="membership-row">
+            <div className="membership-badge"><span className="dot" />NANTA: National Association of Nigeria Travel Agencies</div>
+            <div className="membership-badge"><span className="dot" />NCAA: Nigeria Civil Aviation Authority</div>
+            <div className="membership-badge"><span className="dot" />ITPN: Institute for Tourism Professionals of Nigeria</div>
+          </div>
+          <div className="accred-row">
+            {ACCREDITATIONS.map((a) => (
+              <div className="accred-item" key={a.code}>
+                <div className="accred-tile">
+                  <img src={a.logo} alt={`${a.code} logo`} loading="lazy" />
+                </div>
+                <span className="accred-code">{a.code}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* PARTNERS */}
+      <section className="partners-section">
+        <div className="wrap">
+          <div className="partners-grid">
+            <div className="reveal">
+              <span className="eyebrow">Partners</span>
+              <h2 style={{ fontSize: 26, marginTop: 12 }}>Trusted Global Partners</h2>
+              <p style={{ color: 'var(--slate)', marginTop: 10, fontSize: 14.5, maxWidth: 420 }}>We work with recognized international partners to give your application stronger credibility and better outcomes.</p>
+              <div className="partners-row" style={{ marginTop: 30, justifyContent: 'flex-start' }}>
+                <span className="partner-name">ApplyBoard</span>
+                <span className="partner-name">KC Overseas Education</span>
+                <span className="partner-name">BorderPass</span>
+              </div>
+            </div>
+            <div className="partners-photo reveal">
+              <img src={kcOverseasTeam} alt="Our KC Overseas partner team" loading="lazy" />
+              <span className="partners-photo-caption">Our KC Overseas Education partner team</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* DESTINATIONS */}
       <section id="destinations">
