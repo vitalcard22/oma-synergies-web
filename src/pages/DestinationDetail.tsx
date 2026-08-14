@@ -3,6 +3,7 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { getDestinationBySlug } from '../data/destinations';
+import { getTestimonialsForDestination } from '../data/testimonials';
 import './DestinationDetail.css';
 
 export default function DestinationDetail() {
@@ -18,6 +19,7 @@ export default function DestinationDetail() {
   }
 
   const d = destination;
+  const relatedTestimonials = getTestimonialsForDestination(d.name);
 
   return (
     <>
@@ -62,6 +64,22 @@ export default function DestinationDetail() {
           </div>
         </div>
       </section>
+
+      {relatedTestimonials.length > 0 && (
+        <section className="dest-proof">
+          <div className="wrap-narrow">
+            <h2>Real {d.name} success stories</h2>
+            <div className="dest-proof-grid">
+              {relatedTestimonials.map((t) => (
+                <div className="dest-proof-card" key={t.name}>
+                  <div className="dest-proof-quote">"{t.quote}"</div>
+                  <div className="dest-proof-name">{t.name} <span>· {t.meta}</span></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="final-cta">
         <div className="wrap-narrow">

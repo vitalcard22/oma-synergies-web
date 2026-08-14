@@ -18,3 +18,16 @@ export const TESTIMONIALS: Testimonial[] = [
   { initials: 'G.N.', name: 'Goodluck N.', meta: 'Spain', filterTag: 'Tourist', serviceTag: 'Tourist Visa', quote: 'Thank you for making my Spain tourist visa application straightforward and stress-free. I truly appreciate your professionalism and dedication.' },
   { initials: 'G.A.', name: 'Gift A.', meta: 'Canada', filterTag: 'Business', serviceTag: 'Spousal Open Work Permit', quote: 'The guidance and support I received were exceptional. My Canada Spousal Open Work Permit was approved successfully, and I highly recommend this team to anyone seeking immigration assistance.' },
 ];
+
+// 'United Kingdom' is the destination's stored name, but testimonials
+// naturally say 'UK' (e.g. "University of West Scotland, UK") - a plain
+// substring match against the destination name alone would silently miss
+// both UK testimonials, so aliases are handled explicitly per destination.
+const DESTINATION_ALIASES: Record<string, string[]> = {
+  'United Kingdom': ['UK', 'United Kingdom'],
+};
+
+export function getTestimonialsForDestination(destinationName: string): Testimonial[] {
+  const aliases = DESTINATION_ALIASES[destinationName] || [destinationName];
+  return TESTIMONIALS.filter((t) => aliases.some((alias) => t.meta.includes(alias)));
+}
