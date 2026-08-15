@@ -434,10 +434,10 @@ export default function Home() {
               <div className="timeline-track" />
               <div className="timeline-progress" />
               <div className="timeline-steps">
-                <div className="t-step"><div className="t-num">01</div><h4>Consultation & Profile Evaluation</h4><p>We assess your academic background, career goals, and budget, then match you with the best schools, courses, and countries for you.</p></div>
-                <div className="t-step"><div className="t-num">02</div><h4>School Admission & Document Prep</h4><p>We handle your school applications and help you craft a strong SOP and professional CV to secure your admission letter.</p></div>
-                <div className="t-step"><div className="t-num">03</div><h4>Visa Support & Study Loans</h4><p>We review your documents carefully, guide your visa application, and help you access study loans covering up to 65% of expenses.</p></div>
-                <div className="t-step"><div className="t-num">04</div><h4>Flight Booking & Relocation</h4><p>Once your visa is approved, we handle flights and travel plans, and help you find safe accommodation to settle in easily.</p></div>
+                <div className="t-step"><div className="t-step-head"><div className="t-num">01</div><h4>Consultation & Profile Evaluation</h4></div><p>We assess your academic background, career goals, and budget, then match you with the best schools, courses, and countries for you.</p></div>
+                <div className="t-step"><div className="t-step-head"><div className="t-num">02</div><h4>School Admission & Document Prep</h4></div><p>We handle your school applications and help you craft a strong SOP and professional CV to secure your admission letter.</p></div>
+                <div className="t-step"><div className="t-step-head"><div className="t-num">03</div><h4>Visa Support & Study Loans</h4></div><p>We review your documents carefully, guide your visa application, and help you access study loans covering up to 65% of expenses.</p></div>
+                <div className="t-step"><div className="t-step-head"><div className="t-num">04</div><h4>Flight Booking & Relocation</h4></div><p>Once your visa is approved, we handle flights and travel plans, and help you find safe accommodation to settle in easily.</p></div>
               </div>
             </div>
 
