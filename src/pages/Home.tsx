@@ -456,14 +456,15 @@ export default function Home() {
                 <p>No more "any update?" emails. Log in and watch your admission, visa, and loan status move forward in real time.</p>
                 <Link to="/portal" className="btn btn-outline">Preview Client Login →</Link>
               </div>
-              <div className="portal-mock">
-                <div className="portal-mock-chrome">
-                  <span className="portal-mock-dot" />
-                  <span className="portal-mock-dot" />
-                  <span className="portal-mock-dot" />
-                  <span className="portal-mock-url">portal.omasynergiestravel.com</span>
-                </div>
-                {PORTAL_STAGES.map((s, i) => {
+              <div className="portal-mock-stage">
+                <div className="portal-mock">
+                  <div className="portal-mock-chrome">
+                    <span className="portal-mock-dot" />
+                    <span className="portal-mock-dot" />
+                    <span className="portal-mock-dot" />
+                    <span className="portal-mock-url">portal.omasynergiestravel.com</span>
+                  </div>
+                  {PORTAL_STAGES.map((s, i) => {
                   const isOpen = openStage === i;
                   const panelId = `portal-panel-${i}`;
                   const buttonId = `portal-button-${i}`;
@@ -486,6 +487,7 @@ export default function Home() {
                     </div>
                   );
                 })}
+                </div>
               </div>
             </div>
           </div>
