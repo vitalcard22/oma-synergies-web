@@ -442,12 +442,10 @@ export default function Home() {
             </div>
 
             <div className="visa-photo-strip reveal">
-              <div className="visa-photo-text">
+              <img src={visaPassportPhoto} alt="Visa application and approved passport stamps" loading="lazy" />
+              <div className="visa-photo-overlay">
                 <span className="eyebrow">The Payoff</span>
                 <p>This is what it looks like when the wait is over.</p>
-              </div>
-              <div className="visa-photo-frame">
-                <img src={visaPassportPhoto} alt="Visa application and approved passport stamps" loading="lazy" />
               </div>
             </div>
 
@@ -459,6 +457,12 @@ export default function Home() {
                 <Link to="/portal" className="btn btn-outline">Preview Client Login →</Link>
               </div>
               <div className="portal-mock">
+                <div className="portal-mock-chrome">
+                  <span className="portal-mock-dot" />
+                  <span className="portal-mock-dot" />
+                  <span className="portal-mock-dot" />
+                  <span className="portal-mock-url">portal.omasynergiestravel.com</span>
+                </div>
                 {PORTAL_STAGES.map((s, i) => {
                   const isOpen = openStage === i;
                   const panelId = `portal-panel-${i}`;
