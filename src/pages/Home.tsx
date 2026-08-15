@@ -26,6 +26,16 @@ import './Home.css';
 
 const HEADLINE_WORDS = ['journey to world-class education', 'visa journey', 'journey to new destinations', 'journey to explore the world'];
 
+// Sample data for the interactive portal preview - clearly a demo (the row
+// beside it still says "Preview Client Login"), but gives a visitor something
+// to actually click through rather than just read a static status snapshot.
+const PORTAL_STAGES = [
+  { label: 'Profile Evaluation', status: 'done' as const, statusLabel: '✓ Done', detail: 'Academic background, goals, and budget assessed. Completed Jul 2.' },
+  { label: 'Admission & SOP', status: 'done' as const, statusLabel: '✓ Done', detail: 'Applications submitted to 3 shortlisted schools. Offer received Jul 28.' },
+  { label: 'Visa Application', status: 'active' as const, statusLabel: '● In Progress', detail: 'Documents compiled and under review. Next step: biometrics appointment.' },
+  { label: 'Flight & Relocation', status: 'pending' as const, statusLabel: 'Pending', detail: 'Unlocks once your visa is approved.' },
+];
+
 
 const SERVICE_WORDS = ['Study', 'Visa', 'Travel', 'Tour'];
 
@@ -98,6 +108,7 @@ export default function Home() {
   const [headlineVisible, setHeadlineVisible] = useState(true);
   const [leadVisible, setLeadVisible] = useState(true);
   const [openFaq, setOpenFaq] = useState(0);
+  const [openStage, setOpenStage] = useState<number | null>(null);
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [orbitPulse, setOrbitPulse] = useState(false);
   const [serviceIdx, setServiceIdx] = useState(0);
@@ -448,10 +459,29 @@ export default function Home() {
                 <Link to="/portal" className="btn btn-outline">Preview Client Login →</Link>
               </div>
               <div className="portal-mock">
-                <div className="row"><span>Profile Evaluation</span><span className="status-done">✓ Done</span></div>
-                <div className="row"><span>Admission & SOP</span><span className="status-done">✓ Done</span></div>
-                <div className="row"><span>Visa Application</span><span className="status-active">● In Progress</span></div>
-                <div className="row"><span>Flight & Relocation</span><span className="status-pending">Pending</span></div>
+                {PORTAL_STAGES.map((s, i) => {
+                  const isOpen = openStage === i;
+                  const panelId = `portal-panel-${i}`;
+                  const buttonId = `portal-button-${i}`;
+                  return (
+                    <div className="portal-row-wrap" key={s.label}>
+                      <button
+                        id={buttonId}
+                        className="row"
+                        type="button"
+                        aria-expanded={isOpen}
+                        aria-controls={panelId}
+                        onClick={() => setOpenStage(isOpen ? null : i)}
+                      >
+                        <span>{s.label}</span>
+                        <span className={`status-${s.status}`}>{s.statusLabel}</span>
+                      </button>
+                      <div id={panelId} role="region" aria-labelledby={buttonId} className={isOpen ? 'portal-detail open' : 'portal-detail'}>
+                        <p>{s.detail}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

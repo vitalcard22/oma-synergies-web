@@ -409,11 +409,20 @@
   .portal-preview h4{font-family:var(--display);font-size:19px;margin-bottom:10px;}
   .portal-preview p{font-size:13.5px;color:var(--ink-muted);margin-bottom:20px;}
   .portal-mock{background:var(--navy-deep);border:1px solid var(--line);border-radius:12px;padding:20px 22px;font-family:var(--mono);font-size:12.5px;}
-  .portal-mock .row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);}
-  .portal-mock .row:last-child{border-bottom:none;}
+  .portal-row-wrap{border-bottom:1px dashed var(--line);}
+  .portal-row-wrap:last-child{border-bottom:none;}
+  .portal-mock .row{
+    width:100%;display:flex;align-items:center;justify-content:space-between;
+    padding:9px 0;background:none;border:none;cursor:pointer;
+    font-family:var(--mono);font-size:12.5px;color:var(--white);text-align:left;
+    min-height:44px;
+  }
   .portal-mock .status-done{color:#6fd39a;}
   .portal-mock .status-active{color:var(--gold);}
   .portal-mock .status-pending{color:rgba(255,255,255,0.35);}
+  .portal-detail{display:grid;grid-template-rows:0fr;overflow:hidden;transition:grid-template-rows .3s ease;}
+  .portal-detail.open{grid-template-rows:1fr;}
+  .portal-detail > p{overflow:hidden;min-height:0;font-size:11.5px;color:rgba(255,255,255,0.55);line-height:1.55;padding-bottom:12px;margin:0;}
 
   /* ===== DESTINATIONS ===== */
   .dest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;}
