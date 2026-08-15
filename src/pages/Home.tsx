@@ -444,7 +444,7 @@ export default function Home() {
             <div className="visa-photo-strip reveal">
               <div className="visa-photo-text">
                 <span className="eyebrow">The Payoff</span>
-                <p>From application to approval: real visas, real stamps.</p>
+                <p>This is what it looks like when the wait is over.</p>
               </div>
               <div className="visa-photo-frame">
                 <img src={visaPassportPhoto} alt="Visa application and approved passport stamps" loading="lazy" />
