@@ -29,7 +29,12 @@
   @media(max-width:900px){.wa-spotlight{padding:36px 0;}}
   .wa-spotlight h2{color:var(--white);font-size:clamp(22px,3vw,30px);margin-top:8px;margin-bottom:24px;}
   .wa-panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  @media(max-width:480px){.wa-panels{grid-template-columns:1fr;}}
+  /* 480px was too wide a threshold before stacking: at 480px each panel only
+     has roughly 96px left for text after the icon and padding, nowhere near
+     enough for "0806 769 6464" at 18px bold without wrapping badly. Widened
+     to 640px, comfortably covering the phones/small tablets where the old
+     value was actually failing, not just narrow phones. */
+  @media(max-width:640px){.wa-panels{grid-template-columns:1fr;}}
   .wa-panel{
     display:flex;align-items:center;gap:16px;padding:20px 22px;
     background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.28);border-radius:16px;
