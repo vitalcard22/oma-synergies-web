@@ -22,8 +22,28 @@
   .contact-grid{display:grid;grid-template-columns:1fr 0.85fr;gap:50px;align-items:start;}
   @media(max-width:900px){.contact-grid{grid-template-columns:1fr;}.contact-content{padding:56px 0;}}
 
+  /* WhatsApp spotlight: this is a WhatsApp-first business, so the fastest
+     channel gets top billing as its own confident panel instead of being one
+     row among four in a generic contact list. */
+  .wa-spotlight{background:var(--navy-deep);padding:52px 0;}
+  @media(max-width:900px){.wa-spotlight{padding:36px 0;}}
+  .wa-spotlight h2{color:var(--white);font-size:clamp(22px,3vw,30px);margin-top:8px;margin-bottom:24px;}
+  .wa-panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:480px){.wa-panels{grid-template-columns:1fr;}}
+  .wa-panel{
+    display:flex;align-items:center;gap:16px;padding:20px 22px;
+    background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.28);border-radius:16px;
+    transition:background .25s ease, transform .25s ease;
+  }
+  .wa-panel:hover{background:rgba(37,211,102,0.15);transform:translateY(-2px);}
+  .wa-panel-icon{width:48px;height:48px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .wa-panel-label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:3px;}
+  .wa-panel-value{font-size:18px;color:var(--white);font-weight:600;}
+
   .form-card{background:var(--white);border:1px solid var(--line-dark);border-radius:18px;padding:38px;}
   @media(max-width:900px){.form-card{padding:26px 22px;}}
+  .form-intro{margin-bottom:26px;}
+  .form-intro p{margin-top:8px;font-size:14px;color:var(--slate);line-height:1.5;}
   .form-row{margin-bottom:20px;}
   .form-row label{display:block;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate);margin-bottom:8px;}
   .form-row input, .form-row select, .form-row textarea{
@@ -40,29 +60,55 @@
 
   .info-col .info-card{background:var(--navy);color:var(--white);border-radius:18px;padding:34px;margin-bottom:20px;}
 
-  .reach-card{padding:30px 26px 22px;}
-  .reach-head{margin-bottom:20px;}
+  .reach-card{padding:34px 30px;}
+  .reach-head{margin-bottom:8px;}
   .reach-head h4{font-family:var(--display);font-size:16px;margin-bottom:6px;}
   .reach-head p{font-size:12.5px;color:var(--ink-muted);}
-  .reach-row{display:flex;align-items:center;gap:14px;padding:13px 12px;border-radius:12px;margin-bottom:6px;transition:background .25s ease, transform .25s ease;}
-  .reach-row:hover{background:rgba(255,255,255,0.06);transform:translateX(4px);}
-  .reach-row:last-child{margin-bottom:0;}
-  .reach-badge{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
-  .reach-row:hover .reach-badge{transform:scale(1.1) rotate(-6deg);}
+
+  /* Orbital layout: echoes the hero's dashed-ring motif rather than a plain
+     icon list, so this reads as this specific brand's contact section, not a
+     shared template pattern. Desktop only - see the mobile override below,
+     which falls back to a simple connected list where there's no room for a
+     literal circle to read as intentional rather than cramped. */
+  .reach-orbit{position:relative;height:280px;margin-top:20px;}
+  .reach-orbit-center{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:64px;height:64px;display:flex;align-items:center;justify-content:center;z-index:2;
+  }
+  .reach-orbit-center img{width:26px;height:26px;position:relative;z-index:1;}
+  .reach-orbit-ring{position:absolute;border-radius:50%;border:1px dashed rgba(240,177,36,0.35);}
+  .reach-orbit-ring.r1{width:64px;height:64px;}
+  .reach-orbit-ring.r2{width:100px;height:100px;}
+  .reach-orbit-point{
+    position:absolute;display:flex;align-items:center;gap:10px;max-width:190px;
+    padding:10px 12px;border-radius:12px;transition:background .25s ease;
+  }
+  a.reach-orbit-point:hover{background:rgba(255,255,255,0.06);}
+  .reach-orbit-point.p-email{top:0;left:50%;transform:translateX(-50%);}
+  .reach-orbit-point.p-office{bottom:6%;left:0;}
+  .reach-orbit-point.p-social{bottom:6%;right:0;}
+  .reach-social-row{display:flex;gap:8px;margin-top:6px;}
+  .reach-social-row a{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;color:var(--ink-muted);transition:background .2s ease, color .2s ease;}
+  .reach-social-row a:hover{background:var(--gold);color:var(--navy-deep);}
+
+  .reach-badge{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
   .reach-badge.email{background:rgba(240,177,36,0.15);color:var(--gold);}
-  .reach-badge.whatsapp{background:rgba(37,211,102,0.15);color:#25D366;}
   .reach-badge.location{background:rgba(255,255,255,0.1);color:var(--white);}
-  .reach-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);margin-bottom:2px;}
-  .reach-value{font-size:13.5px;color:var(--white);font-weight:500;line-height:1.35;}
-  .reach-arrow{margin-left:auto;color:var(--ink-muted);opacity:0;transform:translateX(-4px);transition:all .25s ease;flex-shrink:0;}
-  .reach-row:hover .reach-arrow{opacity:1;transform:translateX(0);color:var(--gold);}
+  .reach-badge.social{background:rgba(255,255,255,0.1);color:var(--white);}
+  .reach-label{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);margin-bottom:2px;}
+  .reach-value{font-size:12.5px;color:var(--white);font-weight:500;line-height:1.35;}
   .info-card h4{font-family:var(--display);font-size:16px;margin-bottom:16px;}
 
-  .follow-card{padding:28px 26px;}
-  .follow-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .follow-item{display:flex;align-items:center;gap:10px;padding:13px 14px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--white);font-size:13px;font-weight:500;transition:background .25s ease, border-color .25s ease, transform .25s ease;}
-  .follow-item:hover{background:rgba(240,177,36,0.1);border-color:rgba(240,177,36,0.3);color:var(--gold);transform:translateY(-2px);}
-  .follow-item svg{flex-shrink:0;}
+  /* Mobile: no room for a circle to read as intentional, so the same three
+     points fall back to a simple connected vertical list instead - still
+     distinct from the old design via the dotted connector line, without
+     forcing a cramped orbit onto a narrow screen. */
+  @media(max-width:900px){
+    .reach-orbit{height:auto;margin-top:16px;display:flex;flex-direction:column;gap:4px;padding-left:20px;position:relative;}
+    .reach-orbit::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;border-left:1px dashed rgba(240,177,36,0.35);}
+    .reach-orbit-center{display:none;}
+    .reach-orbit-point{position:static;transform:none;max-width:none;padding:10px 8px;}
+  }
 
   .map-card{border-radius:18px;overflow:hidden;border:1px solid var(--line-dark);height:220px;background:var(--navy-soft);}
   .map-card iframe{display:block;}

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import officePhoto from '../assets/office.jpg';
+import logoIcon from '../assets/logo-icon.png';
 import { MailIcon, WhatsAppIcon, MapPinIcon, InstagramIcon, TikTokIcon, LinkedInIcon, XIcon } from '../components/Icons';
 import './Contact.css';
 
@@ -31,14 +32,42 @@ export default function Contact() {
         </div>
       </section>
 
+      <section className="wa-spotlight">
+        <div className="wrap-narrow">
+          <span className="eyebrow">The Fastest Way To Reach Us</span>
+          <h2>Most people just WhatsApp us</h2>
+          <div className="wa-panels">
+            <a className="wa-panel" href="https://wa.me/2348067696464" target="_blank" rel="noopener noreferrer">
+              <span className="wa-panel-icon"><WhatsAppIcon size={26} /></span>
+              <div>
+                <div className="wa-panel-label">Message Us</div>
+                <div className="wa-panel-value">0806 769 6464</div>
+              </div>
+            </a>
+            <a className="wa-panel" href="https://wa.me/2347078084746" target="_blank" rel="noopener noreferrer">
+              <span className="wa-panel-icon"><WhatsAppIcon size={26} /></span>
+              <div>
+                <div className="wa-panel-label">Message Us</div>
+                <div className="wa-panel-value">0707 808 4746</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
       <section className="contact-content">
         <div className="wrap-narrow contact-grid">
           <div className="form-card">
             {!submitted ? (
-              <form onSubmit={handleSubmit}>
-                <div className="form-row">
-                  <label htmlFor="fullName">Full Name</label>
-                  <input type="text" id="fullName" required placeholder="Your full name" />
+              <>
+                <div className="form-intro">
+                  <span className="eyebrow">Or, Write It Out</span>
+                  <p>Prefer to lay it all out in one go? Fill this in and we'll follow up personally.</p>
+                </div>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-row">
+                    <label htmlFor="fullName">Full Name</label>
+                    <input type="text" id="fullName" required placeholder="Your full name" />
                 </div>
                 <div className="form-two">
                   <div className="form-row">
@@ -83,7 +112,8 @@ export default function Contact() {
                 <button type="submit" className="btn btn-gold" disabled={sending} style={{ width: '100%', justifyContent: 'center' }}>
                   {sending ? 'Sending...' : 'Send Inquiry'}
                 </button>
-              </form>
+                </form>
+              </>
             ) : (
               <div className="success-msg">
                 <div className="icon">✓</div>
@@ -96,52 +126,41 @@ export default function Contact() {
           <div className="info-col">
             <div className="info-card reach-card">
               <div className="reach-head">
-                <h4>Reach Us Directly</h4>
-                <p>Pick whatever's easiest for you, we're just as responsive on all of them.</p>
+                <h4>Other Ways To Reach Us</h4>
+                <p>Prefer email, a visit, or to follow along? We're there too.</p>
               </div>
-              <a className="reach-row" href="mailto:Omasynergiestravels@gmail.com">
-                <span className="reach-badge email"><MailIcon size={17} /></span>
-                <div><div className="reach-label">Email</div><div className="reach-value">Omasynergiestravels@gmail.com</div></div>
-                <span className="reach-arrow">→</span>
-              </a>
-              <a className="reach-row" href="https://wa.me/2348067696464" target="_blank" rel="noopener noreferrer">
-                <span className="reach-badge whatsapp"><WhatsAppIcon size={17} /></span>
-                <div><div className="reach-label">WhatsApp</div><div className="reach-value">0806 769 6464</div></div>
-                <span className="reach-arrow">→</span>
-              </a>
-              <a className="reach-row" href="https://wa.me/2347078084746" target="_blank" rel="noopener noreferrer">
-                <span className="reach-badge whatsapp"><WhatsAppIcon size={17} /></span>
-                <div><div className="reach-label">WhatsApp</div><div className="reach-value">0707 808 4746</div></div>
-                <span className="reach-arrow">→</span>
-              </a>
-              <a className="reach-row" href="https://www.google.com/maps?q=Block+B8,+29/32+Utako+Market+Plaza,+Abuja" target="_blank" rel="noopener noreferrer">
-                <span className="reach-badge location"><MapPinIcon size={17} /></span>
-                <div><div className="reach-label">Visit Our Office</div><div className="reach-value">Block B8, 29/32 Utako Market Plaza, Abuja</div></div>
-                <span className="reach-arrow">→</span>
-              </a>
+              <div className="reach-orbit">
+                <div className="reach-orbit-center">
+                  <span className="reach-orbit-ring r1" />
+                  <span className="reach-orbit-ring r2" />
+                  <img src={logoIcon} alt="" />
+                </div>
+                <a className="reach-orbit-point p-email" href="mailto:Omasynergiestravels@gmail.com">
+                  <span className="reach-badge email"><MailIcon size={16} /></span>
+                  <div><div className="reach-label">Email</div><div className="reach-value">Omasynergiestravels@gmail.com</div></div>
+                </a>
+                <a className="reach-orbit-point p-office" href="https://www.google.com/maps?q=Block+B8,+29/32+Utako+Market+Plaza,+Abuja" target="_blank" rel="noopener noreferrer">
+                  <span className="reach-badge location"><MapPinIcon size={16} /></span>
+                  <div><div className="reach-label">Visit Our Office</div><div className="reach-value">Block B8, 29/32 Utako Market Plaza, Abuja</div></div>
+                </a>
+                <div className="reach-orbit-point p-social">
+                  <span className="reach-badge social"><InstagramIcon size={16} /></span>
+                  <div className="reach-social-links">
+                    <div className="reach-label">Follow Us</div>
+                    <div className="reach-social-row">
+                      <a href="https://www.instagram.com/omasynergiestravelsandtours" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><InstagramIcon size={16} /></a>
+                      <a href="https://www.tiktok.com/@omasynergiestravel" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><TikTokIcon size={16} /></a>
+                      <a href="https://www.linkedin.com/company/oma-synergies-travels-and-tours/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><LinkedInIcon size={16} /></a>
+                      <a href="https://x.com/OmaSynergies" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><XIcon size={16} /></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="office-photo-card">
               <img src={officePhoto} alt="Our Oma Synergies office in Abuja" loading="lazy" />
               <span className="office-photo-caption">Visit us at our Abuja office</span>
-            </div>
-
-            <div className="info-card follow-card">
-              <h4>Follow Us</h4>
-              <div className="follow-grid">
-                <a className="follow-item" href="https://www.instagram.com/omasynergiestravelsandtours" target="_blank" rel="noopener noreferrer">
-                  <InstagramIcon size={18} /><span>Instagram</span>
-                </a>
-                <a className="follow-item" href="https://www.tiktok.com/@omasynergiestravel" target="_blank" rel="noopener noreferrer">
-                  <TikTokIcon size={18} /><span>TikTok</span>
-                </a>
-                <a className="follow-item" href="https://www.linkedin.com/company/oma-synergies-travels-and-tours/" target="_blank" rel="noopener noreferrer">
-                  <LinkedInIcon size={18} /><span>LinkedIn</span>
-                </a>
-                <a className="follow-item" href="https://x.com/OmaSynergies" target="_blank" rel="noopener noreferrer">
-                  <XIcon size={18} /><span>X (Twitter)</span>
-                </a>
-              </div>
             </div>
 
             <div className="map-card">
