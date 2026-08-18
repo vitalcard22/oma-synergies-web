@@ -91,6 +91,11 @@
     position:absolute;display:flex;align-items:center;gap:10px;max-width:190px;
     padding:10px 12px;border-radius:12px;transition:background .25s ease;
   }
+  /* Flex items default to min-width:auto, which prevents the text column from
+     actually shrinking below its content's natural width - since the email
+     has no spaces at all, its "natural width" is the full unbroken string,
+     which would silently defeat overflow-wrap and overflow the box anyway. */
+  .reach-orbit-point > div{min-width:0;}
   a.reach-orbit-point:hover{background:rgba(255,255,255,0.06);}
   .reach-orbit-point.p-email{top:0;left:50%;transform:translateX(-50%);}
   .reach-orbit-point.p-office{bottom:6%;left:0;}
@@ -104,7 +109,7 @@
   .reach-badge.location{background:rgba(255,255,255,0.1);color:var(--white);}
   .reach-badge.social{background:rgba(255,255,255,0.1);color:var(--white);}
   .reach-label{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);margin-bottom:2px;}
-  .reach-value{font-size:12.5px;color:var(--white);font-weight:500;line-height:1.35;}
+  .reach-value{font-size:12.5px;color:var(--white);font-weight:500;line-height:1.35;overflow-wrap:break-word;word-break:break-word;}
   .info-card h4{font-family:var(--display);font-size:16px;margin-bottom:16px;}
 
   /* Mobile: no room for a circle to read as intentional, so the same three
