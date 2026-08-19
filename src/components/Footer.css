@@ -6,6 +6,9 @@ footer {
 @media (max-width: 900px) {
   footer { padding: 36px 0 20px; }
 }
+@media (max-width: 480px) {
+  footer { padding: 30px 0 18px; }
+}
 .footer-grid {
   display: grid;
   grid-template-columns: 1.4fr repeat(3, 1fr);
@@ -15,6 +18,11 @@ footer {
 @media (max-width: 900px) {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 32px; }
 }
+/* True single-column stack only at phone widths - tablets keep the
+   two-column layout above so the footer still reads as multi-column there. */
+@media (max-width: 480px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 26px; margin-bottom: 24px; }
+}
 .footer-brand img {
   height: 40px;
   width: auto;
@@ -23,10 +31,16 @@ footer {
 @media (max-width: 900px) {
   .footer-brand img { margin-bottom: 12px; }
 }
+@media (max-width: 480px) {
+  .footer-brand img { margin-bottom: 10px; }
+}
 .footer-brand p {
   font-size: 13.5px;
   max-width: 280px;
   line-height: 1.6;
+}
+@media (max-width: 480px) {
+  .footer-brand p { max-width: none; font-size: 13px; line-height: 1.55; }
 }
 .footer-col h5 {
   font-family: var(--font-mono);
@@ -36,12 +50,33 @@ footer {
   color: rgba(255, 255, 255, 0.4);
   margin-bottom: 18px;
 }
+@media (max-width: 480px) {
+  .footer-col h5 { margin-bottom: 12px; }
+}
 .footer-col li {
   margin-bottom: 12px;
   font-size: 14px;
 }
-.footer-col a:hover {
+@media (max-width: 480px) {
+  .footer-col li { margin-bottom: 9px; font-size: 13.5px; }
+}
+.footer-col a:hover,
+.footer-col a:focus-visible {
   color: var(--gold);
+}
+.footer-col a:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.footer-social li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.footer-social svg {
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 .footer-bottom {
   border-top: 1px solid var(--line);
@@ -52,11 +87,20 @@ footer {
   gap: 12px;
   font-size: 12.5px;
   font-family: var(--font-mono);
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.48);
 }
 @media (max-width: 900px) {
   .footer-bottom { padding-top: 16px; }
 }
-.footer-bottom a:hover {
+@media (max-width: 480px) {
+  .footer-bottom { padding-top: 14px; gap: 8px; font-size: 12px; }
+}
+.footer-bottom a:hover,
+.footer-bottom a:focus-visible {
   color: var(--gold);
+}
+.footer-bottom a:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
 }

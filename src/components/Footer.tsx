@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import logoIcon from '../assets/logo-icon.png';
+import { InstagramIcon, TikTokIcon, LinkedInIcon, XIcon } from './Icons';
 import './Footer.css';
 
 export default function Footer() {
@@ -31,16 +32,16 @@ export default function Footer() {
           </div>
           <div className="footer-col">
             <h5>Follow</h5>
-            <ul>
-              <li><a href="https://www.instagram.com/omasynergiestravelsandtours" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-              <li><a href="https://www.tiktok.com/@omasynergiestravel" target="_blank" rel="noopener noreferrer">TikTok</a></li>
-              <li><a href="https://www.linkedin.com/company/oma-synergies-travels-and-tours/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
-              <li><a href="https://x.com/OmaSynergies" target="_blank" rel="noopener noreferrer">X (Twitter)</a></li>
+            <ul className="footer-social">
+              <li><a href="https://www.instagram.com/omasynergiestravelsandtours" target="_blank" rel="noopener noreferrer"><InstagramIcon size={16} /><span>Instagram</span></a></li>
+              <li><a href="https://www.tiktok.com/@omasynergiestravel" target="_blank" rel="noopener noreferrer"><TikTokIcon size={16} /><span>TikTok</span></a></li>
+              <li><a href="https://www.linkedin.com/company/oma-synergies-travels-and-tours/" target="_blank" rel="noopener noreferrer"><LinkedInIcon size={16} /><span>LinkedIn</span></a></li>
+              <li><a href="https://x.com/OmaSynergies" target="_blank" rel="noopener noreferrer"><XIcon size={16} /><span>X (Twitter)</span></a></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© 2026 Oma Synergies Travels And Tours Ltd. All Rights Reserved.</span>
+          <span>© 2026 Oma Synergies Travels and Tours Ltd. All Rights Reserved.</span>
           <span><Link to="/privacy">Privacy Policy</Link> · <Link to="/terms">Terms of Service</Link></span>
         </div>
       </div>
