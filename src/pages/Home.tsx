@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -30,10 +30,17 @@ const HEADLINE_WORDS = ['journey to world-class education', 'visa journey', 'jou
 // beside it still says "Preview Client Login"), but gives a visitor something
 // to actually click through rather than just read a static status snapshot.
 const PORTAL_STAGES = [
-  { label: 'Profile Evaluation', status: 'done' as const, statusLabel: '✓ Done', detail: 'Academic background, goals, and budget assessed. Completed Jul 2.' },
-  { label: 'Admission & SOP', status: 'done' as const, statusLabel: '✓ Done', detail: 'Applications submitted to 3 shortlisted schools. Offer received Jul 28.' },
-  { label: 'Visa Application', status: 'active' as const, statusLabel: '● In Progress', detail: 'Documents compiled and under review. Next step: biometrics appointment.' },
-  { label: 'Flight & Relocation', status: 'pending' as const, statusLabel: 'Pending', detail: 'Unlocks once your visa is approved.' },
+  { label: 'Profile Evaluation', status: 'done' as const, statusLabel: '✓ Completed' },
+  { label: 'Admission & SOP', status: 'done' as const, statusLabel: '✓ Completed' },
+  { label: 'Visa Application', status: 'active' as const, statusLabel: '● In Progress' },
+  { label: 'Flight & Relocation', status: 'pending' as const, statusLabel: '○ Pending' },
+];
+
+const HOW_IT_WORKS_STEPS = [
+  { num: '01', title: 'Profile Evaluation', desc: 'We assess your goals, academic background and budget to create the right path for you.' },
+  { num: '02', title: 'Admission & Documents', desc: 'We help with school selection, applications, documents and admission requirements.' },
+  { num: '03', title: 'Visa & Funding Support', desc: 'From visa preparation to funding guidance, we help you move forward with confidence.' },
+  { num: '04', title: 'Flights & Relocation', desc: 'Once approved, we assist with flights, travel planning and your relocation.' },
 ];
 
 
@@ -109,10 +116,49 @@ export default function Home() {
   const [headlineVisible, setHeadlineVisible] = useState(true);
   const [leadVisible, setLeadVisible] = useState(true);
   const [openFaq, setOpenFaq] = useState(0);
-  const [openStage, setOpenStage] = useState<number | null>(null);
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [orbitPulse, setOrbitPulse] = useState(false);
   const [serviceIdx, setServiceIdx] = useState(0);
+
+  // Vertical connector line for the mobile "How It Works" timeline, measured
+  // (not guessed) so it lines up exactly with each numbered circle's center
+  // regardless of how many lines each step's title/description wraps to.
+  // Desktop keeps its existing horizontal track/progress line untouched.
+  const timelineStepsRef = useRef<HTMLDivElement>(null);
+  const timelineNumRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [connector, setConnector] = useState<{ left: number; top: number; height: number } | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 900px)');
+
+    function measure() {
+      if (!mq.matches) {
+        setConnector(null);
+        return;
+      }
+      const container = timelineStepsRef.current;
+      const nums = timelineNumRefs.current.filter(Boolean) as HTMLDivElement[];
+      if (!container || nums.length < 2) return;
+      const containerRect = container.getBoundingClientRect();
+      const first = nums[0].getBoundingClientRect();
+      const last = nums[nums.length - 1].getBoundingClientRect();
+      const left = first.left + first.width / 2 - containerRect.left;
+      const top = first.top + first.height / 2 - containerRect.top;
+      const bottom = last.top + last.height / 2 - containerRect.top;
+      setConnector({ left, top, height: bottom - top });
+    }
+
+    measure();
+    window.addEventListener('resize', measure);
+    mq.addEventListener('change', measure);
+    const ro = new ResizeObserver(measure);
+    if (timelineStepsRef.current) ro.observe(timelineStepsRef.current);
+    return () => {
+      window.removeEventListener('resize', measure);
+      mq.removeEventListener('change', measure);
+      ro.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => setHeroLoaded(true), 80);
@@ -428,17 +474,27 @@ export default function Home() {
           <div className="wrap">
             <div className="section-head reveal">
               <span className="eyebrow">How It Works</span>
-              <h2 style={{ color: '#fff' }}>Our simple 4-step process</h2>
-              <p style={{ color: 'var(--ink-muted)' }}>From your very first consultation to final approval, we provide continuous expert mentorship, with every stage visible in your client portal, not left to guesswork.</p>
+              <h2 style={{ color: '#fff' }}>Your journey, handled from start to finish.</h2>
+              <p style={{ color: 'var(--ink-muted)' }}>From your first consultation to final approval, every step is tracked in your client portal.</p>
             </div>
             <div className="timeline reveal">
               <div className="timeline-track" />
               <div className="timeline-progress" />
-              <div className="timeline-steps">
-                <div className="t-step"><div className="t-step-head"><div className="t-num">01</div><h4>Consultation & Profile Evaluation</h4></div><p>We assess your academic background, career goals, and budget, then match you with the best schools, courses, and countries for you.</p></div>
-                <div className="t-step"><div className="t-step-head"><div className="t-num">02</div><h4>School Admission & Document Prep</h4></div><p>We handle your school applications and help you craft a strong SOP and professional CV to secure your admission letter.</p></div>
-                <div className="t-step"><div className="t-step-head"><div className="t-num">03</div><h4>Visa Support & Study Loans</h4></div><p>We review your documents carefully, guide your visa application, and help you access study loans covering up to 65% of expenses.</p></div>
-                <div className="t-step"><div className="t-step-head"><div className="t-num">04</div><h4>Flight Booking & Relocation</h4></div><p>Once your visa is approved, we handle flights and travel plans, and help you find safe accommodation to settle in easily.</p></div>
+              <div className="timeline-steps" ref={timelineStepsRef}>
+                {connector && (
+                  <div className="timeline-steps-connector" style={{ left: connector.left, top: connector.top, height: connector.height }}>
+                    <div className="timeline-steps-connector-fill" />
+                  </div>
+                )}
+                {HOW_IT_WORKS_STEPS.map((step, i) => (
+                  <div className="t-step" key={step.num}>
+                    <div className="t-step-head">
+                      <div className="t-num" ref={(el) => { timelineNumRefs.current[i] = el; }}>{step.num}</div>
+                      <h4>{step.title}</h4>
+                    </div>
+                    <p>{step.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -453,9 +509,9 @@ export default function Home() {
             <div className="portal-preview reveal">
               <div>
                 <span className="eyebrow" style={{ marginBottom: 10, display: 'inline-block' }}>The Client Portal</span>
-                <h4>See exactly where your case stands, anytime</h4>
-                <p>No more "any update?" emails. Log in and watch your admission, visa, and loan status move forward in real time.</p>
-                <Link to="/portal" className="btn btn-outline">Preview Client Login →</Link>
+                <h4>See exactly where your case stands.<br />Anytime. Anywhere.</h4>
+                <p>No more "any update?" emails. Track your admission, visa and funding progress directly from your client portal.</p>
+                <Link to="/portal" className="btn btn-outline btn-compact">Preview Client Portal →</Link>
               </div>
               <div className="portal-mock-stage">
                 <div className="portal-mock">
@@ -465,29 +521,15 @@ export default function Home() {
                     <span className="portal-mock-dot" />
                     <span className="portal-mock-url">portal.omasynergiestravel.com</span>
                   </div>
-                  {PORTAL_STAGES.map((s, i) => {
-                  const isOpen = openStage === i;
-                  const panelId = `portal-panel-${i}`;
-                  const buttonId = `portal-button-${i}`;
-                  return (
+                  {PORTAL_STAGES.map((s, i) => (
                     <div className="portal-row-wrap" key={s.label}>
-                      <button
-                        id={buttonId}
-                        className="row"
-                        type="button"
-                        aria-expanded={isOpen}
-                        aria-controls={panelId}
-                        onClick={() => setOpenStage(isOpen ? null : i)}
-                      >
-                        <span>{s.label}</span>
+                      <div className="row">
+                        <span className="row-num">{String(i + 1).padStart(2, '0')}</span>
+                        <span className="row-label">{s.label}</span>
                         <span className={`status-${s.status}`}>{s.statusLabel}</span>
-                      </button>
-                      <div id={panelId} role="region" aria-labelledby={buttonId} className={isOpen ? 'portal-detail open' : 'portal-detail'}>
-                        <p>{s.detail}</p>
                       </div>
                     </div>
-                  );
-                })}
+                  ))}
                 </div>
               </div>
             </div>
