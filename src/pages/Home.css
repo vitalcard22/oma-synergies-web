@@ -495,7 +495,6 @@
      desktop is visually unchanged, only adding a tighter mobile override. */
   .why-choose-section{padding:100px 0;}
   @media(max-width:900px){.why-choose-section{padding:56px 0;}}
-  @media(max-width:480px){.why-choose-section{padding:36px 0;}}
   .test-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;}
   .test-card{min-width:340px;scroll-snap-align:start;background:var(--navy-soft);border:1px solid var(--line);border-radius:16px;padding:30px;flex-shrink:0;}
   .test-top{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
@@ -522,15 +521,16 @@
      scoped to this section only so other pages/sections using .section-head
      and similar shared classes are untouched. */
   @media(max-width:480px){
-    .why-choose-section .section-head{margin-bottom:20px;}
-    .why-choose-section .section-head h2{font-size:20px;line-height:1.22;margin-top:8px;}
-    .why-grid{grid-template-columns:1fr 1fr;gap:18px 14px;}
-    .why-item{padding-top:10px;}
-    .why-item h4{font-size:14px;line-height:1.28;margin-bottom:5px;}
-    .why-item p{font-size:12.5px;line-height:1.42;}
-    .why-item .badge-new{font-size:9px;padding:2px 6px;margin-bottom:6px;}
-    .why-tagline{margin-top:26px;padding-top:18px;}
-    .why-tagline .line-1{font-size:16.5px;line-height:1.3;margin-bottom:6px;}
+    .why-choose-section{padding:28px 0;}
+    .why-choose-section .section-head{margin-bottom:16px;}
+    .why-choose-section .section-head h2{font-size:19px;line-height:1.2;margin-top:6px;}
+    .why-grid{grid-template-columns:1fr 1fr;gap:14px 12px;}
+    .why-item{padding-top:8px;}
+    .why-item h4{font-size:13.5px;line-height:1.25;margin-bottom:4px;}
+    .why-item p{font-size:12.5px;line-height:1.36;}
+    .why-item .badge-new{font-size:9px;padding:2px 5px;margin-bottom:5px;}
+    .why-tagline{margin-top:20px;padding-top:14px;}
+    .why-tagline .line-1{font-size:15.5px;line-height:1.28;margin-bottom:5px;}
     .why-tagline .line-2{font-size:12.5px;}
   }
 
