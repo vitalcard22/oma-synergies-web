@@ -62,7 +62,7 @@ const SERVICES_CORE = [
   { icon: 'passport' as const, title: 'Strategic Visa Application Support', desc: 'We provide end-to-end guidance for study permit and student visa applications. Our team oversees everything from initial file compilation to final submission, ensuring full compliance with immigration requirements.', link: '/services/visa' },
   { icon: 'scale' as const, title: 'Legal Document Review & Verification', desc: 'To maximize your approval success rate, our experts conduct rigorous reviews of all financial, academic, and legal documents to eliminate errors and strengthen your application profile.', link: '/services/document-review' },
   { icon: 'card' as const, title: 'Educational Financing & Study Loan Support', desc: 'Through our trusted global funding partners, we facilitate access to study loans covering up to 65% of your tuition and living expenses, easing the financial burden of relocation.', link: '/services/study-loan' },
-  { icon: 'compass' as const, title: 'Comprehensive End-to-End Guidance', desc: 'From your very first consultation and school selection to the final visa approval, we provide continuous expert mentorship at every stage of your international education journey.', link: '/services' },
+  { icon: 'pen' as const, title: 'Professional Academic & Career Branding', desc: 'Expert drafting, editing, and review of tailored Statements of Purpose (SOP), Letters of Intent, and professional Curriculum Vitae (CV) to strongly align with foreign university standards and visa requirements.', link: '/services/branding' },
 ];
 
 const SERVICES_TRAVEL = [
