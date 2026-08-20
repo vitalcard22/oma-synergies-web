@@ -107,22 +107,29 @@
   }
   .partner-logo-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,0.25);}
   .partner-logo-card img{display:block;height:30px;width:auto;max-width:100%;}
+  .partner-logo-card-dup{display:none;}
   .partners-scroll-wrap{position:relative;min-width:0;}
   @media(max-width:480px){
+    /* Same continuous auto-scroll treatment as the homepage Partners
+       section - see Home.css for the full explanation of how the seamless
+       loop works. */
+    .partners-scroll-wrap{overflow:hidden;}
     .partners-row{
       flex-wrap:nowrap;justify-content:flex-start;gap:12px;
-      overflow-x:auto;scroll-snap-type:x mandatory;
-      scrollbar-width:none;-webkit-overflow-scrolling:touch;
-      padding-right:28px;
+      width:max-content;
+      animation:partnerMarquee 16s linear infinite;
     }
-    .partners-row::-webkit-scrollbar{display:none;}
-    .partner-logo-card{scroll-snap-align:start;flex-shrink:0;min-width:126px;min-height:52px;padding:9px 16px;}
+    .partners-row:active, .partners-row.is-paused{animation-play-state:paused;}
+    .partner-logo-card-dup{display:inline-flex;}
+    .partner-logo-card{flex-shrink:0;min-width:126px;min-height:52px;padding:9px 16px;}
     .partner-logo-card img{height:24px;}
-    .partners-scroll-wrap::after{
-      content:"";position:absolute;top:0;right:0;bottom:0;width:36px;
-      background:linear-gradient(to right, transparent, var(--navy-deep));
-      pointer-events:none;
-    }
+  }
+  @keyframes partnerMarquee{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media(max-width:480px) and (prefers-reduced-motion:reduce){
+    .partners-row{animation:none;}
   }
 
   /* final cta */

@@ -651,34 +651,47 @@
   }
   .partner-logo-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(20,21,42,0.1);}
   .partner-logo-card img{display:block;height:30px;width:auto;max-width:100%;}
+  /* Duplicate set for the seamless auto-scroll loop below - hidden by
+     default (desktop/tablet keep the static wrapped grid), only revealed
+     at <=480px where the row becomes an animated track. */
+  .partner-logo-card-dup{display:none;}
   /* Single scrollable row instead of wrapping to two uneven rows - saves
      vertical height and scales cleanly if more partners are added later
-     without the grid ever looking lopsided. Snap gives each card a
-     deliberate resting position while swiping rather than free-scrolling,
-     and the fade on the wrapper (not the row, so it doesn't scroll away
-     with the content) hints there's more without needing a label or arrow. */
+     without the grid ever looking lopsided. */
   .partners-scroll-wrap{position:relative;}
   /* Grid/flex items default to min-width:auto, refusing to shrink below
      their content's natural width - that's what let the scroll row push
      the whole page wider instead of scrolling within its own bounds.
-     min-width:0 down this chain is what actually makes overflow-x:auto
-     work as intended. */
+     min-width:0 down this chain is what keeps the animated track properly
+     clipped instead of overflowing the page. */
   .partners-copy, .partners-scroll-wrap{min-width:0;}
   @media(max-width:480px){
+    /* Continuous auto-scroll instead of manual swipe - the row holds the
+       real 4 cards plus an aria-hidden duplicate set back-to-back, sized to
+       width:max-content so it can render at its full natural width. The
+       wrapper clips that overflow (overflow:hidden) while the row itself
+       animates via transform, translating exactly -50% of its own width -
+       since both halves are pixel-identical, that lands precisely on the
+       start of the duplicate half and the loop is invisible. Paused on
+       touch/press so someone can still stop to read a logo without it
+       sliding out from under their thumb. */
+    .partners-scroll-wrap{overflow:hidden;}
     .partners-row{
       flex-wrap:nowrap;justify-content:flex-start;gap:12px;
-      overflow-x:auto;scroll-snap-type:x mandatory;
-      scrollbar-width:none;-webkit-overflow-scrolling:touch;
-      padding-right:28px;
+      width:max-content;
+      animation:partnerMarquee 16s linear infinite;
     }
-    .partners-row::-webkit-scrollbar{display:none;}
-    .partner-logo-card{scroll-snap-align:start;flex-shrink:0;min-width:126px;min-height:52px;padding:9px 16px;}
+    .partners-row:active, .partners-row.is-paused{animation-play-state:paused;}
+    .partner-logo-card-dup{display:inline-flex;}
+    .partner-logo-card{flex-shrink:0;min-width:126px;min-height:52px;padding:9px 16px;}
     .partner-logo-card img{height:24px;}
-    .partners-scroll-wrap::after{
-      content:"";position:absolute;top:30px;right:0;bottom:0;width:36px;
-      background:linear-gradient(to right, transparent, var(--paper));
-      pointer-events:none;
-    }
+  }
+  @keyframes partnerMarquee{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media(max-width:480px) and (prefers-reduced-motion:reduce){
+    .partners-row{animation:none;}
   }
   .partners-photo{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/3;}
   .partners-photo img{width:100%;height:100%;object-fit:cover;}

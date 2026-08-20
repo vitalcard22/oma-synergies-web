@@ -165,10 +165,20 @@ export default function About() {
           <div className="creds-block">
             <div className="creds-label">Trusted Global Partners</div>
             <div className="partners-scroll-wrap">
-              <div className="creds-row partners-row">
+              <div
+                className="creds-row partners-row"
+                onTouchStart={(e) => e.currentTarget.classList.add('is-paused')}
+                onTouchEnd={(e) => e.currentTarget.classList.remove('is-paused')}
+                onTouchCancel={(e) => e.currentTarget.classList.remove('is-paused')}
+              >
                 {PARTNERS.map((p) => (
                   <div className="partner-logo-card" key={p.name}>
                     <img src={p.logo} alt={p.name} loading="lazy" />
+                  </div>
+                ))}
+                {PARTNERS.map((p) => (
+                  <div className="partner-logo-card partner-logo-card-dup" key={`dup-${p.name}`} aria-hidden="true">
+                    <img src={p.logo} alt="" loading="lazy" />
                   </div>
                 ))}
               </div>
