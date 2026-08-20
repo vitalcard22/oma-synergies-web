@@ -551,16 +551,18 @@ export default function Home() {
       <section className="partners-section">
         <div className="wrap">
           <div className="partners-grid">
-            <div className="reveal">
+            <div className="reveal partners-copy">
               <span className="eyebrow">Partners</span>
               <h2 style={{ fontSize: 26, marginTop: 12 }}>Trusted Global Partners</h2>
               <p style={{ color: 'var(--slate)', marginTop: 10, fontSize: 14.5, maxWidth: 420 }}>We work with recognized international partners to give your application stronger credibility and better outcomes.</p>
-              <div className="partners-row" style={{ marginTop: 30, justifyContent: 'flex-start' }}>
-                {PARTNERS.map((p) => (
-                  <div className="partner-logo-card" key={p.name}>
-                    <img src={p.logo} alt={p.name} loading="lazy" />
-                  </div>
-                ))}
+              <div className="partners-scroll-wrap">
+                <div className="partners-row" style={{ marginTop: 30, justifyContent: 'flex-start' }}>
+                  {PARTNERS.map((p) => (
+                    <div className="partner-logo-card" key={p.name}>
+                      <img src={p.logo} alt={p.name} loading="lazy" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             <div className="partners-photo reveal">

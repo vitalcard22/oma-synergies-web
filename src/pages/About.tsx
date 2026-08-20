@@ -164,12 +164,14 @@ export default function About() {
           </div>
           <div className="creds-block">
             <div className="creds-label">Trusted Global Partners</div>
-            <div className="creds-row">
-              {PARTNERS.map((p) => (
-                <div className="partner-logo-card" key={p.name}>
-                  <img src={p.logo} alt={p.name} loading="lazy" />
-                </div>
-              ))}
+            <div className="partners-scroll-wrap">
+              <div className="creds-row partners-row">
+                {PARTNERS.map((p) => (
+                  <div className="partner-logo-card" key={p.name}>
+                    <img src={p.logo} alt={p.name} loading="lazy" />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

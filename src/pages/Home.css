@@ -628,24 +628,57 @@
   /* partners */
   .partners-section{padding:70px 0;border-top:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark);background:var(--paper);}
   .partners-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
-  @media(max-width:900px){.partners-grid{grid-template-columns:1fr;}}
+  @media(max-width:900px){.partners-grid{grid-template-columns:minmax(0,1fr);}}
   .partners-label{text-align:center;margin-bottom:34px;}
-  .partners-row{display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap;}
+  .partners-row{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;}
   .partner-name{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);opacity:0.55;transition:opacity .3s ease, transform .3s ease;letter-spacing:-0.01em;}
   .partner-name:hover{opacity:1;transform:translateY(-2px);}
-  /* Logos arrive with their own solid backgrounds baked in (not
-     transparent), rather than uniform silhouettes - so each card is sized
-     to the logo's own natural aspect ratio (height fixed, width auto)
-     instead of a shared fixed box. That avoids either cropping any logo or
-     letterboxing it against a mismatched background color; the rounded
-     corners come from clipping the image itself, not from painting a card
-     behind it. */
-  .partner-logo-card{display:inline-flex;align-items:center;border-radius:10px;overflow:hidden;border:1px solid var(--line-dark);transition:transform .3s ease, box-shadow .3s ease;}
-  .partner-logo-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(20,21,42,0.1);}
-  .partner-logo-card img{display:block;height:44px;width:auto;}
+  /* Logos arrive with their own solid backgrounds baked in (white, blue,
+     black, charcoal - not transparent), so putting them straight into a
+     shared box either crops them or leaves a color clash at the edges.
+     Instead each sits centered on a consistent light "mat" - same idea as
+     a gallery-mounted print - so the OUTER card is uniform (background,
+     border, radius, min-size) even though what's framed inside differs.
+     That's what makes four differently-colored logos read as one curated
+     set instead of loose stickers, without needing to touch the source
+     images. The logo itself keeps sharp corners (no radius) so it reads as
+     a distinct plaque sitting on the mat, not another rounded badge. */
+  .partner-logo-card{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:150px;min-height:64px;padding:12px 20px;
+    background:var(--white);border:1px solid var(--line-dark);border-radius:12px;
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .partner-logo-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(20,21,42,0.1);}
+  .partner-logo-card img{display:block;height:30px;width:auto;max-width:100%;}
+  /* Single scrollable row instead of wrapping to two uneven rows - saves
+     vertical height and scales cleanly if more partners are added later
+     without the grid ever looking lopsided. Snap gives each card a
+     deliberate resting position while swiping rather than free-scrolling,
+     and the fade on the wrapper (not the row, so it doesn't scroll away
+     with the content) hints there's more without needing a label or arrow. */
+  .partners-scroll-wrap{position:relative;}
+  /* Grid/flex items default to min-width:auto, refusing to shrink below
+     their content's natural width - that's what let the scroll row push
+     the whole page wider instead of scrolling within its own bounds.
+     min-width:0 down this chain is what actually makes overflow-x:auto
+     work as intended. */
+  .partners-copy, .partners-scroll-wrap{min-width:0;}
   @media(max-width:480px){
-    .partners-row{gap:14px;}
-    .partner-logo-card img{height:34px;}
+    .partners-row{
+      flex-wrap:nowrap;justify-content:flex-start;gap:12px;
+      overflow-x:auto;scroll-snap-type:x mandatory;
+      scrollbar-width:none;-webkit-overflow-scrolling:touch;
+      padding-right:28px;
+    }
+    .partners-row::-webkit-scrollbar{display:none;}
+    .partner-logo-card{scroll-snap-align:start;flex-shrink:0;min-width:126px;min-height:52px;padding:9px 16px;}
+    .partner-logo-card img{height:24px;}
+    .partners-scroll-wrap::after{
+      content:"";position:absolute;top:30px;right:0;bottom:0;width:36px;
+      background:linear-gradient(to right, transparent, var(--paper));
+      pointer-events:none;
+    }
   }
   .partners-photo{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/3;}
   .partners-photo img{width:100%;height:100%;object-fit:cover;}

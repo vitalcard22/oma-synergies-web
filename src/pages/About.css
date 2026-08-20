@@ -94,13 +94,36 @@
   .membership-badge{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.75);font-family:var(--body);font-weight:600;font-size:13px;padding:10px 18px;border:1px solid var(--line);border-radius:100px;}
   .membership-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;}
   .partner-name{font-family:var(--display);font-weight:600;font-size:18px;color:var(--white);opacity:0.55;}
-  /* Same logo-card treatment as the homepage Partners section, border color
-     swapped to the lighter --line variable used elsewhere on this page's
-     dark navy background (--line-dark is tuned for light backgrounds). */
-  .partner-logo-card{display:inline-flex;align-items:center;border-radius:10px;overflow:hidden;border:1px solid var(--line);transition:transform .3s ease;}
-  .partner-logo-card:hover{transform:translateY(-2px);}
-  .partner-logo-card img{display:block;height:40px;width:auto;}
-  @media(max-width:480px){.partner-logo-card img{height:32px;}}
+  /* Same "gallery mat" treatment as the homepage Partners section - a
+     consistent light card neutralizes the logos' own mismatched baked-in
+     backgrounds (white/blue/black/charcoal) regardless of what's behind the
+     section itself, so it reads the same design language on this page's
+     dark navy background as it does on Home's light one. */
+  .partner-logo-card{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:150px;min-height:64px;padding:12px 20px;
+    background:var(--white);border-radius:12px;
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .partner-logo-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,0.25);}
+  .partner-logo-card img{display:block;height:30px;width:auto;max-width:100%;}
+  .partners-scroll-wrap{position:relative;min-width:0;}
+  @media(max-width:480px){
+    .partners-row{
+      flex-wrap:nowrap;justify-content:flex-start;gap:12px;
+      overflow-x:auto;scroll-snap-type:x mandatory;
+      scrollbar-width:none;-webkit-overflow-scrolling:touch;
+      padding-right:28px;
+    }
+    .partners-row::-webkit-scrollbar{display:none;}
+    .partner-logo-card{scroll-snap-align:start;flex-shrink:0;min-width:126px;min-height:52px;padding:9px 16px;}
+    .partner-logo-card img{height:24px;}
+    .partners-scroll-wrap::after{
+      content:"";position:absolute;top:0;right:0;bottom:0;width:36px;
+      background:linear-gradient(to right, transparent, var(--navy-deep));
+      pointer-events:none;
+    }
+  }
 
   /* final cta */
   .about-cta{background:radial-gradient(120% 140% at 50% 0%, var(--navy-soft), var(--navy-deep) 70%);color:var(--white);text-align:center;padding:110px 0;}
