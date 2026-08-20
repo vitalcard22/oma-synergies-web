@@ -21,6 +21,10 @@ import OrbitDestinations from '../components/OrbitDestinations';
 import nantaLogo from '../assets/accreditations/nanta.png';
 import ncaaLogo from '../assets/accreditations/ncaa.png';
 import itpnLogo from '../assets/accreditations/itpn.png';
+import applyBoardLogo from '../assets/partners/applyboard.png';
+import kcOverseasLogo from '../assets/partners/kc-overseas.png';
+import borderPassLogo from '../assets/partners/borderpass.png';
+import passageLogo from '../assets/partners/passage.png';
 import visaPassportPhoto from '../assets/visa-passport.jpg';
 import './Home.css';
 
@@ -50,6 +54,12 @@ const ACCREDITATIONS = [
   { code: 'NANTA', logo: nantaLogo },
   { code: 'NCAA', logo: ncaaLogo },
   { code: 'ITPN', logo: itpnLogo },
+];
+const PARTNERS = [
+  { name: 'ApplyBoard', logo: applyBoardLogo },
+  { name: 'KC Overseas Education', logo: kcOverseasLogo },
+  { name: 'BorderPass', logo: borderPassLogo },
+  { name: 'Passage', logo: passageLogo },
 ];
 const LEAD_TEXTS = [
   'From admission and visa processing to flights, tours, and accommodation Oma Synergies guides you end to end, with real-time tracking every step of the way.',
@@ -546,9 +556,11 @@ export default function Home() {
               <h2 style={{ fontSize: 26, marginTop: 12 }}>Trusted Global Partners</h2>
               <p style={{ color: 'var(--slate)', marginTop: 10, fontSize: 14.5, maxWidth: 420 }}>We work with recognized international partners to give your application stronger credibility and better outcomes.</p>
               <div className="partners-row" style={{ marginTop: 30, justifyContent: 'flex-start' }}>
-                <span className="partner-name">ApplyBoard</span>
-                <span className="partner-name">KC Overseas Education</span>
-                <span className="partner-name">BorderPass</span>
+                {PARTNERS.map((p) => (
+                  <div className="partner-logo-card" key={p.name}>
+                    <img src={p.logo} alt={p.name} loading="lazy" />
+                  </div>
+                ))}
               </div>
             </div>
             <div className="partners-photo reveal">

@@ -8,7 +8,18 @@ import increasePhoto from '../assets/team/increase.jpg';
 import nnennaPhoto from '../assets/team/nnenna.jpg';
 import joshuaPhoto from '../assets/team/joshua.jpg';
 import whoWeAreTeam from '../assets/who-we-are-team.jpg';
+import applyBoardLogo from '../assets/partners/applyboard.png';
+import kcOverseasLogo from '../assets/partners/kc-overseas.png';
+import borderPassLogo from '../assets/partners/borderpass.png';
+import passageLogo from '../assets/partners/passage.png';
 import './About.css';
+
+const PARTNERS = [
+  { name: 'ApplyBoard', logo: applyBoardLogo },
+  { name: 'KC Overseas Education', logo: kcOverseasLogo },
+  { name: 'BorderPass', logo: borderPassLogo },
+  { name: 'Passage', logo: passageLogo },
+];
 
 const TEAM = [
   { photo: adaezePhoto, name: 'Adaeze Ohazuruike', role: 'Founder & CEO', credential: { title: 'Certified UK Knowledge Agent & Counsellor', sub: 'British Council, via ApplyBoard, valid until 05/2028' } },
@@ -154,9 +165,11 @@ export default function About() {
           <div className="creds-block">
             <div className="creds-label">Trusted Global Partners</div>
             <div className="creds-row">
-              <span className="partner-name">ApplyBoard</span>
-              <span className="partner-name">KC Overseas Education</span>
-              <span className="partner-name">BorderPass</span>
+              {PARTNERS.map((p) => (
+                <div className="partner-logo-card" key={p.name}>
+                  <img src={p.logo} alt={p.name} loading="lazy" />
+                </div>
+              ))}
             </div>
           </div>
         </div>
