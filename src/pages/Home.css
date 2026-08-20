@@ -465,6 +465,10 @@
   .portal-detail > p{overflow:hidden;min-height:0;font-size:11.5px;color:rgba(255,255,255,0.55);line-height:1.55;padding-bottom:12px;margin:0;}
 
   /* ===== DESTINATIONS ===== */
+  /* #destinations was a bare <section> with no responsive padding override -
+     same issue already found and fixed on #faq. Desktop stays at 100px. */
+  @media(max-width:900px){#destinations{padding:56px 0;}}
+  @media(max-width:480px){#destinations{padding:36px 0;}}
   .dest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;}
   .dest-card{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/5;cursor:pointer;}
   .dest-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;}
@@ -475,6 +479,16 @@
   .dest-overlay h4{font-family:var(--display);font-size:20px;margin-bottom:6px;}
   .dest-overlay .stat{font-family:var(--mono);font-size:11.5px;color:var(--gold-soft);}
   .dest-cta{text-align:center;margin-top:48px;}
+  /* Same single-column collapse fix already applied to the standalone
+     Destinations page - force a compact 2-column grid on phones instead of
+     12 large full-width portrait cards stacked with big gaps. */
+  @media(max-width:480px){
+    .dest-grid{grid-template-columns:1fr 1fr;gap:10px;}
+    .dest-overlay{padding:12px;}
+    .dest-overlay h4{font-size:14px;margin-bottom:2px;}
+    .dest-overlay .stat{font-size:9px;}
+    .dest-cta{margin-top:24px;}
+  }
 
   /* ===== TOURS ===== */
   .tours-strip{display:flex;gap:20px;overflow-x:auto;padding-bottom:12px;scroll-snap-type:x mandatory;}

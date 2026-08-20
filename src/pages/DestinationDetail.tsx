@@ -25,7 +25,6 @@ export default function DestinationDetail() {
     <>
       <Header />
 
-      <div className="hero-photo-tag">Sample Photo</div>
       <section className="dest-hero">
         <img src={d.img} alt={d.name} loading="eager" />
         <div className="wrap-narrow dest-hero-inner">
@@ -36,7 +35,7 @@ export default function DestinationDetail() {
 
       <div className="stat-strip">
         <div className="wrap-narrow stat-row">
-          <div className="stat-item"><div className="n">{d.processing}</div><div className="l">Avg. Visa Processing<span className="placeholder-note">Sample</span></div></div>
+          <div className="stat-item"><div className="n">{d.processing}</div><div className="l">Avg. Visa Processing</div></div>
           <div className="stat-item"><div className="n">{d.region}</div><div className="l">Region</div></div>
           <div className="stat-item"><div className="n">7</div><div className="l">Services Available Here</div></div>
         </div>
@@ -53,7 +52,7 @@ export default function DestinationDetail() {
                 <span className="program-chip" key={p}>{p}</span>
               ))}
             </div>
-            <p style={{ marginTop: 10 }}><span className="placeholder-note">Sample list, actual programs depend on partner schools</span></p>
+            <p className="programs-note">Actual programs available depend on our partner schools at the time of your application.</p>
           </div>
           <div className="side-card">
             <h4>Visa Overview</h4>

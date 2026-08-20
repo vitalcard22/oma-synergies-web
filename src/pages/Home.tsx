@@ -530,7 +530,7 @@ export default function Home() {
                 <img src={d.img} alt={d.name} loading="lazy" />
                 <div className="dest-overlay">
                   <h4>{d.name}</h4>
-                  <div className="stat">Avg. processing: {d.processing} <span className="placeholder-note">Sample</span></div>
+                  <div className="stat">Avg. processing: {d.processing}</div>
                 </div>
               </Link>
             ))}

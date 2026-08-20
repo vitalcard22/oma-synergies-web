@@ -44,7 +44,7 @@ export default function Destinations() {
                 <div className="dest-overlay">
                   <div className="region">{d.region}</div>
                   <h4>{d.name}</h4>
-                  <div className="stat">Processing: {d.processing}<span className="placeholder-note">Sample</span></div>
+                  <div className="stat">Processing: {d.processing}</div>
                 </div>
               </Link>
             ))}
