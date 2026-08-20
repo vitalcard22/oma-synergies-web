@@ -66,6 +66,7 @@ const SERVICES_CORE = [
 ];
 
 const SERVICES_TRAVEL = [
+  { icon: 'plane' as const, title: 'Comprehensive Flight Bookings & Travel Logistics', desc: 'Handling itinerary planning, competitive flight bookings, flight reservations for visa purposes, and hotel or short-let accommodations for corporate, family, or student travelers.', link: '/services/flights' },
   { icon: 'home' as const, title: 'Relocation & Accommodation Assistance', desc: 'Our services extend beyond visa approvals. We assist students in securing safe, comfortable housing and offer essential guidance to help them settle smoothly into their new host countries.', link: '/services/relocation' },
 ];
 

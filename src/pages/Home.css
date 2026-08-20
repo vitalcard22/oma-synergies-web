@@ -377,6 +377,25 @@
   .service-card h4{font-family:var(--display);font-size:17px;font-weight:600;margin-bottom:10px;}
   .service-card p{font-size:14px;color:var(--slate);transition:color .3s ease;margin-bottom:16px;}
   .service-card .learn{font-family:var(--mono);font-size:12px;color:var(--gold);display:inline-block;transition:transform .3s ease;}
+  @media(max-width:480px){
+    .cluster{margin-bottom:32px;}
+    .cluster-head{margin-bottom:14px;gap:10px;}
+    .cluster-head h3{font-size:18px;}
+    .cluster-head .tag{font-size:9.5px;padding:3px 8px;}
+    .service-grid{gap:10px;}
+    .service-card{padding:20px 18px;}
+    .service-icon{width:36px;height:36px;margin-bottom:12px;}
+    .service-card h4{font-size:15.5px;margin-bottom:6px;line-height:1.3;}
+    /* Full descriptions run up to ~260 characters (one lists 12 countries by
+       name) - at mobile card width that's 8-10 wrapped lines per card, which
+       was the single biggest driver of this section's height. Clamp to 3
+       lines instead of shrinking the font (still 14px, matches desktop) -
+       every card links to its own page via "Learn More" for the rest. */
+    .service-card p{
+      font-size:14px;margin-bottom:10px;line-height:1.5;
+      display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;
+    }
+  }
 
   /* ===== TIMELINE ===== */
   .timeline-wrap{background:var(--navy);color:var(--white);position:relative;overflow:hidden;}
