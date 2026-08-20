@@ -335,8 +335,11 @@
   @media(max-width:900px){.wwd-head-grid{grid-template-columns:1fr;}}
   /* Gap after Memberships was 146px on mobile: 46px from .membership-strip's
      own bottom padding plus 100px from the global section top-padding rule
-     stacking on top of it. Scoped to this one section, not a global change. */
-  @media(max-width:900px){#what-we-do{padding-top:36px;}}
+     stacking on top of it. Scoped to this one section, not a global change.
+     padding-bottom had the same issue but was missed in that pass - still
+     the full 100px default, stacking with How It Works' own top padding
+     right below it to create a ~136px gap between the two sections. */
+  @media(max-width:900px){#what-we-do{padding-top:36px;padding-bottom:36px;}}
   .wwd-head-grid .section-head{margin-bottom:0;}
   .wwd-photo{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:3/2;}
   .wwd-photo.in img{transform:scale(1);}
