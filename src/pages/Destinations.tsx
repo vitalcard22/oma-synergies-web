@@ -3,12 +3,18 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { DESTINATIONS } from '../data/destinations';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import './Destinations.css';
 
 const REGIONS = ['all', 'Americas', 'Europe', 'Asia', 'Oceania'] as const;
 
 export default function Destinations() {
   const [activeRegion, setActiveRegion] = useState<(typeof REGIONS)[number]>('all');
+
+  useDocumentMeta(
+    'Study & Travel Destinations | Oma Synergies Travels And Tours',
+    'Full admissions and visa guidance across 12 flagship destinations in the Americas, Europe, Asia and Oceania — with support available worldwide.'
+  );
 
   const filtered = activeRegion === 'all' ? DESTINATIONS : DESTINATIONS.filter((d) => d.region === activeRegion);
 

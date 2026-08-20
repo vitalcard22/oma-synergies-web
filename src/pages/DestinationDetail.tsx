@@ -4,6 +4,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { getDestinationBySlug } from '../data/destinations';
 import { getTestimonialsForDestination } from '../data/testimonials';
+import { SERVICES } from '../data/services';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import './DestinationDetail.css';
 
 export default function DestinationDetail() {
@@ -13,6 +15,11 @@ export default function DestinationDetail() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
+
+  useDocumentMeta(
+    destination ? `Study & Travel to ${destination.name} | Oma Synergies Travels And Tours` : 'Destination Not Found | Oma Synergies Travels And Tours',
+    destination ? `${destination.why} Avg. visa processing: ${destination.processing}. Get guided admissions, visa, and travel support for ${destination.name} with Oma Synergies.` : undefined
+  );
 
   if (!destination) {
     return <Navigate to="/destinations" replace />;
@@ -37,7 +44,7 @@ export default function DestinationDetail() {
         <div className="wrap-narrow stat-row">
           <div className="stat-item"><div className="n">{d.processing}</div><div className="l">Avg. Visa Processing</div></div>
           <div className="stat-item"><div className="n">{d.region}</div><div className="l">Region</div></div>
-          <div className="stat-item"><div className="n">7</div><div className="l">Services Available Here</div></div>
+          <div className="stat-item"><div className="n">{SERVICES.length}</div><div className="l">Services Available Here</div></div>
         </div>
       </div>
 
