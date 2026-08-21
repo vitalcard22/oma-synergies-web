@@ -113,6 +113,7 @@ export default function Home() {
   useScrollReveal();
   useStaggerReveal('.service-grid.stagger', '.service-card');
   useStaggerReveal('.test-track.stagger', '.test-card, .video-slot');
+  useStaggerReveal('.faq-list.stagger', '.faq-item');
   const statsRef = useCountUp();
   const heroStatsRef = useCountUp();
 
@@ -716,7 +717,7 @@ export default function Home() {
             <span className="eyebrow">FAQ</span>
             <h2>Frequently Asked Questions</h2>
           </div>
-          <div className="reveal">
+          <div className="faq-list stagger">
             {FAQS.map((f, i) => (
               <div className={openFaq === i ? 'faq-item open' : 'faq-item'} key={f.q}>
                 <div className="faq-q" onClick={() => setOpenFaq(openFaq === i ? -1 : i)}>
@@ -729,6 +730,7 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <p className="faq-more">Still have questions? <Link to="/contact">Contact us</Link> and we'll walk you through it.</p>
         </div>
       </section>
 
