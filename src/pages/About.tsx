@@ -133,9 +133,13 @@ export default function About() {
             <div className="team-grid reveal">
               {TEAM.map((m) => (
                 <div className="team-card" key={m.name}>
-                  <div className="team-avatar"><img src={m.photo} alt={m.name} loading="lazy" /></div>
-                  <h4>{m.name}</h4>
-                  <div className="team-role">{m.role}</div>
+                  <div className="team-card-head">
+                    <div className="team-avatar"><img src={m.photo} alt={m.name} loading="lazy" /></div>
+                    <div>
+                      <h4>{m.name}</h4>
+                      <div className="team-role">{m.role}</div>
+                    </div>
+                  </div>
                   {m.credential && (
                     <div className="cred-badge">
                       <span className="cb-icon"><GraduationCapIcon size={16} /></span>
