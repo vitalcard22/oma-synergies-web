@@ -41,6 +41,11 @@ export default function Tours() {
                 <div className="tour-body">
                   <h4>{t.name}</h4>
                   <div className="tour-meta"><span>{t.nights} Nights</span></div>
+                  <div className="tour-cats">
+                    {t.categories.map((c) => (
+                      <span className="tour-cat-tag" key={c}>{c}</span>
+                    ))}
+                  </div>
                   <div className="tour-price">
                     {formatNaira(t.fromPrice)}<span> per person, from</span>
                   </div>
