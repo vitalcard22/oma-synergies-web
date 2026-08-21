@@ -575,7 +575,7 @@
      Testimonials' own top padding right below to create a bloated gap
      between the two sections on mobile. */
   @media(max-width:900px){.tours-section{padding-bottom:56px;}}
-  @media(max-width:480px){.tours-section{padding-bottom:36px;}}
+  @media(max-width:480px){.tours-section{padding-bottom:28px;}}
   .tour-card{min-width:280px;scroll-snap-align:start;background:var(--white);border:1px solid var(--line-dark);border-radius:16px;overflow:hidden;flex-shrink:0;}
   .tour-img{height:170px;background:linear-gradient(135deg,#2E3152,#1F2035);position:relative;}
   .tour-body{padding:20px;}
@@ -588,7 +588,7 @@
   /* ===== TESTIMONIALS ===== */
   .test-wrap{background:var(--navy);color:var(--white);position:relative;overflow:hidden;}
   @media(max-width:900px){.test-wrap section{padding:56px 0;}}
-  @media(max-width:480px){.test-wrap section{padding:36px 0;}}
+  @media(max-width:480px){.test-wrap section{padding:28px 0;}}
   /* Was previously a bare <section> relying entirely on the global
      section{padding:100px 0} default - preserved that exact value here so
      desktop is visually unchanged, only adding a tighter mobile override. */
@@ -611,14 +611,44 @@
   .test-meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-muted);margin-top:2px;}
   .test-quote{font-size:14.5px;line-height:1.65;color:rgba(255,255,255,0.88);}
   .video-slot{flex:0 0 280px;scroll-snap-align:start;border:1.5px dashed rgba(255,255,255,0.25);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--ink-muted);font-family:var(--mono);font-size:12px;text-align:center;padding:20px;}
-  /* Spotlight effect while swiping - see the useEffect wiring testTrackRef
-     for how .in-focus gets toggled. Cards start dimmed/slightly smaller and
-     snap to full weight once roughly 60% visible within the scroll track,
-     so the one you're actually reading stands out from the ones you've
-     swiped past or are about to reach. */
-  @media(max-width:900px) and (prefers-reduced-motion:no-preference){
-    .test-card, .video-slot{opacity:0.4;transform:scale(0.94);transition:opacity .4s ease, transform .4s ease;}
-    .test-card.in-focus, .video-slot.in-focus{opacity:1;transform:scale(1);}
+  /* Each story fades/rises in on its own as the row scrolls into view,
+     instead of the whole track appearing as one flat block - same stagger
+     pattern already used for the service cards above, reused here rather
+     than inventing a second animation system. Runs at every width, not
+     just mobile: on desktop it's the only reveal this section gets; on
+     mobile it composes with the swipe spotlight below (entrance first,
+     then focus dimming layers on top of an already-revealed card). */
+  .test-card, .video-slot{opacity:0;transform:translateY(20px);transition:opacity .5s ease, transform .5s cubic-bezier(.19,1,.22,1);}
+  .test-card.in, .video-slot.in{opacity:1;transform:translateY(0);}
+  .test-track .test-card:nth-child(1){transition-delay:0ms;}
+  .test-track .test-card:nth-child(2){transition-delay:60ms;}
+  .test-track .test-card:nth-child(3){transition-delay:120ms;}
+  .test-track .test-card:nth-child(4){transition-delay:180ms;}
+  .test-track .test-card:nth-child(5){transition-delay:240ms;}
+  .test-track .test-card:nth-child(6){transition-delay:300ms;}
+  .test-track .test-card:nth-child(7){transition-delay:360ms;}
+  .test-track .test-card:nth-child(8){transition-delay:420ms;}
+  .test-track .test-card:nth-child(9){transition-delay:480ms;}
+  .test-track .video-slot{transition-delay:540ms;}
+  @media(prefers-reduced-motion:reduce){
+    .test-card, .video-slot{transition:none;}
+  }
+  /* Spotlight effect while scrolling/swiping the track - see the useEffect
+     wiring testTrackRef for how .in-focus gets toggled. Cards start dimmed/
+     slightly smaller and snap to full weight once roughly 60% visible
+     within the scroll track, so whichever one(s) you're actually reading
+     stand out from ones you've scrolled past or are about to reach. Applies
+     at every width - desktop's 9-card track overflows its container too
+     (3556px of cards vs ~1116px visible at 1280px wide), so this isn't
+     mobile-only; it can legitimately highlight more than one card at once
+     on wider screens where several are simultaneously well in view. Only
+     applies to cards that have already made their entrance (.in) -
+     otherwise a card being revealed for the first time while also
+     mid-scroll would fight the entrance animation above for the same
+     opacity/transform properties. */
+  @media(prefers-reduced-motion:no-preference){
+    .test-card.in:not(.in-focus), .video-slot.in:not(.in-focus){opacity:0.4;transform:scale(0.94);}
+    .test-card.in.in-focus, .video-slot.in.in-focus{opacity:1;transform:scale(1);}
   }
   @media(max-width:480px){
     .test-card{flex-basis:296px;padding:24px;}
