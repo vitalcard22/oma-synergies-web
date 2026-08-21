@@ -7,9 +7,26 @@ import './Tours.css';
 
 const CATEGORIES = ['all', 'Group Tours', 'Honeymoon', 'Solo', 'Family'] as const;
 
+// The 10% discount genuinely only applies to parties of 4+, so showing it
+// while someone is specifically browsing Honeymoon (2 people) or Solo (1
+// person) is irrelevant at best and misleading at worst - neither hits the
+// threshold. Group Tours and Family plausibly do, and on the unfiltered
+// "all" view there's no single traveler-type context to contradict, so the
+// general framing stays.
+function getPricingNote(activeCat: (typeof CATEGORIES)[number]) {
+  if (activeCat === 'Honeymoon') {
+    return { showDiscount: false, note: "Priced per person, contact us for your couple's package quote." };
+  }
+  if (activeCat === 'Solo') {
+    return { showDiscount: false, note: 'Priced per person, contact us to confirm your solo travel quote.' };
+  }
+  return { showDiscount: true, note: 'Final price depends on group size and dates, contact us for an exact quote.' };
+}
+
 export default function Tours() {
   const [activeCat, setActiveCat] = useState<(typeof CATEGORIES)[number]>('all');
   const filtered = activeCat === 'all' ? TOURS : TOURS.filter((t) => t.categories.includes(activeCat));
+  const pricingNote = getPricingNote(activeCat);
 
   return (
     <>
@@ -49,10 +66,12 @@ export default function Tours() {
                   <div className="tour-price">
                     {formatNaira(t.fromPrice)}<span> per person, from</span>
                   </div>
-                  <div className="tour-discount">
-                    {formatNaira(getDiscountedFromPrice(t.fromPrice))} per person for groups of {GROUP_DISCOUNT_MIN_SIZE}+ <span>({GROUP_DISCOUNT_PERCENT}% off)</span>
-                  </div>
-                  <p className="tour-note">Final price depends on group size and dates, contact us for an exact quote.</p>
+                  {pricingNote.showDiscount && (
+                    <div className="tour-discount">
+                      {formatNaira(getDiscountedFromPrice(t.fromPrice))} per person for groups of {GROUP_DISCOUNT_MIN_SIZE}+ <span>({GROUP_DISCOUNT_PERCENT}% off)</span>
+                    </div>
+                  )}
+                  <p className="tour-note">{pricingNote.note}</p>
                   <Link to="/contact" className="tour-book-btn">Book Now →</Link>
                 </div>
               </div>
