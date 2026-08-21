@@ -9,6 +9,7 @@ import { useCountUp } from '../hooks/useCountUp';
 import logoIcon from '../assets/logo-icon.png';
 import { DESTINATIONS } from '../data/destinations';
 import { TESTIMONIALS } from '../data/testimonials';
+import { TOURS, GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira } from '../data/tours';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import wwdTeamPhoto from '../assets/wwd-team.jpg';
 import wwdStaffDesk from '../assets/wwd-staff-desk.jpg';
@@ -85,13 +86,6 @@ const SERVICES_CORE = [
 const SERVICES_TRAVEL = [
   { icon: 'plane' as const, title: 'Comprehensive Flight Bookings & Travel Logistics', desc: 'Handling itinerary planning, competitive flight bookings, flight reservations for visa purposes, and hotel or short-let accommodations for corporate, family, or student travelers.', link: '/services/flights' },
   { icon: 'home' as const, title: 'Relocation & Accommodation Assistance', desc: 'Our services extend beyond visa approvals. We assist students in securing safe, comfortable housing and offer essential guidance to help them settle smoothly into their new host countries.', link: '/services/relocation' },
-];
-
-const TOURS = [
-  { name: 'Cape Town Explorer', meta: '7 Days · From ₦850,000' },
-  { name: 'Dubai Long Weekend', meta: '4 Days · From ₦620,000' },
-  { name: 'London Highlights', meta: '6 Days · From ₦1,150,000' },
-  { name: 'Istanbul Discovery', meta: '5 Days · From ₦730,000' },
 ];
 
 
@@ -647,11 +641,14 @@ export default function Home() {
           </div>
           <div className="tours-strip reveal">
             {TOURS.map((t) => (
-              <div className="tour-card" key={t.name}>
-                <div className="tour-img"><span className="placeholder-badge">Sample Package</span></div>
+              <div className="tour-card" key={t.slug}>
+                <div className="tour-img tour-img-pending">
+                  <span className="tour-img-pending-label">Photo coming soon</span>
+                </div>
                 <div className="tour-body">
                   <h4>{t.name}</h4>
-                  <div className="meta">{t.meta}</div>
+                  <div className="meta">{t.nights} Nights · From {formatNaira(t.fromPrice)}</div>
+                  <div className="tour-discount">Groups of {GROUP_DISCOUNT_MIN_SIZE}+ save {GROUP_DISCOUNT_PERCENT}% per person</div>
                   <Link to="/contact" className="tour-book-btn">Book Now →</Link>
                 </div>
               </div>
