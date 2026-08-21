@@ -170,6 +170,45 @@ export default function Home() {
     };
   }, []);
 
+  // Testimonials on mobile are a horizontal swipe with one card roughly
+  // filling the screen at a time - this puts a spotlight on whichever card
+  // is actually centered as you swipe (full opacity/scale) and dims the
+  // rest, rather than every card sitting at flat, identical visual weight
+  // regardless of whether it's the one currently being read. Desktop shows
+  // 2-3 cards side by side already, so this is mobile-only - having several
+  // cards simultaneously "in focus" there would look broken, not premium.
+  const testTrackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 900px)');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+
+    let io: IntersectionObserver | null = null;
+
+    function setup() {
+      io?.disconnect();
+      if (!mq.matches || !testTrackRef.current) return;
+      const cards = testTrackRef.current.querySelectorAll('.test-card, .video-slot');
+      io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            e.target.classList.toggle('in-focus', e.intersectionRatio >= 0.6);
+          });
+        },
+        { root: testTrackRef.current, threshold: [0, 0.6, 1] }
+      );
+      cards.forEach((c) => io!.observe(c));
+    }
+
+    setup();
+    mq.addEventListener('change', setup);
+    return () => {
+      mq.removeEventListener('change', setup);
+      io?.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     const t = setTimeout(() => setHeroLoaded(true), 80);
     return () => clearTimeout(t);
@@ -608,7 +647,7 @@ export default function Home() {
       </section>
 
       {/* TOURS */}
-      <section style={{ paddingTop: 0 }}>
+      <section className="tours-section" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <div className="section-head reveal" style={{ marginBottom: 36 }}>
             <span className="eyebrow">Tours & Travel</span>
@@ -639,7 +678,7 @@ export default function Home() {
               <h2 style={{ color: '#fff' }}>What our clients say</h2>
               <p style={{ color: 'var(--ink-muted)' }}>Shared with permission. Photos withheld by client request.</p>
             </div>
-            <div className="test-track reveal">
+            <div className="test-track reveal" ref={testTrackRef}>
               {TESTIMONIALS.map((t) => (
                 <div className="test-card" key={t.name}>
                   <div className="test-top">
