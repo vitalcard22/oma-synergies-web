@@ -636,7 +636,7 @@ export default function Home() {
           <div className="wrap">
             <div className="section-head reveal">
               <span className="eyebrow">Success Stories</span>
-              <h2 style={{ color: '#fff' }}>Real clients. Real outcomes.</h2>
+              <h2 style={{ color: '#fff' }}>What our clients say</h2>
               <p style={{ color: 'var(--ink-muted)' }}>Shared with permission. Photos withheld by client request.</p>
             </div>
             <div className="test-track reveal">

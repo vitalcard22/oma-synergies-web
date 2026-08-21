@@ -18,7 +18,7 @@ export default function Stories() {
       <section className="page-hero">
         <div className="wrap">
           <span className="eyebrow">Success Stories</span>
-          <h1>Real clients. Real outcomes.</h1>
+          <h1>What our clients say</h1>
           <p>Shared with permission. Photos withheld by client request.</p>
           <div className="filter-bar">
             {FILTERS.map((f) => (
