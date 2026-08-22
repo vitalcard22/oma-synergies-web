@@ -51,62 +51,71 @@
   @keyframes dashFlow{to{stroke-dashoffset:-160;}}
   .hero-grid{position:relative;z-index:1;}
   .hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;align-items:center;}
+  /* Cycling-word badge design (previously mobile-only) shared to every
+     width, replacing the old static desktop pill below it - per an explicit
+     "copy mobile's design to desktop, don't invent anything new" request.
+     This block used to live entirely inside the <=900px query, so showing
+     the badge on desktop without moving these rules out would have shown
+     an unstyled, unstacked mess: the exact same properties/values as
+     before, just no longer gated to mobile only. Nothing here changed for
+     mobile - the <=900px block further below still carries its own
+     order/margin overrides, which win at that width via specificity, so
+     mobile renders pixel-identical to before this change. */
+  .svc-block{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
+  .svc-row{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:nowrap;}
+  .svc-item{
+    display:inline-block;
+    font-family:var(--display);
+    font-size:16px;
+    font-weight:600;
+    line-height:1.1;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.35);
+    transition:color .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1);
+    will-change:transform;
+  }
+  .svc-item + .svc-item::before{
+    content:"·";
+    margin-right:9px;
+    color:rgba(255,255,255,0.25);
+    display:inline-block;
+  }
+  .svc-item.active{
+    color:var(--gold);
+    transform:scale(1.12);
+  }
+  .svc-anchor{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.13em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.5);
+    white-space:nowrap;
+  }
+  @media(prefers-reduced-motion:reduce){
+    .svc-item{transition:none;}
+    .svc-item.active{transform:none;}
+  }
+  /* Old static desktop pill is retired in favor of the cycling badge above -
+     hidden everywhere now, not just on mobile where it already was. */
+  .hero-eyebrow{display:none;}
+  /* Was mobile-only (display:none as the base/desktop rule, only shown via
+     the <=900px override). Now visible everywhere: grid-column:1/-1 makes
+     it span both of the desktop grid's columns and sit as its own row
+     above hero-content/orbit-stage, since it's a direct grid child of
+     .hero-grid alongside them, not nested inside hero-content - the
+     equivalent of "order:1" on mobile's single-column stack. On mobile,
+     grid-template-columns is a single 1fr track, so grid-column:1/-1 is a
+     no-op there and the existing <=900px override (order/margin) still
+     applies unchanged. */
+  .hero-eyebrow-mobile{display:flex;justify-content:center;margin-bottom:26px;grid-column:1/-1;}
   @media(max-width:900px){
     .hero-grid{grid-template-columns:1fr;align-self:stretch;}
-    .hero-grid .hero-eyebrow-mobile{order:1;display:flex;justify-content:center;margin-bottom:14px;}
-    /* Service statement: the cycling word is the point, so it gets roughly 2x
-       the size of the supporting phrase and sits on its own line. On one line
-       the longer phrase visually outweighs the short word at any size. */
-    .svc-block{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
-    /* All four services stay visible at once, with one highlighting in turn.
-       Showing a single cycling word made the business look like whichever one
-       happened to be on screen, since most visitors never see a full cycle. */
-    /* nowrap: with flex-wrap the scaled active word could push the row from
-       one line to two and back as the highlight cycles. */
-    .svc-row{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:nowrap;}
-    .svc-item{
-      display:inline-block;
-      font-family:var(--display);
-      font-size:16px;
-      font-weight:600;
-      line-height:1.1;
-      letter-spacing:0.04em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,0.35);
-      transition:color .4s ease, transform .4s cubic-bezier(.34,1.56,.64,1);
-      will-change:transform;
-    }
-    .svc-item + .svc-item::before{
-      content:"·";
-      margin-right:9px;
-      color:rgba(255,255,255,0.25);
-      display:inline-block;
-    }
-    /* Weight stays constant: bolding the active word changes its rendered
-       width, which shifts every other word sideways on each cycle. Colour and
-       transform are safe because neither affects layout. */
-    .svc-item.active{
-      color:var(--gold);
-      transform:scale(1.12);
-    }
-    .svc-anchor{
-      font-family:var(--mono);
-      font-size:11.5px;
-      letter-spacing:0.13em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,0.5);
-      white-space:nowrap;
-    }
-    @media(prefers-reduced-motion:reduce){
-      .svc-item{transition:none;}
-      .svc-item.active{transform:none;}
-    }
+    .hero-grid .hero-eyebrow-mobile{order:1;margin-bottom:14px;}
     .hero-grid .orbit-stage{order:2;margin-bottom:4px;}
     .hero-grid .hero-content{order:3;}
-    .hero-grid .hero-content .hero-eyebrow{display:none;}
   }
-  .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(240,177,36,0.1);border:1px solid rgba(240,177,36,0.3);padding:7px 14px;border-radius:100px;margin-bottom:26px;}
-  .hero-eyebrow-mobile{display:none;}
   /* Reserve height for the tallest rotating phrase so the hero doesn't expand
      and contract as the headline cycles. A hidden sizer renders the longest
      phrase so the reserved height is always correct, at any breakpoint and
@@ -276,26 +285,29 @@
   @media(max-width:900px){.board-section{padding:26px 0 30px;}}
   .membership-strip{background:var(--navy-deep);padding:0 0 46px;}
   .membership-label{font-family:var(--mono);color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:20px;text-align:center;}
-  .membership-row{display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap;}
+  /* Text pills retired everywhere, not just mobile - real accreditation
+     logos below replace them at every width now, per the same "share
+     mobile's design to desktop, don't invent anything new" request as the
+     eyebrow badge above. */
+  .membership-row{display:none;}
   .membership-badge{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.75);font-family:var(--body);font-weight:600;font-size:13px;letter-spacing:0.02em;padding:10px 18px;border:1px solid var(--line);border-radius:100px;transition:border-color .25s ease, color .25s ease;}
 
-  /* Accreditation logos: mobile only for now. The text pills wrapped to two
-     lines on a phone because of the long org names, giving three uneven blocks.
-     Real logos carry more trust weight and fit a single row. */
-  .accred-row{display:none;}
-  @media(max-width:900px){
-    .membership-row{display:none;}
-    .accred-row{display:flex;justify-content:center;align-items:flex-start;gap:14px;}
-    .accred-item{display:flex;flex-direction:column;align-items:center;gap:7px;}
-    .accred-tile{
-      width:82px;height:82px;border-radius:14px;background:#fff;
-      display:flex;align-items:center;justify-content:center;
-      padding:9px;box-sizing:border-box;
-      box-shadow:0 2px 10px rgba(0,0,0,0.22);
-    }
-    .accred-tile img{width:100%;height:100%;object-fit:contain;display:block;}
-    .accred-code{font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;color:rgba(255,255,255,0.5);}
+  /* Accreditation logos: previously mobile-only. The original reasoning
+     ("text pills wrapped to two uneven lines because of the long org
+     names; real logos carry more trust weight and fit a single row")
+     applies just as well on desktop, so it's shown at every width now
+     with the exact same styling - not resized or rearranged for wider
+     screens, just no longer hidden there. */
+  .accred-row{display:flex;justify-content:center;align-items:flex-start;gap:14px;}
+  .accred-item{display:flex;flex-direction:column;align-items:center;gap:7px;}
+  .accred-tile{
+    width:82px;height:82px;border-radius:14px;background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    padding:9px;box-sizing:border-box;
+    box-shadow:0 2px 10px rgba(0,0,0,0.22);
   }
+  .accred-tile img{width:100%;height:100%;object-fit:contain;display:block;}
+  .accred-code{font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;color:rgba(255,255,255,0.5);}
   @media(max-width:480px){
     .accred-row{gap:10px;}
     .accred-tile{width:72px;height:72px;border-radius:12px;padding:7px;}

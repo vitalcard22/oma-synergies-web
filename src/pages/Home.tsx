@@ -201,13 +201,14 @@ export default function Home() {
     return () => clearTimeout(t);
   }, []);
 
-  // Cycles the service word inside the mobile badge (Study -> Visa -> Travel -> Tour).
-  // Mobile-only and motion-safe: desktop shows the full static list, and anyone
-  // with reduced-motion enabled sees "Study" held steady rather than cycling.
+  // Cycles the service word inside the badge (Study -> Visa -> Travel -> Tour).
+  // Previously mobile-only (desktop showed a separate static pill instead) -
+  // now runs at every width since the cycling badge itself is shared to
+  // desktop too. Still respects reduced-motion: anyone with that preference
+  // sees "Study" held steady rather than cycling, on any screen size.
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const mq = window.matchMedia('(max-width: 900px)');
-    if (reduced.matches || !mq.matches) return;
+    if (reduced.matches) return;
 
     const t = setInterval(() => {
       setServiceIdx((i) => (i + 1) % SERVICE_WORDS.length);
