@@ -1,14 +1,7 @@
-  :root{
-    --navy:#1F2035; --navy-soft:#262A47; --navy-deep:#14152A;
-    --gold:#F0B124; --gold-soft:#F6C863; --paper:#F7F6F3; --slate:#5B5F76; --white:#FFFFFF;
-    --ink-muted:rgba(255,255,255,0.62); --line:rgba(255,255,255,0.14); --line-dark:rgba(31,32,53,0.12);
-    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
-  }
-
   html{scroll-behavior:smooth;}
 
 
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
   .btn-gold{background:var(--gold);color:var(--navy-deep);}
   .btn-gold:hover{background:var(--gold-soft);box-shadow:0 8px 24px rgba(240,177,36,0.35);}
   .btn-outline{border-color:rgba(255,255,255,0.35);color:var(--white);}
@@ -20,30 +13,69 @@
 
   .page-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:150px 0 80px;}
   @media(max-width:900px){.page-hero{padding:88px 0 44px;}.svc-hub-content{padding:56px 0;}}
+  @media(max-width:480px){.page-hero{padding:64px 0 32px;}.svc-hub-content{padding:36px 0;}}
   .page-hero h1{color:var(--white);font-size:clamp(32px,4.4vw,50px);margin-top:16px;max-width:680px;}
   .page-hero p{margin-top:16px;font-size:16px;color:var(--ink-muted);max-width:560px;}
+  @media(max-width:480px){
+    .page-hero h1{font-size:26px;line-height:1.25;margin-top:10px;}
+    .page-hero p{margin-top:10px;font-size:13.5px;}
+  }
 
   .svc-cluster{margin-bottom:56px;}
   .svc-cluster-head{display:flex;align-items:baseline;gap:14px;margin-bottom:28px;}
   .svc-cluster-head h3{font-size:20px;}
-  .svc-cluster-head .svc-tag{font-family:var(--mono);font-size:11px;color:var(--white);background:var(--navy);padding:4px 10px;border-radius:100px;letter-spacing:0.05em;}
+  .svc-cluster-head .svc-tag{font-family:var(--font-mono);font-size:11px;color:var(--white);background:var(--navy);padding:4px 10px;border-radius:100px;letter-spacing:0.05em;}
   .svc-cluster-head .svc-tag.secondary{background:var(--slate);}
+  @media(max-width:480px){
+    .svc-cluster{margin-bottom:32px;}
+    .svc-cluster-head{margin-bottom:16px;gap:10px;}
+    .svc-cluster-head h3{font-size:17px;}
+    .svc-cluster-head .svc-tag{font-size:9.5px;padding:3px 8px;}
+  }
 
+  /* Same auto-fit collapse already found and fixed on Destinations/Why
+     Choose Us/the homepage's own service clusters - below ~544px this
+     stacked every card full-width in one column (5 cards, then 2 for the
+     smaller cluster). Taglines here are short (60-90 characters, no card
+     needs the line-clamp treatment the homepage's longer descriptions
+     needed), so a straight 2-column grid works without any text-truncation
+     tradeoff. The 1px-gap-reveals-a-divider-line trick (gap:1px on a
+     colored background) still works the same in 2 columns - just adds
+     vertical divider lines between the two, not only horizontal ones. */
   .svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);}
+  @media(max-width:480px){.svc-grid{grid-template-columns:1fr 1fr;}}
   .svc-card{background:var(--white);padding:34px 28px;transition:background .35s ease;position:relative;}
   .svc-card:hover{background:var(--navy);color:var(--white);}
   .svc-card:hover .svc-icon{background:var(--gold);}
   .svc-card:hover p{color:var(--ink-muted);}
   .svc-card:hover .learn{transform:translateX(4px);}
   .svc-icon{width:44px;height:44px;border-radius:10px;background:var(--paper);border:1px solid var(--line-dark);display:flex;align-items:center;justify-content:center;color:var(--navy);margin-bottom:20px;transition:background .35s ease;}
-  .svc-card h4{font-family:var(--display);font-size:17.5px;margin-bottom:10px;}
+  .svc-card h4{font-family:var(--font-display);font-size:17.5px;margin-bottom:10px;}
   .svc-card p{font-size:14px;color:var(--slate);transition:color .3s ease;margin-bottom:18px;}
-  .svc-card .learn{font-family:var(--mono);font-size:12px;color:var(--gold);display:inline-block;transition:transform .3s ease;}
+  .svc-card .learn{font-family:var(--font-mono);font-size:12px;color:var(--gold);display:inline-block;transition:transform .3s ease;}
+  @media(max-width:480px){
+    .svc-card{padding:18px 14px;}
+    .svc-icon{width:36px;height:36px;margin-bottom:12px;}
+    .svc-card h4{font-size:14.5px;margin-bottom:6px;line-height:1.3;}
+    .svc-card p{font-size:12.5px;margin-bottom:10px;line-height:1.45;}
+    .svc-card .learn{font-size:11px;}
+  }
 
+  /* This section had zero responsive treatment at all - still rendered at
+     the full 100px desktop padding on every phone, and the two buttons
+     never stacked full-width like every other page's matching final-cta
+     already does. */
   .final-cta{background:radial-gradient(120% 140% at 50% 0%, var(--navy-soft), var(--navy-deep) 70%);color:var(--white);text-align:center;padding:100px 0;}
+  @media(max-width:900px){.final-cta{padding:56px 0;}}
+  @media(max-width:480px){.final-cta{padding:36px 0;}}
   .final-cta h2{font-size:clamp(26px,3.4vw,36px);max-width:600px;margin:0 auto 16px;}
   .final-cta p{color:var(--ink-muted);max-width:440px;margin:0 auto 28px;}
   .final-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
-
-  .footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center;font-size:12.5px;font-family:var(--mono);}
-  .footer-inner a:hover{color:var(--gold);}
+  @media(max-width:900px){
+    .final-actions{flex-direction:column;gap:12px;}
+    .final-actions .btn{width:100%;justify-content:center;}
+  }
+  @media(max-width:480px){
+    .final-cta h2{font-size:21px;margin:0 auto 10px;}
+    .final-cta p{font-size:13.5px;margin:0 auto 20px;}
+  }
