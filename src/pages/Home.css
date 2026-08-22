@@ -273,15 +273,24 @@
     }
     .hero-mini-trust .mini-stat .n{font-size:15px;display:block;}
     .hero-mini-trust .mini-stat .l{font-size:7.5px;letter-spacing:0.05em;display:block;margin-top:2px;line-height:1.2;}
-    /* Track Record section is redundant now the hero carries the same figures. */
-    .board-section{display:none;}
+    /* Track Record section is redundant now the hero carries the same
+       figures - moved out of this media query to apply everywhere, not
+       just mobile (see the universal .board-section rule below). */
   }
   .scroll-line{width:1px;height:34px;background:linear-gradient(var(--gold),transparent);animation:pulse 2s ease-in-out infinite;}
   @media(max-width:900px){.scroll-line{height:22px;}.hero-scroll-cue{gap:5px;}}
   @keyframes pulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
 
   /* ===== DEPARTURE BOARD (signature) ===== */
-  .board-section{background:var(--navy-deep);padding:52px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  /* Redundant everywhere now, not just mobile - the hero's own stat row
+     (.hero-mini-trust) already carries the same six figures at every
+     width, so this standalone section was showing the identical numbers
+     a second time immediately below the hero on desktop specifically
+     (mobile already had this hidden). Own styling kept intact below
+     (harmless while hidden) rather than deleted, in case there's a reason
+     to bring it back as its own distinct section later - just adding
+     display:none as the deciding rule for now. */
+  .board-section{display:none;background:var(--navy-deep);padding:52px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
   @media(max-width:900px){.board-section{padding:26px 0 30px;}}
   .membership-strip{background:var(--navy-deep);padding:0 0 46px;}
   .membership-label{font-family:var(--mono);color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:20px;text-align:center;}
