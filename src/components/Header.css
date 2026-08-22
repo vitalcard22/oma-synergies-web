@@ -69,6 +69,7 @@
   font-size: 14px;
   font-weight: 500;
   transition: color .2s ease;
+  white-space: nowrap;
 }
 .nav-links a:hover {
   color: var(--white);
@@ -77,6 +78,24 @@
   display: flex;
   align-items: center;
   gap: 18px;
+}
+/* At 1024px specifically, the full nav needed ~960px and only had ~960px
+   available - a ~0px margin that any sub-pixel rendering variance could
+   push over, which is exactly what was happening: "Success Stories" (the
+   longest single item) wrapped to two lines while its siblings stayed on
+   one, and "About" ended up with a literal 0px gap against the Client
+   Login button. Confirmed via direct measurement (logo + nav-links +
+   nav-cta natural widths) before choosing these values - tightening just
+   .nav-links' gap (34px was 4 gaps x 34px = 136px on its own) and
+   .nav-cta's gap saves ~62px, comfortably clearing the deficit rather
+   than just barely closing it. Scoped to the range where the full nav is
+   still shown at all (<=1150px down to the hamburger breakpoint at
+   900px) - above 1150px there's room to spare, so the original spacious
+   34px/18px gaps stay untouched there. */
+@media (max-width: 1150px) and (min-width: 901px) {
+  .nav-links { gap: 20px; }
+  .nav-links a { font-size: 13.5px; }
+  .nav-cta { gap: 12px; }
 }
 @media (max-width: 900px) {
   .nav-links { display: none; }

@@ -97,9 +97,9 @@
     .svc-item{transition:none;}
     .svc-item.active{transform:none;}
   }
-  /* Old static desktop pill is retired in favor of the cycling badge above -
-     hidden everywhere now, not just on mobile where it already was. */
-  .hero-eyebrow{display:none;}
+  /* Old static desktop pill (.hero-eyebrow) removed from the JSX entirely -
+     was retired in favor of the cycling badge below, and had nothing left
+     referencing it. */
   /* Was mobile-only (display:none as the base/desktop rule, only shown via
      the <=900px override). Now visible everywhere: grid-column:1/-1 makes
      it span both of the desktop grid's columns and sit as its own row

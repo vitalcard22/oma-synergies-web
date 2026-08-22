@@ -327,22 +327,32 @@ export default function Home() {
         <HeroPhotoBackdrop image={wwdCheckinHandoff} />
         <div className="hero-map-layer">
           <svg viewBox="0 0 1200 620" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            {/* Origin and all paths deliberately kept at x>=750 - measured the
+                headline's actual bounding box in this SVG's own coordinate
+                space (accounting for preserveAspectRatio="xMidYMid slice")
+                across 1024/1280/1440/1920px, and it consistently occupies
+                roughly x:[200,650] y:[140,360]. The previous origin (300,310)
+                sat inside that box, so the animated plane periodically flew
+                directly through the headline's own line-gaps rather than
+                staying in the background. Confirmed via the same measurement
+                technique post-fix that nothing here re-enters that zone at
+                any of those widths. */}
             <g fill="none" stroke="#F0B124" strokeWidth="1.4" strokeDasharray="1 7" strokeLinecap="round">
-              <path className="flight-path" d="M300,310 Q410,150 520,119" opacity="0.55" />
-              <path className="flight-path" d="M300,310 Q230,210 160,143" opacity="0.5" />
-              <path className="flight-path" d="M300,310 Q460,260 660,262" opacity="0.5" />
-              <path className="flight-path" d="M300,310 Q650,430 1000,500" opacity="0.45" />
+              <path className="flight-path" d="M750,340 Q860,180 970,150" opacity="0.55" />
+              <path className="flight-path" d="M750,340 Q880,260 1050,240" opacity="0.5" />
+              <path className="flight-path" d="M750,340 Q900,340 1080,360" opacity="0.5" />
+              <path className="flight-path" d="M750,340 Q950,480 1150,540" opacity="0.45" />
             </g>
             <g fill="#F0B124">
-              <circle cx="300" cy="310" r="4" opacity="0.9" />
-              <circle cx="520" cy="119" r="3" opacity="0.7" />
-              <circle cx="160" cy="143" r="3" opacity="0.7" />
-              <circle cx="660" cy="262" r="3" opacity="0.7" />
-              <circle cx="1000" cy="500" r="3" opacity="0.7" />
+              <circle cx="750" cy="340" r="4" opacity="0.9" />
+              <circle cx="970" cy="150" r="3" opacity="0.7" />
+              <circle cx="1050" cy="240" r="3" opacity="0.7" />
+              <circle cx="1080" cy="360" r="3" opacity="0.7" />
+              <circle cx="1150" cy="540" r="3" opacity="0.7" />
             </g>
             <g>
               <path d="M0 0 L 7 -2 L 10 -8 L 12 -8 L 11 -1 L 18 1 L 18 3 L 11 4 L 10 11 L 8 11 L 7 3 Z" fill="#F0B124" />
-              <animateMotion dur="7s" repeatCount="indefinite" path="M300,310 Q410,150 520,119" rotate="auto" />
+              <animateMotion dur="7s" repeatCount="indefinite" path="M750,340 Q860,180 970,150" rotate="auto" />
             </g>
           </svg>
         </div>
@@ -381,9 +391,6 @@ export default function Home() {
             </div>
           </div>
           <div className="hero-content">
-            <div className="hero-eyebrow hero-rise" style={{ transitionDelay: '80ms' }}>
-              <span className="eyebrow" style={{ margin: 0 }}>Study · Visa · Travel · Tour · One Trusted Partner</span>
-            </div>
             <h1 className="hero-rise" style={{ transitionDelay: '340ms' }}>
               {/* Invisible sizers: one per phrase, all stacked in the same grid
                   cell. The h1 sizes to whichever actually wraps tallest, which
