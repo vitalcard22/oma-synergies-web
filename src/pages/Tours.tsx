@@ -52,9 +52,6 @@ export default function Tours() {
           <div className="tour-grid">
             {filtered.map((t) => (
               <div className="tour-card" key={t.slug}>
-                <div className="tour-img tour-img-pending">
-                  <span className="tour-img-pending-label">Photo coming soon</span>
-                </div>
                 <div className="tour-body">
                   <h4>{t.name}</h4>
                   <div className="tour-meta"><span>{t.nights} Nights</span></div>

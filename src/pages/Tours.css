@@ -27,12 +27,6 @@
   @media(max-width:900px){.tours-content{padding:56px 0;}}
   .tour-card{background:var(--white);border:1px solid var(--line-dark);border-radius:18px;overflow:hidden;transition:transform .3s ease, box-shadow .3s ease;}
   .tour-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(31,32,53,0.1);}
-  .tour-img{height:190px;position:relative;overflow:hidden;}
-  /* Real pricing/dates now, but no photos yet - a plain muted tile with an
-     honest "coming soon" label reads as "content pending," not "fake data,"
-     which is the distinction that matters now that the numbers are real. */
-  .tour-img-pending{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2E3152,#1F2035);}
-  .tour-img-pending-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.55);letter-spacing:0.04em;}
   .tour-body{padding:22px;}
   .tour-body h4{font-family:var(--display);font-size:17px;margin-bottom:8px;}
   .tour-meta{font-family:var(--mono);font-size:12px;color:var(--slate);margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap;}
