@@ -775,27 +775,41 @@
      so tightening it globally would affect sections that don't need it. */
   @media(max-width:480px){#faq .section-head{margin-bottom:16px;}}
 
-  .faq-item{border-bottom:1px solid var(--line-dark);opacity:0;transform:translateY(16px);transition:opacity .5s ease, transform .5s cubic-bezier(.19,1,.22,1);}
-  .faq-item.in{opacity:1;transform:translateY(0);}
+  /* SEVERITY NOTE: bare, unscoped .faq-item/.faq-q/.faq-icon/.faq-a class
+     names here were colliding with ServiceDetail.tsx's completely separate
+     FAQ accordion, which reuses the exact same class names for its own,
+     unrelated implementation. Vite bundled this file's rules into a shared
+     CSS chunk that loads on every route (confirmed via document.styleSheets
+     on a fresh, direct navigation to /services/:slug - Home.css's compiled
+     output was present there despite that page never importing Home.tsx).
+     Since ServiceDetail's FAQ items never receive the .in class (no
+     stagger-reveal hook targets them), .faq-item{opacity:0} from here was
+     permanently hiding the entire FAQ section on all 7 individual service
+     pages - a real, live regression, not just a style leak. Scoped every
+     selector below under #faq (unique to this section - verified no other
+     page uses that id) so nothing here can ever apply outside this specific
+     section again, regardless of build/bundling behavior. */
+  #faq .faq-item{border-bottom:1px solid var(--line-dark);opacity:0;transform:translateY(16px);transition:opacity .5s ease, transform .5s cubic-bezier(.19,1,.22,1);}
+  #faq .faq-item.in{opacity:1;transform:translateY(0);}
   .faq-list .faq-item:nth-child(1){transition-delay:0ms;}
   .faq-list .faq-item:nth-child(2){transition-delay:60ms;}
   .faq-list .faq-item:nth-child(3){transition-delay:120ms;}
   .faq-list .faq-item:nth-child(4){transition-delay:180ms;}
   .faq-list .faq-item:nth-child(5){transition-delay:240ms;}
   .faq-list .faq-item:nth-child(6){transition-delay:300ms;}
-  @media(prefers-reduced-motion:reduce){.faq-item{transition:none;}}
+  @media(prefers-reduced-motion:reduce){#faq .faq-item{transition:none;}}
 
-  .faq-q{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;font-family:var(--display);font-weight:600;font-size:16px;}
+  #faq .faq-q{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;cursor:pointer;font-family:var(--display);font-weight:600;font-size:16px;}
   /* Chevron instead of a blocky plus/minus - a single bordered corner,
      rotated 45deg to point down at rest and flipped 180deg (pointing up)
      when open, transitioning smoothly rather than the old snap-scale. */
-  .faq-icon{width:9px;height:9px;border-right:1.5px solid var(--navy);border-bottom:1.5px solid var(--navy);transform:rotate(45deg);transition:transform .3s cubic-bezier(.4,0,.2,1);flex-shrink:0;margin-top:-3px;}
-  .faq-item.open .faq-icon{transform:rotate(225deg);margin-top:3px;}
-  .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;}
-  .faq-a p{padding-bottom:22px;color:var(--slate);font-size:14.5px;max-width:640px;}
+  #faq .faq-icon{width:9px;height:9px;border-right:1.5px solid var(--navy);border-bottom:1.5px solid var(--navy);transform:rotate(45deg);transition:transform .3s cubic-bezier(.4,0,.2,1);flex-shrink:0;margin-top:-3px;}
+  #faq .faq-item.open .faq-icon{transform:rotate(225deg);margin-top:3px;}
+  #faq .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+  #faq .faq-a p{padding-bottom:22px;color:var(--slate);font-size:14.5px;max-width:640px;}
   @media(max-width:480px){
-    .faq-q{padding:14px 0;font-size:15px;}
-    .faq-a p{padding-bottom:14px;font-size:13.5px;}
+    #faq .faq-q{padding:14px 0;font-size:15px;}
+    #faq .faq-a p{padding-bottom:14px;font-size:13.5px;}
   }
 
   .faq-more{margin-top:28px;font-size:14px;color:var(--slate);text-align:center;}
