@@ -113,7 +113,6 @@ export default function Home() {
   useScrollReveal();
   useStaggerReveal('.service-grid.stagger', '.service-card');
   useStaggerReveal('.test-track.stagger', '.test-card, .video-slot');
-  useStaggerReveal('.faq-list.stagger', '.faq-item');
   const statsRef = useCountUp();
   const heroStatsRef = useCountUp();
 
@@ -122,6 +121,41 @@ export default function Home() {
   const [headlineVisible, setHeadlineVisible] = useState(true);
   const [leadVisible, setLeadVisible] = useState(true);
   const [openFaq, setOpenFaq] = useState(0);
+  // FAQ items' className also toggles ('open'/not) based on openFaq via
+  // React, and that's exactly the conflict that broke this: the old shared
+  // useStaggerReveal hook added the 'in' reveal class by calling
+  // element.classList.add('in') directly on the DOM node, completely
+  // outside React's knowledge. That's invisible to React right up until
+  // something else causes a re-render of that same element with a
+  // genuinely different className string (opening/closing a question does
+  // exactly that) - at that point React overwrites the whole className
+  // attribute with only what it itself is tracking, silently wiping out
+  // the imperatively-added 'in' class. The item stays laid out
+  // (display/position untouched) but permanently invisible - confirmed via
+  // computed opacity:0 on exactly the two items whose open state changed
+  // in a single click, while untouched items kept opacity:1. Fixed by
+  // tracking reveal state in React itself instead, so it's part of the
+  // className React computes every render, not a side-channel that can be
+  // clobbered by an unrelated state change on the same element.
+  const faqListRef = useRef<HTMLDivElement>(null);
+  const [faqRevealed, setFaqRevealed] = useState(false);
+  useEffect(() => {
+    const el = faqListRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setFaqRevealed(true);
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0, rootMargin: '0px 0px -10% 0px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [orbitPulse, setOrbitPulse] = useState(false);
   const [serviceIdx, setServiceIdx] = useState(0);
@@ -715,9 +749,9 @@ export default function Home() {
             <span className="eyebrow">FAQ</span>
             <h2>Frequently Asked Questions</h2>
           </div>
-          <div className="faq-list stagger">
+          <div className="faq-list stagger" ref={faqListRef}>
             {FAQS.map((f, i) => (
-              <div className={openFaq === i ? 'faq-item open' : 'faq-item'} key={f.q}>
+              <div className={`faq-item${faqRevealed ? ' in' : ''}${openFaq === i ? ' open' : ''}`} key={f.q}>
                 <div className="faq-q" onClick={() => setOpenFaq(openFaq === i ? -1 : i)}>
                   {f.q}
                   <div className="faq-icon" />
