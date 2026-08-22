@@ -1,32 +1,28 @@
-  :root{
-    --navy:#1F2035; --navy-soft:#262A47; --navy-deep:#14152A;
-    --gold:#F0B124; --gold-soft:#F6C863; --paper:#F7F6F3; --slate:#5B5F76; --white:#FFFFFF;
-    --ink-muted:rgba(255,255,255,0.62); --line:rgba(255,255,255,0.14); --line-dark:rgba(31,32,53,0.12);
-    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
-  }
-
-
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
   .btn-gold{background:var(--gold);color:var(--navy-deep);}
   .btn-gold:hover{background:var(--gold-soft);box-shadow:0 8px 24px rgba(240,177,36,0.35);}
   .btn-gold:disabled{opacity:0.6;cursor:not-allowed;}
 
-  .nav-links a{color:rgba(255,255,255,0.7);font-size:13.5px;font-weight:500;}
-  .nav-links a:hover{color:var(--white);}
-
   .page-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:150px 0 60px;}
   @media(max-width:900px){.page-hero{padding:88px 0 40px;}}
+  @media(max-width:480px){.page-hero{padding:64px 0 32px;}}
   .page-hero h1{color:var(--white);font-size:clamp(30px,4vw,46px);margin-top:16px;max-width:600px;}
   .page-hero p{margin-top:14px;font-size:15.5px;color:var(--ink-muted);max-width:540px;}
+  @media(max-width:480px){
+    .page-hero h1{font-size:27px;line-height:1.25;margin-top:10px;}
+    .page-hero p{margin-top:10px;font-size:13.5px;}
+  }
 
   .contact-grid{display:grid;grid-template-columns:1fr 0.85fr;gap:50px;align-items:start;}
   @media(max-width:900px){.contact-grid{grid-template-columns:1fr;}.contact-content{padding:56px 0;}}
+  @media(max-width:480px){.contact-content{padding:36px 0;}}
 
   /* WhatsApp spotlight: this is a WhatsApp-first business, so the fastest
      channel gets top billing as its own confident panel instead of being one
      row among four in a generic contact list. */
   .wa-spotlight{background:var(--navy-deep);padding:52px 0;}
   @media(max-width:900px){.wa-spotlight{padding:36px 0;}}
+  @media(max-width:480px){.wa-spotlight{padding:28px 0;}}
   .wa-spotlight h2{color:var(--white);font-size:clamp(22px,3vw,30px);margin-top:8px;margin-bottom:24px;}
   .wa-panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   /* 480px was too wide a threshold before stacking: at 480px each panel only
@@ -43,34 +39,58 @@
   @media(max-width:900px){.wa-panel{padding:16px 18px;gap:12px;}}
   .wa-panel:hover{background:rgba(37,211,102,0.15);transform:translateY(-2px);}
   .wa-panel-icon{width:48px;height:48px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .wa-panel-label{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:3px;}
+  .wa-panel-label{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:3px;}
   .wa-panel-value{font-size:18px;color:var(--white);font-weight:600;}
+  @media(max-width:480px){.wa-spotlight h2{margin-bottom:18px;}}
 
   .form-card{background:var(--white);border:1px solid var(--line-dark);border-radius:18px;padding:38px;}
   @media(max-width:900px){.form-card{padding:26px 22px;}}
+  @media(max-width:480px){.form-card{padding:20px 18px;}}
   .form-intro{margin-bottom:26px;}
   @media(max-width:900px){.form-intro{margin-bottom:18px;}}
+  @media(max-width:480px){.form-intro{margin-bottom:14px;}}
   .form-intro p{margin-top:8px;font-size:14px;color:var(--slate);line-height:1.5;}
   .form-row{margin-bottom:20px;}
-  .form-row label{display:block;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate);margin-bottom:8px;}
+  .form-row label{display:block;font-family:var(--font-mono);font-size:11.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate);margin-bottom:8px;}
   .form-row input, .form-row select, .form-row textarea{
-    width:100%;padding:13px 14px;border:1px solid var(--line-dark);border-radius:10px;font-family:var(--body);font-size:14.5px;color:var(--navy);background:var(--paper);transition:border-color .2s ease;
+    width:100%;padding:13px 14px;border:1px solid var(--line-dark);border-radius:10px;font-family:var(--font-body);font-size:14.5px;color:var(--navy);background:var(--paper);transition:border-color .2s ease;
   }
   .form-row input:focus, .form-row select:focus, .form-row textarea:focus{outline:none;border-color:var(--gold);}
   .form-row textarea{resize:vertical;min-height:110px;}
   .form-two{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   @media(max-width:480px){.form-two{grid-template-columns:1fr;}}
+  /* The 6 form rows' own margin-bottom was the single biggest lever on this
+     page - 20px unchanged at every width, compounding to 120px of pure
+     spacing between fields regardless of screen size. Inputs/selects/
+     textarea padding is untouched here on purpose: 13px top+bottom already
+     puts them right at the ~44-46px accessible tap-target floor, so this
+     only tightens the gaps between fields, not the fields themselves. */
+  @media(max-width:480px){
+    .form-row{margin-bottom:14px;}
+    .form-row label{margin-bottom:6px;font-size:11px;}
+  }
   .success-msg{display:none;text-align:center;padding:40px 10px;}
   .success-msg .icon{width:56px;height:56px;border-radius:50%;background:rgba(240,177,36,0.15);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px;}
   .success-msg h3{font-size:19px;margin-bottom:8px;}
   .success-msg p{font-size:14px;color:var(--slate);}
 
   .info-col .info-card{background:var(--navy);color:var(--white);border-radius:18px;padding:34px;margin-bottom:20px;}
+  @media(max-width:480px){.info-col .info-card{margin-bottom:14px;}}
 
-  .reach-card{padding:34px 30px;}
-  @media(max-width:900px){.reach-card{padding:24px 22px;}}
+  /* .info-card.reach-card (compound selector matching the same element),
+     not just .reach-card - the generic .info-col .info-card{padding:34px}
+     rule above has higher specificity (two classes) than a bare .reach-card
+     (one class), so the override below was silently losing to it at every
+     breakpoint, always rendering at 34px regardless of screen size. This
+     was a real, pre-existing bug, not just something introduced by this
+     pass's <=480px addition - confirmed via computed style before the fix
+     (paddingTop/Right/Bottom/Left all reporting 34px on mobile despite the
+     <=900px and <=480px overrides existing in the source). */
+  .info-card.reach-card{padding:34px 30px;}
+  @media(max-width:900px){.info-card.reach-card{padding:24px 22px;}}
+  @media(max-width:480px){.info-card.reach-card{padding:20px 18px;}}
   .reach-head{margin-bottom:8px;}
-  .reach-head h4{font-family:var(--display);font-size:16px;margin-bottom:6px;}
+  .reach-head h4{font-family:var(--font-display);font-size:16px;margin-bottom:6px;}
   .reach-head p{font-size:12.5px;color:var(--ink-muted);}
 
   /* Orbital layout: echoes the hero's dashed-ring motif rather than a plain
@@ -108,9 +128,9 @@
   .reach-badge.email{background:rgba(240,177,36,0.15);color:var(--gold);}
   .reach-badge.location{background:rgba(255,255,255,0.1);color:var(--white);}
   .reach-badge.social{background:rgba(255,255,255,0.1);color:var(--white);}
-  .reach-label{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);margin-bottom:2px;}
+  .reach-label{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);margin-bottom:2px;}
   .reach-value{font-size:12.5px;color:var(--white);font-weight:500;line-height:1.35;overflow-wrap:break-word;word-break:break-word;}
-  .info-card h4{font-family:var(--display);font-size:16px;margin-bottom:16px;}
+  .info-card h4{font-family:var(--font-display);font-size:16px;margin-bottom:16px;}
 
   /* Mobile: no room for a circle to read as intentional, so the same three
      points fall back to a simple connected vertical list instead - still
@@ -134,10 +154,8 @@
   .map-card{border-radius:18px;overflow:hidden;border:1px solid var(--line-dark);height:220px;background:var(--navy-soft);}
   .map-card iframe{display:block;}
 
-  .footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center;font-size:12.5px;font-family:var(--mono);}
-  .footer-inner a:hover{color:var(--gold);}
-
   .office-photo-card{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--line-dark);aspect-ratio:9/8;margin-bottom:20px;}
   @media(max-width:900px){.office-photo-card{margin-bottom:16px;}}
+  @media(max-width:480px){.office-photo-card{margin-bottom:12px;}}
   .office-photo-card img{width:100%;height:100%;object-fit:cover;}
-  .office-photo-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top, rgba(20,21,42,0.85), transparent);color:var(--white);font-family:var(--mono);font-size:11px;padding:26px 16px 12px;}
+  .office-photo-caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top, rgba(20,21,42,0.85), transparent);color:var(--white);font-family:var(--font-mono);font-size:11px;padding:26px 16px 12px;}
