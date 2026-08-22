@@ -8,6 +8,7 @@ import increasePhoto from '../assets/team/increase.jpg';
 import nnennaPhoto from '../assets/team/nnenna.jpg';
 import joshuaPhoto from '../assets/team/joshua.jpg';
 import whoWeAreTeam from '../assets/who-we-are-team.jpg';
+import adaezeCertificate from '../assets/credentials/adaeze-british-council.jpg';
 import applyBoardLogo from '../assets/partners/applyboard.png';
 import kcOverseasLogo from '../assets/partners/kc-overseas.png';
 import borderPassLogo from '../assets/partners/borderpass.png';
@@ -22,7 +23,7 @@ const PARTNERS = [
 ];
 
 const TEAM = [
-  { photo: adaezePhoto, name: 'Adaeze Ohazuruike', role: 'Founder & CEO', credential: { title: 'Certified UK Knowledge Agent & Counsellor', sub: 'British Council, via ApplyBoard, valid until 05/2028' } },
+  { photo: adaezePhoto, name: 'Adaeze Ohazuruike', role: 'Founder & CEO', credential: { title: 'Certified UK Knowledge Agent & Counsellor', sub: 'British Council, via ApplyBoard, valid until 05/2028', proof: adaezeCertificate } },
   { photo: increasePhoto, name: 'Increase Uchechukwu', role: 'Writer, SOP & CV Specialist' },
   { photo: nnennaPhoto, name: 'Ugwuoke Nnenna Juliet', role: 'Strategy and Operations Lead' },
   { photo: joshuaPhoto, name: 'Awoniyi Joshua Ayodeji', role: 'Research Assistant' },
@@ -141,13 +142,24 @@ export default function About() {
                     </div>
                   </div>
                   {m.credential && (
-                    <div className="cred-badge">
-                      <span className="cb-icon"><GraduationCapIcon size={16} /></span>
-                      <div>
-                        <div className="cb-title">{m.credential.title}</div>
-                        <div className="cb-sub">{m.credential.sub}</div>
+                    m.credential.proof ? (
+                      <a className="cred-badge cred-badge-link" href={m.credential.proof} target="_blank" rel="noopener noreferrer">
+                        <span className="cb-icon"><GraduationCapIcon size={16} /></span>
+                        <div>
+                          <div className="cb-title">{m.credential.title}</div>
+                          <div className="cb-sub">{m.credential.sub}</div>
+                          <div className="cb-verify">View Certificate →</div>
+                        </div>
+                      </a>
+                    ) : (
+                      <div className="cred-badge">
+                        <span className="cb-icon"><GraduationCapIcon size={16} /></span>
+                        <div>
+                          <div className="cb-title">{m.credential.title}</div>
+                          <div className="cb-sub">{m.credential.sub}</div>
+                        </div>
                       </div>
-                    </div>
+                    )
                   )}
                 </div>
               ))}

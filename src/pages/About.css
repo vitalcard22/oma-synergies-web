@@ -111,6 +111,15 @@
   .cred-badge .cb-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
   .cred-badge .cb-title{font-size:12.5px;font-weight:600;color:var(--navy);}
   .cred-badge .cb-sub{font-size:11.5px;color:var(--slate);margin-top:2px;}
+  /* Real, viewable proof behind "Real credentials you can verify yourself"
+     above - previously just text asserting a credential with nothing to
+     actually click and check. Same badge shape/colors, just made
+     interactive: border/background shift on hover, and a small
+     "View Certificate" link (matching the site's existing "Learn More"/
+     "View Service" link language) makes clear it opens something. */
+  a.cred-badge-link{transition:border-color .2s ease, background .2s ease;cursor:pointer;}
+  a.cred-badge-link:hover{border-color:var(--gold);background:var(--white);}
+  .cb-verify{font-family:var(--font-mono);font-size:10.5px;color:var(--gold);margin-top:6px;font-weight:600;}
   /* Team members' content lengths vary a lot (one has a two-line credential
      badge, the other three don't), so forcing a 2-column grid here risked
      visibly mismatched row heights - the same fix used for Why Choose Us
@@ -127,6 +136,7 @@
     .cred-badge{padding:10px 12px;}
     .cred-badge .cb-title{font-size:12px;}
     .cred-badge .cb-sub{font-size:11px;}
+    .cb-verify{font-size:10px;margin-top:5px;}
   }
 
   /* memberships / partners recap */
