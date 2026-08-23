@@ -575,10 +575,13 @@
 
   /* ===== DESTINATIONS ===== */
   /* #destinations was a bare <section> with no responsive padding override -
-     same issue already found and fixed on #faq. Desktop stays at 100px. */
+     same issue already found and fixed on #faq. Desktop was left at the
+     bare 100px default in that pass - tightening now for consistency with
+     the same treatment already applied to What We Do and others. */
+  #destinations{padding-top:72px;padding-bottom:72px;}
   @media(max-width:900px){#destinations{padding:56px 0;}}
   @media(max-width:480px){#destinations{padding:36px 0;}}
-  .dest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;}
+  .dest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;}
   .dest-card{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/5;cursor:pointer;}
   .dest-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;}
   .dest-card:hover img{transform:scale(1.08);}
@@ -587,7 +590,7 @@
   .dest-card:hover::after{border-color:var(--gold);}
   .dest-overlay h4{font-family:var(--display);font-size:20px;margin-bottom:6px;}
   .dest-overlay .stat{font-family:var(--mono);font-size:11.5px;color:var(--gold-soft);}
-  .dest-cta{text-align:center;margin-top:48px;}
+  .dest-cta{text-align:center;margin-top:40px;}
   /* Same single-column collapse fix already applied to the standalone
      Destinations page - force a compact 2-column grid on phones instead of
      12 large full-width portrait cards stacked with big gaps. */
