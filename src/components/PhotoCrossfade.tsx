@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './PhotoCrossfade.css';
 
 interface Props {
@@ -10,7 +10,6 @@ interface Props {
 export default function PhotoCrossfade({ images, alts, holdMs = 4500 }: Props) {
   const [active, setActive] = useState(0);
   const [zoomIn, setZoomIn] = useState(true);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -24,7 +23,7 @@ export default function PhotoCrossfade({ images, alts, holdMs = 4500 }: Props) {
   }, [images.length, holdMs]);
 
   return (
-    <div className="photo-crossfade" ref={containerRef}>
+    <div className="photo-crossfade">
       {images.map((src, i) => (
         <img
           key={src}
