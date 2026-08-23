@@ -113,6 +113,7 @@ export default function Home() {
   useScrollReveal();
   useStaggerReveal('.service-grid.stagger', '.service-card');
   useStaggerReveal('.test-track.stagger', '.test-card, .video-slot');
+  useStaggerReveal('.dest-grid.stagger', '.dest-card');
   const statsRef = useCountUp();
   const heroStatsRef = useCountUp();
 
@@ -650,9 +651,16 @@ export default function Home() {
             <h2>12 flagship destinations. Worldwide reach.</h2>
             <p>Full admissions and visa guidance across our premium destinations in the Americas, Europe, Asia and Oceania, with support available for students and travelers headed anywhere else too.</p>
           </div>
-          <div className="dest-grid reveal">
+          <div className="dest-grid stagger">
             {DESTINATIONS.map((d) => (
-              <Link to={`/destinations/${d.slug}`} className="dest-card" key={d.slug}>
+              <Link
+                to={`/destinations/${d.slug}`}
+                className="dest-card"
+                key={d.slug}
+                onTouchStart={(e) => e.currentTarget.classList.add('touch-active')}
+                onTouchEnd={(e) => e.currentTarget.classList.remove('touch-active')}
+                onTouchCancel={(e) => e.currentTarget.classList.remove('touch-active')}
+              >
                 <img src={d.img} alt={d.name} loading="lazy" />
                 <div className="dest-overlay">
                   <h4>{d.name}</h4>

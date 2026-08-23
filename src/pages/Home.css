@@ -582,12 +582,47 @@
   @media(max-width:900px){#destinations{padding:56px 0;}}
   @media(max-width:480px){#destinations{padding:36px 0;}}
   .dest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;}
-  .dest-card{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/5;cursor:pointer;}
+  /* Was a single .reveal fade for the whole grid at once - now each card
+     cascades in individually as you scroll to it, matching the same
+     stagger pattern already used for service cards/testimonials, just with
+     a smaller 40ms step since there are 12 cards here rather than 4-6
+     (a 60-80ms step across 12 would spread the reveal out for over a
+     second, which reads as sluggish rather than soft). */
+  .dest-card{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/5;cursor:pointer;opacity:0;transform:translateY(20px);transition:opacity .5s ease, transform .5s cubic-bezier(.19,1,.22,1), box-shadow .3s ease;}
+  .dest-card.in{opacity:1;transform:translateY(0);}
+  .dest-grid .dest-card:nth-child(1){transition-delay:0ms;}
+  .dest-grid .dest-card:nth-child(2){transition-delay:40ms;}
+  .dest-grid .dest-card:nth-child(3){transition-delay:80ms;}
+  .dest-grid .dest-card:nth-child(4){transition-delay:120ms;}
+  .dest-grid .dest-card:nth-child(5){transition-delay:160ms;}
+  .dest-grid .dest-card:nth-child(6){transition-delay:200ms;}
+  .dest-grid .dest-card:nth-child(7){transition-delay:240ms;}
+  .dest-grid .dest-card:nth-child(8){transition-delay:280ms;}
+  .dest-grid .dest-card:nth-child(9){transition-delay:320ms;}
+  .dest-grid .dest-card:nth-child(10){transition-delay:360ms;}
+  .dest-grid .dest-card:nth-child(11){transition-delay:400ms;}
+  .dest-grid .dest-card:nth-child(12){transition-delay:440ms;}
+  @media(prefers-reduced-motion:reduce){.dest-card{transition:none;}}
   .dest-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;}
-  .dest-card:hover img{transform:scale(1.08);}
   .dest-overlay{position:absolute;inset:0;background:linear-gradient(to top, rgba(20,21,42,0.92) 0%, rgba(20,21,42,0.15) 55%, transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:24px;color:var(--white);}
   .dest-card::after{content:"";position:absolute;inset:0;border:2px solid transparent;border-radius:16px;transition:border-color .3s ease;pointer-events:none;}
-  .dest-card:hover::after{border-color:var(--gold);}
+  /* Hover-capable pointers only (mouse/trackpad) - a bare :hover here would
+     read as "stuck" on touch devices, since tapping a link and then moving
+     on doesn't fire the mouseleave that would normally clear it. Touch gets
+     its own equivalent below instead, tied to real touchstart/touchend so
+     it can't get stuck the same way. */
+  @media(hover:hover) and (pointer:fine){
+    .dest-card:hover img{transform:scale(1.08);}
+    .dest-card:hover::after{border-color:var(--gold);}
+    .dest-card:hover{box-shadow:0 16px 32px rgba(20,21,42,0.22);}
+  }
+  /* Touch equivalent of the hover effect above - a softer version (smaller
+     zoom, no shadow, since a shadow underneath a full-bleed photo card
+     reads oddly without the surrounding lift a mouse hover implies) that
+     responds to an actual press-and-release rather than a pseudo-class
+     that can't reliably clear itself on touch. */
+  .dest-card.touch-active img{transform:scale(1.04);}
+  .dest-card.touch-active::after{border-color:var(--gold);}
   .dest-overlay h4{font-family:var(--display);font-size:20px;margin-bottom:6px;}
   .dest-overlay .stat{font-family:var(--mono);font-size:11.5px;color:var(--gold-soft);}
   .dest-cta{text-align:center;margin-top:40px;}
