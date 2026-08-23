@@ -835,7 +835,15 @@
      section{padding:100px 0} default, with no responsive override at all -
      unlike its neighbors above (Why Choose Us) and below (Final CTA) which
      were already tightened for mobile. That mismatch is what widened the
-     gap around this section on phones. Desktop stays at the same 100px. */
+     gap around this section on phones. Desktop was left at the same 100px
+     in that pass - tightening now for consistency with the same treatment
+     applied everywhere else this session. Declared before the media
+     queries below, not after - both target #faq with identical
+     specificity, so source order decides ties, and the base rule has to
+     come first or it silently wins at every width regardless of the media
+     queries (the exact bug caught and fixed on What We Do earlier in this
+     same sweep). */
+  #faq{padding-top:72px;padding-bottom:72px;}
   @media(max-width:900px){#faq{padding:56px 0;}}
   @media(max-width:480px){#faq{padding:36px 0;}}
   /* Scoped to this section only - .section-head is shared across the page,
