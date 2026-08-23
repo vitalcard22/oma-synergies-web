@@ -659,9 +659,12 @@
   @media(max-width:900px){.test-wrap section{padding:56px 0;}}
   @media(max-width:480px){.test-wrap section{padding:28px 0;}}
   /* Was previously a bare <section> relying entirely on the global
-     section{padding:100px 0} default - preserved that exact value here so
-     desktop is visually unchanged, only adding a tighter mobile override. */
-  .why-choose-section{padding:100px 0;}
+     section{padding:100px 0} default. Desktop was deliberately left at
+     100px in that earlier pass ("visually unchanged, only adding a
+     tighter mobile override") - tightening now for consistency with the
+     same treatment applied to What We Do/Destinations elsewhere this
+     session. */
+  .why-choose-section{padding:72px 0;}
   @media(max-width:900px){.why-choose-section{padding:56px 0;}}
   .test-track{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;}
   /* flex:0 0 340px (not just min-width) is what actually matters here - a
@@ -726,13 +729,13 @@
   }
 
   /* ===== WHY CHOOSE US ===== */
-  .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px;}
+  .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:26px;}
   .why-item{padding-top:20px;border-top:2px solid var(--navy);}
   .why-item.featured{border-top-color:var(--gold);}
   .why-item h4{font-family:var(--display);font-size:17px;margin-bottom:10px;}
   .why-item p{font-size:14px;color:var(--slate);}
   .why-item .badge-new{display:inline-block;font-family:var(--mono);font-size:10px;color:var(--gold);background:rgba(240,177,36,0.12);padding:3px 8px;border-radius:6px;margin-bottom:10px;letter-spacing:0.05em;}
-  .why-tagline{margin-top:56px;padding-top:40px;border-top:1px solid var(--line-dark);text-align:center;}
+  .why-tagline{margin-top:40px;padding-top:32px;border-top:1px solid var(--line-dark);text-align:center;}
   .why-tagline .line-1{font-family:var(--display);font-weight:600;font-size:clamp(19px,2.4vw,26px);color:var(--navy);margin-bottom:8px;}
   .why-tagline .line-2{font-size:14.5px;color:var(--slate);font-style:italic;}
   /* Below ~544px container width, the auto-fit grid above collapses to a
