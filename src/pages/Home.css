@@ -885,7 +885,16 @@
   @media(max-width:480px){.faq-more{margin-top:20px;font-size:13.5px;}}
 
   /* ===== FINAL CTA ===== */
-  .final-cta{background:radial-gradient(120% 140% at 50% 0%, var(--navy-soft), var(--navy-deep) 70%);color:var(--white);text-align:center;padding:120px 0;position:relative;overflow:hidden;}
+  /* Unlike the other sections tightened this session, this one already had
+     complete padding coverage at every breakpoint - no missing desktop
+     treatment to fix. 120px was a deliberate choice (slightly more than the
+     ~100px default used elsewhere), which makes some sense for the page's
+     closing statement. Still meaningfully more than the ~72px range the
+     rest of the homepage settled on though, so trimmed it partway rather
+     than all the way - keeps this section reading as a touch more spacious
+     than the others (fitting, as the last thing on the page) without being
+     the outlier it was before. */
+  .final-cta{background:radial-gradient(120% 140% at 50% 0%, var(--navy-soft), var(--navy-deep) 70%);color:var(--white);text-align:center;padding:90px 0;position:relative;overflow:hidden;}
   .final-cta h2{font-size:clamp(30px,4vw,46px);max-width:680px;margin:0 auto 22px;}
   .final-cta p{color:var(--ink-muted);max-width:480px;margin:0 auto 38px;}
   .final-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
