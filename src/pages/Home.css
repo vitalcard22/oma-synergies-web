@@ -762,10 +762,7 @@
   .partners-section{padding:70px 0;border-top:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark);background:var(--paper);}
   .partners-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
   @media(max-width:900px){.partners-grid{grid-template-columns:minmax(0,1fr);}}
-  .partners-label{text-align:center;margin-bottom:34px;}
   .partners-row{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;}
-  .partner-name{font-family:var(--display);font-weight:600;font-size:18px;color:var(--navy);opacity:0.55;transition:opacity .3s ease, transform .3s ease;letter-spacing:-0.01em;}
-  .partner-name:hover{opacity:1;transform:translateY(-2px);}
   /* Logos arrive with their own solid backgrounds baked in (white, blue,
      black, charcoal - not transparent), so putting them straight into a
      shared box either crops them or leaves a color clash at the edges.
@@ -780,50 +777,61 @@
     display:inline-flex;align-items:center;justify-content:center;
     min-width:150px;min-height:64px;padding:12px 20px;
     background:var(--white);border:1px solid var(--line-dark);border-radius:12px;
+    flex-shrink:0;
     transition:transform .3s ease, box-shadow .3s ease;
   }
-  .partner-logo-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(20,21,42,0.1);}
+  /* Hover-capable pointers only (mouse/trackpad) - a bare :hover here would
+     read as "stuck" on touch devices, since tapping and moving on doesn't
+     fire the mouseleave that would normally clear it. Same category of bug
+     already found and fixed on Destinations/How It Works/FAQ. */
+  @media(hover:hover) and (pointer:fine){
+    .partner-logo-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(20,21,42,0.1);}
+    /* Marquee pauses on real mouse hover too now that it animates at every
+       width, not just on touch/press - lets someone stop to actually read
+       a logo without it sliding out from under their cursor. */
+    .partners-row:hover{animation-play-state:paused;}
+  }
   .partner-logo-card img{display:block;height:30px;width:auto;max-width:100%;}
-  /* Duplicate set for the seamless auto-scroll loop below - hidden by
-     default (desktop/tablet keep the static wrapped grid), only revealed
-     at <=480px where the row becomes an animated track. */
-  .partner-logo-card-dup{display:none;}
-  /* Single scrollable row instead of wrapping to two uneven rows - saves
-     vertical height and scales cleanly if more partners are added later
-     without the grid ever looking lopsided. */
-  .partners-scroll-wrap{position:relative;}
+  /* Duplicate set for the seamless auto-scroll loop - aria-hidden since
+     it's a visual repeat of the same 4 real cards above, not new content. */
+  .partner-logo-card-dup{display:inline-flex;}
+  /* Single continuously-scrolling row instead of a static wrapped grid -
+     shared to every width now, matching the same animated treatment mobile
+     already had (was previously mobile-only, <=480px). Saves vertical
+     height and scales cleanly if more partners are added later, without
+     the grid ever looking lopsided at any screen size. */
+  .partners-scroll-wrap{position:relative;overflow:hidden;}
   /* Grid/flex items default to min-width:auto, refusing to shrink below
      their content's natural width - that's what let the scroll row push
      the whole page wider instead of scrolling within its own bounds.
      min-width:0 down this chain is what keeps the animated track properly
      clipped instead of overflowing the page. */
   .partners-copy, .partners-scroll-wrap{min-width:0;}
+  /* Continuous auto-scroll instead of a static grid - the row holds the
+     real 4 cards plus an aria-hidden duplicate set back-to-back, sized to
+     width:max-content so it can render at its full natural width. The
+     wrapper clips that overflow (overflow:hidden above) while the row
+     itself animates via transform, translating exactly -50% of its own
+     width - since both halves are pixel-identical, that lands precisely
+     on the start of the duplicate half and the loop is invisible. Paused
+     on touch/press (or real mouse hover, see above) so someone can still
+     stop to read a logo without it sliding away. */
+  .partners-row{
+    flex-wrap:nowrap;justify-content:flex-start;gap:16px;
+    width:max-content;
+    animation:partnerMarquee 22s linear infinite;
+  }
+  .partners-row:active, .partners-row.is-paused{animation-play-state:paused;}
   @media(max-width:480px){
-    /* Continuous auto-scroll instead of manual swipe - the row holds the
-       real 4 cards plus an aria-hidden duplicate set back-to-back, sized to
-       width:max-content so it can render at its full natural width. The
-       wrapper clips that overflow (overflow:hidden) while the row itself
-       animates via transform, translating exactly -50% of its own width -
-       since both halves are pixel-identical, that lands precisely on the
-       start of the duplicate half and the loop is invisible. Paused on
-       touch/press so someone can still stop to read a logo without it
-       sliding out from under their thumb. */
-    .partners-scroll-wrap{overflow:hidden;}
-    .partners-row{
-      flex-wrap:nowrap;justify-content:flex-start;gap:12px;
-      width:max-content;
-      animation:partnerMarquee 16s linear infinite;
-    }
-    .partners-row:active, .partners-row.is-paused{animation-play-state:paused;}
-    .partner-logo-card-dup{display:inline-flex;}
-    .partner-logo-card{flex-shrink:0;min-width:126px;min-height:52px;padding:9px 16px;}
+    .partners-row{gap:12px;animation-duration:16s;}
+    .partner-logo-card{min-width:126px;min-height:52px;padding:9px 16px;}
     .partner-logo-card img{height:24px;}
   }
   @keyframes partnerMarquee{
     from{transform:translateX(0);}
     to{transform:translateX(-50%);}
   }
-  @media(max-width:480px) and (prefers-reduced-motion:reduce){
+  @media(prefers-reduced-motion:reduce){
     .partners-row{animation:none;}
   }
   .partners-photo{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:4/3;}
