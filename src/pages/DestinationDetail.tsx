@@ -93,7 +93,7 @@ export default function DestinationDetail() {
           <h2>Let's map your path to {d.name}</h2>
           <p>Every {d.name} application is different. Let's talk about yours.</p>
           <div className="final-actions">
-            <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
+            <a href="https://selar.com/h5s9957y17" target="_blank" rel="noopener noreferrer" className="btn btn-gold">Book a Consultation</a>
             <Link to="/destinations" className="btn btn-outline">View All Destinations</Link>
           </div>
         </div>

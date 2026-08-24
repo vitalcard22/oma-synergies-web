@@ -51,7 +51,7 @@ export default function Header() {
           </ul>
           <div className="nav-cta">
             <Link to="/portal" className="btn btn-outline">Client Login</Link>
-            <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
+            <a href="https://selar.com/h5s9957y17" target="_blank" rel="noopener noreferrer" className="btn btn-gold">Book a Consultation</a>
           </div>
           <button
             className={menuOpen ? 'menu-toggle open' : 'menu-toggle'}
@@ -76,7 +76,7 @@ export default function Header() {
         </ul>
         <div className="mobile-nav-cta">
           <Link to="/portal" className="btn btn-outline" onClick={() => setMenuOpen(false)}>Client Login</Link>
-          <Link to="/contact" className="btn btn-gold" onClick={() => setMenuOpen(false)}>Book a Consultation</Link>
+          <a href="https://selar.com/h5s9957y17" target="_blank" rel="noopener noreferrer" className="btn btn-gold" onClick={() => setMenuOpen(false)}>Book a Consultation</a>
         </div>
       </div>
     </header>

@@ -119,7 +119,7 @@ function ServiceDetailContent({ service }: { service: NonNullable<ReturnType<typ
           <h2>{service.ctaHeadline}</h2>
           <p>A quick call, real answers, no pressure.</p>
           <div className="final-actions">
-            <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
+            <a href="https://selar.com/h5s9957y17" target="_blank" rel="noopener noreferrer" className="btn btn-gold">Book a Consultation</a>
             <Link to="/services" className="btn btn-outline">View All Services</Link>
           </div>
           <a href="https://wa.me/2348067696464" target="_blank" rel="noopener noreferrer" className="svc-whatsapp">

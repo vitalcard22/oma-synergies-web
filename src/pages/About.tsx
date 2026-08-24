@@ -209,7 +209,7 @@ export default function About() {
           <h2 className="reveal">You've read our story. Let's start yours.</h2>
           <p className="reveal">One conversation is all it takes to find out where you stand.</p>
           <div className="about-cta-actions reveal">
-            <Link to="/contact" className="btn btn-gold">Book a Consultation</Link>
+            <a href="https://selar.com/h5s9957y17" target="_blank" rel="noopener noreferrer" className="btn btn-gold">Book a Consultation</a>
             <Link to="/" className="btn btn-outline">Back to Home</Link>
           </div>
         </div>
