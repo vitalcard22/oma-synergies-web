@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import officePhoto from '../assets/office.jpg';
@@ -133,7 +134,9 @@ export default function Contact() {
                 <div className="reach-orbit-center">
                   <span className="reach-orbit-ring r1" />
                   <span className="reach-orbit-ring r2" />
-                  <img src={logoIcon} alt="" />
+                  <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                    <img src={logoIcon} alt="Oma Synergies – go to home" />
+                  </Link>
                 </div>
                 <a className="reach-orbit-point p-email" href="mailto:Omasynergiestravels@gmail.com">
                   <span className="reach-badge email"><MailIcon size={16} /></span>
