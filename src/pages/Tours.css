@@ -1,30 +1,32 @@
-  :root{
-    --navy:#1F2035; --navy-soft:#262A47; --navy-deep:#14152A;
-    --gold:#F0B124; --gold-soft:#F6C863; --paper:#F7F6F3; --slate:#5B5F76; --white:#FFFFFF;
-    --ink-muted:rgba(255,255,255,0.62); --line:rgba(255,255,255,0.14); --line-dark:rgba(31,32,53,0.12);
-    --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
-  }
+  html{scroll-behavior:smooth;}
 
 
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
+  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
   .btn-gold{background:var(--gold);color:var(--navy-deep);}
   .btn-gold:hover{background:var(--gold-soft);}
   .btn-outline{border-color:rgba(255,255,255,0.35);color:var(--white);}
   .btn-outline:hover{border-color:var(--white);background:rgba(255,255,255,0.06);}
 
 
-  .page-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:150px 0 60px;}
-  @media(max-width:900px){.page-hero{padding:88px 0 40px;}}
-  .page-hero h1{color:var(--white);font-size:clamp(32px,4.4vw,50px);margin-top:16px;max-width:640px;}
-  .page-hero p{margin-top:16px;font-size:16px;color:var(--ink-muted);max-width:560px;}
+  .page-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:96px 0 48px;}
+  .tours-content{padding-top:56px;padding-bottom:56px;}
+  @media(max-width:900px){.page-hero{padding:88px 0 40px;}.tours-content{padding:56px 0;}}
+  @media(max-width:480px){.page-hero{padding:64px 0 32px;}.tours-content{padding:36px 0;}}
+  .page-hero h1{color:var(--white);font-size:clamp(28px,3.4vw,42px);margin-top:14px;max-width:600px;line-height:1.2;}
+  .page-hero p{margin-top:14px;font-size:15px;color:var(--ink-muted);max-width:520px;}
+  @media(max-width:480px){
+    .page-hero h1{font-size:26px;line-height:1.25;margin-top:10px;}
+    .page-hero p{margin-top:10px;font-size:13.5px;}
+  }
 
-  .cat-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px;}
-  .cat-btn{font-family:var(--mono);font-size:12px;padding:9px 18px;border-radius:100px;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.7);cursor:pointer;background:transparent;transition:all .25s ease;}
+  .cat-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;}
+  @media(max-width:480px){.cat-bar{gap:8px;margin-top:20px;}}
+  .cat-btn{font-family:var(--font-mono);font-size:12px;padding:9px 18px;border-radius:100px;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.7);cursor:pointer;background:transparent;transition:all .25s ease;}
   .cat-btn:hover{border-color:var(--gold);color:var(--white);}
   .cat-btn.active{background:var(--gold);color:var(--navy-deep);border-color:var(--gold);}
+  @media(max-width:480px){.cat-btn{padding:7px 14px;font-size:11px;}}
 
   .tour-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;}
-  @media(max-width:900px){.tours-content{padding:56px 0;}}
   .tour-card{background:var(--white);border:1px solid var(--line-dark);border-radius:18px;overflow:hidden;transition:transform .3s ease, box-shadow .3s ease;}
   @media(hover:hover) and (pointer:fine){.tour-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(31,32,53,0.1);}}
   /* Aspect-ratio instead of fixed height — same fix as the homepage teaser.
@@ -35,21 +37,21 @@
   .tour-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
   @media(hover:hover) and (pointer:fine){.tour-card:hover .tour-img img{transform:scale(1.06);}}
   .tour-img-pending{display:flex;align-items:center;justify-content:center;}
-  .tour-img-pending-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.55);letter-spacing:0.04em;}
+  .tour-img-pending-label{font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,0.55);letter-spacing:0.04em;}
   /* Gradient covers both lines. Duration: smaller, muted, above.
      Price: bigger, bold, bottom. Clear hierarchy, price findable at a glance. */
   .tour-img-overlay{position:absolute;left:0;right:0;bottom:0;padding:46px 18px 14px;background:linear-gradient(to top, rgba(20,21,42,0.92) 0%, rgba(20,21,42,0.5) 55%, transparent 100%);color:var(--white);}
-  .tour-img-duration{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.78);letter-spacing:0.03em;margin-bottom:3px;}
-  .tour-img-price{font-family:var(--mono);font-weight:700;font-size:17px;letter-spacing:0.01em;}
+  .tour-img-duration{font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,0.78);letter-spacing:0.03em;margin-bottom:3px;}
+  .tour-img-price{font-family:var(--font-mono);font-weight:700;font-size:17px;letter-spacing:0.01em;}
   .tour-body{padding:18px 22px 22px;}
-  .tour-body h4{font-family:var(--display);font-size:17px;margin-bottom:8px;}
+  .tour-body h4{font-family:var(--font-display);font-size:17px;margin-bottom:8px;}
   /* Confirms which trip types a tour is actually bookable for - the filter
      tabs above the grid only decide which cards show, they don't explain
      why a card appears under a given tab, and every tour here currently
      matches every tab, which looks like the filter is broken without this. */
   .tour-cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
-  .tour-cat-tag{font-family:var(--mono);font-size:10px;color:var(--slate);background:var(--paper);border:1px solid var(--line-dark);padding:3px 9px;border-radius:100px;letter-spacing:0.02em;}
-  .tour-price{font-family:var(--mono);font-size:15px;color:var(--navy);font-weight:600;margin-bottom:8px;}
+  .tour-cat-tag{font-family:var(--font-mono);font-size:10px;color:var(--slate);background:var(--paper);border:1px solid var(--line-dark);padding:3px 9px;border-radius:100px;letter-spacing:0.02em;}
+  .tour-price{font-family:var(--font-mono);font-size:15px;color:var(--navy);font-weight:600;margin-bottom:8px;}
   .tour-price span{font-size:11px;color:var(--slate);font-weight:400;}
   .tour-discount{font-size:12.5px;color:var(--navy);background:rgba(240,177,36,0.16);border-radius:8px;padding:8px 12px;margin-bottom:10px;}
   .tour-discount span{color:var(--slate);}
@@ -57,14 +59,15 @@
   .tour-book-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-weight:600;font-size:13.5px;color:var(--navy);background:var(--paper);border:1px solid var(--line-dark);padding:11px 16px;border-radius:100px;transition:all .25s ease;}
   .tour-book-btn:hover{background:var(--gold);border-color:var(--gold);}
 
-  .custom-cta{margin-top:60px;background:var(--navy);color:var(--white);border-radius:20px;padding:50px 44px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
+  .custom-cta{margin-top:44px;background:var(--navy);color:var(--white);border-radius:20px;padding:40px 38px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
   @media(max-width:900px){.custom-cta{margin-top:36px;padding:32px 26px;}}
-  .custom-cta h3{font-size:22px;margin-bottom:8px;}
-  .custom-cta p{color:var(--ink-muted);font-size:14.5px;max-width:440px;}
+  @media(max-width:480px){.custom-cta{margin-top:24px;padding:24px 20px;gap:16px;}}
+  .custom-cta h3{font-size:20px;margin-bottom:8px;}
+  .custom-cta p{color:var(--ink-muted);font-size:14px;max-width:440px;}
 
-  .tour-terms{margin-top:40px;padding-top:32px;border-top:1px solid var(--line-dark);}
+  .tour-terms{margin-top:32px;padding-top:28px;border-top:1px solid var(--line-dark);}
   @media(max-width:900px){.tour-terms{margin-top:28px;padding-top:22px;}}
-  .tour-terms h3{font-family:var(--display);font-size:16px;margin-bottom:12px;color:var(--navy);}
-  .tour-terms ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
-  .tour-terms li{font-size:13px;color:var(--slate);line-height:1.5;padding-left:16px;position:relative;}
+  .tour-terms h3{font-family:var(--font-display);font-size:15px;margin-bottom:10px;color:var(--navy);}
+  .tour-terms ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .tour-terms li{font-size:12.5px;color:var(--slate);line-height:1.5;padding-left:16px;position:relative;}
   .tour-terms li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:var(--gold);}
