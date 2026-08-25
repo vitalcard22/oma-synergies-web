@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { TOURS, GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira, getDiscountedFromPrice } from '../data/tours';
+import { TOURS, GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira, formatDuration, getDiscountedFromPrice } from '../data/tours';
 import './Tours.css';
 
 const CATEGORIES = ['all', 'Group Tours', 'Honeymoon', 'Solo', 'Family'] as const;
@@ -54,14 +54,14 @@ export default function Tours() {
               <div className="tour-card" key={t.slug}>
                 <div className="tour-body">
                   <h4>{t.name}</h4>
-                  <div className="tour-meta"><span>{t.nights} Nights</span></div>
+                  <div className="tour-meta"><span>{formatDuration(t.nights)}</span></div>
                   <div className="tour-cats">
                     {t.categories.map((c) => (
                       <span className="tour-cat-tag" key={c}>{c}</span>
                     ))}
                   </div>
                   <div className="tour-price">
-                    {formatNaira(t.fromPrice)}<span> per person, from</span>
+                    {formatNaira(t.fromPrice)}<span> {t.perPersonSharing ? 'per person sharing, from' : 'per person, from'}</span>
                   </div>
                   {pricingNote.showDiscount && (
                     <div className="tour-discount">
@@ -81,6 +81,15 @@ export default function Tours() {
               <p>Every trip can be fully customized, tell us your dates, budget, and vibe, and we'll build something just for you.</p>
             </div>
             <Link to="/contact" className="btn btn-gold">Request a Custom Trip</Link>
+          </div>
+
+          <div className="tour-terms">
+            <h3>Terms &amp; Conditions</h3>
+            <ul>
+              <li>Package rates displayed are subject to change and availability.</li>
+              <li>Flight rates are not inclusive.</li>
+              <li>Offer is not inclusive of travel expenses like travel insurance, medical expenses, laundry, beverages, meals, activities &amp; personal transfers, etc., other than stated above.</li>
+            </ul>
           </div>
         </div>
       </section>

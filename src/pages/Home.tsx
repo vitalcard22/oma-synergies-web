@@ -9,7 +9,7 @@ import { useCountUp } from '../hooks/useCountUp';
 import logoIcon from '../assets/logo-icon.png';
 import { DESTINATIONS } from '../data/destinations';
 import { TESTIMONIALS } from '../data/testimonials';
-import { TOURS, GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira } from '../data/tours';
+import { TOURS, GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira, formatDuration } from '../data/tours';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import wwdTeamPhoto from '../assets/wwd-team.jpg';
 import wwdStaffDesk from '../assets/wwd-staff-desk.jpg';
@@ -685,7 +685,7 @@ export default function Home() {
               <div className="tour-card" key={t.slug}>
                 <div className="tour-body">
                   <h4>{t.name}</h4>
-                  <div className="meta">{t.nights} Nights · From {formatNaira(t.fromPrice)}</div>
+                  <div className="meta">{formatDuration(t.nights)} · From {formatNaira(t.fromPrice)}</div>
                   <div className="tour-discount">Groups of {GROUP_DISCOUNT_MIN_SIZE}+ save {GROUP_DISCOUNT_PERCENT}% per person</div>
                   <Link to="/contact" className="tour-book-btn">Book Now →</Link>
                 </div>

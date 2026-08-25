@@ -49,5 +49,9 @@
   .custom-cta h3{font-size:22px;margin-bottom:8px;}
   .custom-cta p{color:var(--ink-muted);font-size:14.5px;max-width:440px;}
 
-  .footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center;font-size:12.5px;font-family:var(--mono);}
-  .footer-inner a:hover{color:var(--gold);}
+  .tour-terms{margin-top:40px;padding-top:32px;border-top:1px solid var(--line-dark);}
+  @media(max-width:900px){.tour-terms{margin-top:28px;padding-top:22px;}}
+  .tour-terms h3{font-family:var(--display);font-size:16px;margin-bottom:12px;color:var(--navy);}
+  .tour-terms ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .tour-terms li{font-size:13px;color:var(--slate);line-height:1.5;padding-left:16px;position:relative;}
+  .tour-terms li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:var(--gold);}
