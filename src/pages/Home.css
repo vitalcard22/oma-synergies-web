@@ -656,10 +656,6 @@
      "Mauritius" off the left. Width:100% here means 100% of the flex
      container (the strip), which is exactly the available padded area. */
   .tour-card{min-width:280px;max-width:380px;scroll-snap-align:start;background:var(--white);border:1px solid var(--line-dark);border-radius:16px;overflow:hidden;flex-shrink:0;}
-  @media(max-width:480px){
-    .tour-card{width:100%;max-width:100%;min-width:0;}
-    .tours-strip{gap:16px;}
-  }
   /* Switch from fixed height to aspect-ratio so the full photo composition
      shows top-to-bottom. Source photos are 900x675 (4:3). On a ~363px-wide
      card, the old fixed 200px was cropping away ~27% of the image height —
@@ -682,6 +678,18 @@
   .tour-discount{font-size:12px;color:var(--navy);background:rgba(240,177,36,0.16);border-radius:6px;padding:4px 9px;margin-bottom:8px;display:inline-block;}
   .tour-book-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--body);font-weight:600;font-size:13px;color:var(--navy);background:var(--paper);border:1px solid var(--line-dark);padding:9px 16px;border-radius:100px;transition:background .25s ease,border-color .25s ease,transform .2s ease;}
   .tour-book-btn:hover{background:var(--gold);border-color:var(--gold);transform:translateX(2px);}
+  /* All <=480px tour card overrides in one block, placed AFTER all base
+     rules above - same specificity so source order decides, and the media
+     query must come last to win (this is the same cascade-ordering bug
+     already caught and fixed 3 times this session on other sections). */
+  @media(max-width:480px){
+    .tour-card{width:100%;max-width:100%;min-width:0;}
+    .tours-strip{gap:16px;}
+    .tour-body{padding:6px 12px 10px;}
+    .tour-body h4{font-size:15px;margin-bottom:2px;}
+    .tour-discount{font-size:11px;padding:3px 8px;margin-bottom:4px;}
+    .tour-book-btn{font-size:12px;padding:7px 14px;width:100%;justify-content:center;}
+  }
 
   /* ===== TESTIMONIALS ===== */
   .test-wrap{background:var(--navy);color:var(--white);position:relative;overflow:hidden;}
