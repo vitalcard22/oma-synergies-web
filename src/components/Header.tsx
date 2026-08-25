@@ -37,7 +37,11 @@ export default function Header() {
     <header className={scrolled || menuOpen ? 'site-header scrolled' : 'site-header'}>
       <div className="wrap">
         <nav>
-          <Link to="/" className="logo-mark">
+          <Link
+            to="/"
+            className="logo-mark"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
             <img src={logoIcon} alt="Oma Synergies" loading="eager" />
             <span className="logo-text">
               <span className="logo-name">OMA SYNERGIES</span>
