@@ -646,7 +646,20 @@
      between the two sections on mobile. */
   @media(max-width:900px){.tours-section{padding-bottom:56px;}}
   @media(max-width:480px){.tours-section{padding-bottom:28px;}}
+  /* Desktop: max-width:380px keeps cards from stretching too wide in the
+     scrollable strip.
+     Mobile (<=480px): override to width:100% + no max-width so the card
+     fills exactly the available strip width. The strip is 326px wide at
+     390px viewport (wrap has 32px horizontal padding on each side).
+     max-width:380px was wider than that, causing the card to overflow 22px
+     past the right edge of the screen and clipping "4 Days", "From", and
+     "Mauritius" off the left. Width:100% here means 100% of the flex
+     container (the strip), which is exactly the available padded area. */
   .tour-card{min-width:280px;max-width:380px;scroll-snap-align:start;background:var(--white);border:1px solid var(--line-dark);border-radius:16px;overflow:hidden;flex-shrink:0;}
+  @media(max-width:480px){
+    .tour-card{width:100%;max-width:100%;min-width:0;}
+    .tours-strip{gap:16px;}
+  }
   /* Switch from fixed height to aspect-ratio so the full photo composition
      shows top-to-bottom. Source photos are 900x675 (4:3). On a ~363px-wide
      card, the old fixed 200px was cropping away ~27% of the image height —
