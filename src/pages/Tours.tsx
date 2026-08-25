@@ -53,7 +53,10 @@ export default function Tours() {
             {filtered.map((t) => (
               <div className="tour-card" key={t.slug}>
                 {t.img ? (
-                  <div className="tour-img"><img src={t.img} alt={t.name} loading="lazy" /></div>
+                  <div className="tour-img">
+                    <img src={t.img} alt={t.name} loading="lazy" />
+                    <div className="tour-img-price">From {formatNaira(t.fromPrice)}</div>
+                  </div>
                 ) : (
                   <div className="tour-img tour-img-pending">
                     <span className="tour-img-pending-label">Photo coming soon</span>

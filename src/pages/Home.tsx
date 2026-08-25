@@ -684,7 +684,10 @@ export default function Home() {
             {TOURS.map((t) => (
               <div className="tour-card" key={t.slug}>
                 {t.img ? (
-                  <div className="tour-img"><img src={t.img} alt={t.name} loading="lazy" /></div>
+                  <div className="tour-img">
+                    <img src={t.img} alt={t.name} loading="lazy" />
+                    <div className="tour-img-price">From {formatNaira(t.fromPrice)}</div>
+                  </div>
                 ) : (
                   <div className="tour-img tour-img-pending">
                     <span className="tour-img-pending-label">Photo coming soon</span>
@@ -692,7 +695,7 @@ export default function Home() {
                 )}
                 <div className="tour-body">
                   <h4>{t.name}</h4>
-                  <div className="meta">{formatDuration(t.nights)} · From {formatNaira(t.fromPrice)}</div>
+                  <div className="meta">{formatDuration(t.nights)}</div>
                   <div className="tour-discount">Groups of {GROUP_DISCOUNT_MIN_SIZE}+ save {GROUP_DISCOUNT_PERCENT}% per person</div>
                   <Link to="/contact" className="tour-book-btn">Book Now →</Link>
                 </div>
