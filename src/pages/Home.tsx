@@ -683,6 +683,13 @@ export default function Home() {
           <div className="tours-strip reveal">
             {TOURS.map((t) => (
               <div className="tour-card" key={t.slug}>
+                {t.img ? (
+                  <div className="tour-img"><img src={t.img} alt={t.name} loading="lazy" /></div>
+                ) : (
+                  <div className="tour-img tour-img-pending">
+                    <span className="tour-img-pending-label">Photo coming soon</span>
+                  </div>
+                )}
                 <div className="tour-body">
                   <h4>{t.name}</h4>
                   <div className="meta">{formatDuration(t.nights)} · From {formatNaira(t.fromPrice)}</div>
