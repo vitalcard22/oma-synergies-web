@@ -25,55 +25,52 @@
      base rule second would let it silently win at every width regardless
      of the media query (the exact bug this session already caught once on
      What We Do). */
-  .stories-grid-section{padding-top:72px;padding-bottom:72px;}
-  @media(max-width:900px){.page-hero{padding:88px 0 40px;}.stories-grid-section{padding:56px 0;}}
+  /* Per explicit request: bringing mobile's tight spacing to every width
+     instead of scaling padding back up for wider screens. Previously this
+     used a tiered 72px(desktop)/56px(tablet)/36px(phone) scale - now a
+     single 36px applies everywhere, same as mobile always had. */
+  .stories-grid-section{padding-top:36px;padding-bottom:36px;}
+  @media(max-width:900px){.page-hero{padding:88px 0 40px;}}
   .page-hero h1{color:var(--white);font-size:clamp(32px,4.4vw,50px);margin-top:16px;max-width:640px;}
   .page-hero p{margin-top:16px;font-size:16px;color:var(--ink-muted);max-width:560px;}
   @media(max-width:480px){
     .page-hero h1{font-size:26px;line-height:1.25;margin-top:10px;}
     .page-hero p{margin-top:10px;font-size:13.5px;}
-    .filter-bar{margin-top:20px;}
   }
 
-  .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px;}
+  .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
   .filter-btn{font-family:var(--font-mono);font-size:12px;padding:9px 18px;border-radius:100px;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.7);cursor:pointer;background:transparent;transition:all .25s ease;}
   .filter-btn:hover{border-color:var(--gold);color:var(--white);}
   .filter-btn.active{background:var(--gold);color:var(--navy-deep);border-color:var(--gold);}
 
-  .story-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;}
-  .story-card{background:var(--white);border:1px solid var(--line-dark);border-radius:16px;padding:28px;transition:transform .3s ease, box-shadow .3s ease;}
+  /* Card padding/gap and internal spacing brought down to mobile's
+     already-tight values at every width too, not just <=480px - denser
+     cards mean more stories visible per screen, which is the actual goal
+     ("make each story fit on screen") rather than just a smaller number
+     on one breakpoint. */
+  .story-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;}
+  .story-card{background:var(--white);border:1px solid var(--line-dark);border-radius:16px;padding:18px;transition:transform .3s ease, box-shadow .3s ease;}
   /* Was a bare :hover with a transform+shadow lift - same touch-stuck risk
      already found and fixed on Destinations/How It Works/Partners/Tours
      this session. A card that stays visually "lifted" after a tap, with no
      mouseleave to clear it, reads as a stuck/broken state on touch. */
   @media(hover:hover) and (pointer:fine){.story-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(31,32,53,0.08);}}
-  .story-top{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
-  .initial-badge{width:46px;height:46px;border-radius:50%;background:var(--navy);color:var(--gold);font-family:var(--font-display);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+  .story-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .initial-badge{width:42px;height:42px;border-radius:50%;background:var(--navy);color:var(--gold);font-family:var(--font-display);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
   .story-name{font-weight:600;font-size:14.5px;}
   .story-meta{font-family:var(--font-mono);font-size:11.5px;color:var(--slate);margin-top:2px;}
-  .story-quote{font-size:14.5px;line-height:1.65;color:var(--navy);}
-  .service-tag{display:inline-block;font-family:var(--font-mono);font-size:10px;color:var(--white);background:var(--navy);padding:3px 9px;border-radius:100px;margin-top:14px;letter-spacing:0.03em;}
-  @media(max-width:480px){
-    .stories-grid-section{padding-top:36px;padding-bottom:36px;}
-    .story-card{padding:18px;}
-  }
+  .story-quote{font-size:14px;line-height:1.55;color:var(--navy);}
+  .service-tag{display:inline-block;font-family:var(--font-mono);font-size:10px;color:var(--white);background:var(--navy);padding:3px 9px;border-radius:100px;margin-top:10px;letter-spacing:0.03em;}
 
   .video-section{background:var(--navy);color:var(--white);}
-  /* Same missing-desktop-tier gap as the grid section above. */
-  .video-section section{padding-top:72px;padding-bottom:72px;}
-  @media(max-width:900px){.video-section section{padding:56px 0;}}
-  @media(max-width:480px){.video-section section{padding:36px 0;}}
+  /* Same unification as the grid section above - one tight value at every
+     width instead of scaling back up for wider screens. */
+  .video-section section{padding-top:36px;padding-bottom:36px;}
   .video-slot-large{border:1.5px dashed rgba(255,255,255,0.25);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--ink-muted);font-family:var(--font-mono);font-size:13px;text-align:center;padding:60px 20px;margin-top:30px;}
   .video-slot-large .play-icon{width:56px;height:56px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;}
 
-  /* .final-cta had no responsive treatment at all - not even the <=900px
-     tier every other page's matching CTA section already has, and
-     .final-actions never stacked to full-width buttons on mobile either.
-     Values matched to the same pattern used elsewhere (Services/Contact's
-     final-cta): desktop unchanged, tightened at both breakpoints below. */
-  .final-cta{background:radial-gradient(120% 140% at 50% 0%, var(--navy-soft), var(--navy-deep) 70%);color:var(--white);text-align:center;padding:90px 0;}
-  @media(max-width:900px){.final-cta{padding:56px 0;}}
-  @media(max-width:480px){.final-cta{padding:36px 0;}}
+  /* Same unification again - single tight value at every width. */
+  .final-cta{background:radial-gradient(120% 140% at 50% 0%, var(--navy-soft), var(--navy-deep) 70%);color:var(--white);text-align:center;padding:36px 0;}
   .final-cta h2{font-size:clamp(24px,3.2vw,32px);max-width:560px;margin:0 auto 14px;}
   .final-cta p{color:var(--ink-muted);max-width:420px;margin:0 auto 26px;}
   @media(max-width:480px){
