@@ -677,9 +677,9 @@
   .tour-img-overlay{position:absolute;left:0;right:0;bottom:0;padding:42px 14px 12px;background:linear-gradient(to top, rgba(20,21,42,0.92) 0%, rgba(20,21,42,0.5) 55%, transparent 100%);color:var(--white);}
   .tour-img-duration{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.78);letter-spacing:0.03em;margin-bottom:3px;}
   .tour-img-price{font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:0.01em;}
-  .tour-body{padding:14px 18px 18px;}
-  .tour-body h4{font-family:var(--display);font-size:16px;margin-bottom:10px;}
-  .tour-discount{font-size:12px;color:var(--navy);background:rgba(240,177,36,0.16);border-radius:6px;padding:5px 10px;margin-bottom:14px;display:inline-block;}
+  .tour-body{padding:10px 16px 14px;}
+  .tour-body h4{font-family:var(--display);font-size:16px;margin-bottom:6px;}
+  .tour-discount{font-size:12px;color:var(--navy);background:rgba(240,177,36,0.16);border-radius:6px;padding:4px 9px;margin-bottom:8px;display:inline-block;}
   .tour-book-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--body);font-weight:600;font-size:13px;color:var(--navy);background:var(--paper);border:1px solid var(--line-dark);padding:9px 16px;border-radius:100px;transition:background .25s ease,border-color .25s ease,transform .2s ease;}
   .tour-book-btn:hover{background:var(--gold);border-color:var(--gold);transform:translateX(2px);}
 
