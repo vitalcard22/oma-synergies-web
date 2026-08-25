@@ -4,6 +4,7 @@ import maldivesImg from '../assets/tours/maldives.jpg';
 import kigaliRwandaImg from '../assets/tours/kigali-rwanda.jpg';
 import egyptImg from '../assets/tours/egypt.jpg';
 import qatarImg from '../assets/tours/qatar.jpg';
+import zanzibarImg from '../assets/tours/zanzibar.jpg';
 import seychellesImg from '../assets/tours/seychelles.jpg';
 import nairobiImg from '../assets/tours/nairobi.jpg';
 
@@ -35,7 +36,7 @@ export const TOURS: Tour[] = [
   { slug: 'kigali-rwanda', name: 'Kigali, Rwanda', categories: ['Group Tours', 'Honeymoon', 'Solo', 'Family'], nights: 3, fromPrice: 800_000, perPersonSharing: true, img: kigaliRwandaImg },
   { slug: 'egypt', name: 'Egypt', categories: ['Group Tours', 'Honeymoon', 'Solo', 'Family'], nights: 3, fromPrice: 985_900, perPersonSharing: true, img: egyptImg },
   { slug: 'qatar', name: 'Qatar', categories: ['Group Tours', 'Honeymoon', 'Solo', 'Family'], nights: 4, fromPrice: 1_500_000, perPersonSharing: true, img: qatarImg },
-  { slug: 'zanzibar', name: 'Zanzibar', categories: ['Group Tours', 'Honeymoon', 'Solo', 'Family'], nights: 4, fromPrice: 1_400_000, perPersonSharing: true },
+  { slug: 'zanzibar', name: 'Zanzibar', categories: ['Group Tours', 'Honeymoon', 'Solo', 'Family'], nights: 4, fromPrice: 1_400_000, perPersonSharing: true, img: zanzibarImg },
   { slug: 'seychelles', name: 'Seychelles', categories: ['Group Tours', 'Honeymoon', 'Solo', 'Family'], nights: 4, fromPrice: 1_500_000, perPersonSharing: true, img: seychellesImg },
   { slug: 'nairobi', name: 'Nairobi', categories: ['Group Tours', 'Honeymoon', 'Solo', 'Family'], nights: 4, fromPrice: 1_000_000, perPersonSharing: true, img: nairobiImg },
 ];
