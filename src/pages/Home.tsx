@@ -411,7 +411,7 @@ export default function Home() {
               <span className="lead-short">{LEAD_MOBILE}</span>
             </p>
             <div className="hero-actions hero-rise" style={{ transitionDelay: '540ms' }}>
-              <a href="https://selar.com/h5s9957y17" target="_blank" rel="noopener noreferrer" className="btn btn-gold">Book a Consultation</a>
+              <a href="https://selar.com/088958q1eo" target="_blank" rel="noopener noreferrer" className="btn btn-gold">Book a Consultation</a>
               <Link to="/destinations" className="btn btn-outline">Explore Destinations</Link>
             </div>
             <div className="hero-mini-trust hero-rise" style={{ transitionDelay: '640ms' }} ref={heroStatsRef}>
@@ -790,7 +790,7 @@ export default function Home() {
           <h2 className="reveal">Let's map out your path, together</h2>
           <p className="reveal">Tell us where you're headed, study, visa, or travel, and we'll take it from there.</p>
           <div className="final-actions reveal">
-            <a href="https://selar.com/h5s9957y17" target="_blank" rel="noopener noreferrer" className="btn btn-gold">Book a Consultation</a>
+            <a href="https://selar.com/088958q1eo" target="_blank" rel="noopener noreferrer" className="btn btn-gold">Book a Consultation</a>
             <Link to="/contact" className="btn btn-outline">Send an Inquiry</Link>
           </div>
         </div>
