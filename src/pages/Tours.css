@@ -27,23 +27,22 @@
   @media(max-width:900px){.tours-content{padding:56px 0;}}
   .tour-card{background:var(--white);border:1px solid var(--line-dark);border-radius:18px;overflow:hidden;transition:transform .3s ease, box-shadow .3s ease;}
   @media(hover:hover) and (pointer:fine){.tour-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(31,32,53,0.1);}}
-  /* Taller and bolder than before, matching the same treatment applied to
-     the homepage teaser cards - photos are the main visual draw here, and
-     a bold gradient + price badge (same technique already proven on the
-     Destinations cards) makes the whole grid read as more eye-catching. */
-  .tour-img{height:220px;position:relative;overflow:hidden;background:linear-gradient(135deg,#2E3152,#1F2035);}
+  /* Aspect-ratio instead of fixed height — same fix as the homepage teaser.
+     Source photos are 900x675 (4:3). Fixed 220px was cropping ~27% of the
+     image at a ~330px-wide card. 4:3 ratio lets the card width drive the
+     height so the full composition shows from top to bottom. */
+  .tour-img{aspect-ratio:4/3;min-height:160px;position:relative;overflow:hidden;background:linear-gradient(135deg,#2E3152,#1F2035);}
   .tour-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
   @media(hover:hover) and (pointer:fine){.tour-card:hover .tour-img img{transform:scale(1.06);}}
   .tour-img-pending{display:flex;align-items:center;justify-content:center;}
   .tour-img-pending-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.55);letter-spacing:0.04em;}
-  /* "Small but visible": the badge stays compact (13px, tight padding)
-     rather than shouting, but the gradient behind it guarantees contrast
-     against any photo - light sand, dark night skyline, bright turquoise
-     water - so it's always legible without needing a bulkier solid pill. */
-  .tour-img-price{position:absolute;left:0;right:0;bottom:0;padding:24px 18px 12px;background:linear-gradient(to top, rgba(20,21,42,0.85) 0%, transparent 100%);color:var(--white);font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:0.02em;}
-  .tour-body{padding:22px;}
+  /* Gradient covers both lines. Duration: smaller, muted, above.
+     Price: bigger, bold, bottom. Clear hierarchy, price findable at a glance. */
+  .tour-img-overlay{position:absolute;left:0;right:0;bottom:0;padding:46px 18px 14px;background:linear-gradient(to top, rgba(20,21,42,0.92) 0%, rgba(20,21,42,0.5) 55%, transparent 100%);color:var(--white);}
+  .tour-img-duration{font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.78);letter-spacing:0.03em;margin-bottom:3px;}
+  .tour-img-price{font-family:var(--mono);font-weight:700;font-size:17px;letter-spacing:0.01em;}
+  .tour-body{padding:18px 22px 22px;}
   .tour-body h4{font-family:var(--display);font-size:17px;margin-bottom:8px;}
-  .tour-meta{font-family:var(--mono);font-size:12px;color:var(--slate);margin-bottom:10px;display:flex;gap:14px;flex-wrap:wrap;}
   /* Confirms which trip types a tour is actually bookable for - the filter
      tabs above the grid only decide which cards show, they don't explain
      why a card appears under a given tab, and every tour here currently
