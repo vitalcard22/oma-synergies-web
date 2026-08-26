@@ -1,6 +1,5 @@
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { ScaleIcon } from '../components/Icons';
 import './Terms.css';
 
 const SECTIONS = [
@@ -67,20 +66,12 @@ export default function Terms() {
           <p className="party">
             By engaging the services of <strong>Oma Synergies Travels and Tours Ltd</strong> for visa consultation and processing assistance, you (the "Client") agree to the following terms and conditions. These terms ensure a professional, transparent, and efficient working relationship between the agency and the applicant.
           </p>
-          <div className="meta-line">Last updated: <span>[Add effective date]</span> · Applies to all visa consultation and processing engagements</div>
+          <div className="meta-line">Effective date: August 2026 · Applies to all visa consultation and processing engagements</div>
         </div>
       </div>
 
       <div className="legal-body">
         <div className="wrap">
-          <div className="disclaimer-box">
-            <span className="icon"><ScaleIcon size={20} /></span>
-            <div>
-              <strong>Legal review recommended</strong>
-              <p>This document was drafted for Oma Synergies Travels and Tours Ltd. It has not yet been reviewed by a licensed attorney. We recommend legal review before this page is relied upon for binding client agreements, particularly around liability limitations, refund policy, and data protection compliance in your jurisdiction.</p>
-            </div>
-          </div>
-
           <div className="legal-grid">
             <aside className="toc">
               <h4>On This Page</h4>
