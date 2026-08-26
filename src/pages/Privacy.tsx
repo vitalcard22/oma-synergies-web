@@ -209,7 +209,7 @@ export default function Privacy() {
                 </p>
                 <p style={{ marginTop: '12px' }}>
                   For questions about your visa application terms, see our{' '}
-                  <Link to="/terms" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ color: 'var(--gold)' }}>Terms & Conditions</Link>.
+                  <Link to="/terms" style={{ color: 'var(--gold)' }}>Terms & Conditions</Link>.
                 </p>
               </div>
 

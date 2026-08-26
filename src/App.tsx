@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import ScrollToTop from './components/ScrollToTop';
 import './styles/global.css';
 
 // Route-based code splitting: Home loads eagerly since it's the primary
@@ -50,6 +51,7 @@ function RouteLoading() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Suspense fallback={<RouteLoading />}>
         <Routes>
           <Route path="/" element={<Home />} />

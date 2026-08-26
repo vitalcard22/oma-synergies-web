@@ -40,7 +40,6 @@ export default function Header() {
           <Link
             to="/"
             className="logo-mark"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
             <img src={logoIcon} alt="Oma Synergies" loading="eager" />
             <span className="logo-text">

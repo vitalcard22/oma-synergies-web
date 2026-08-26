@@ -134,7 +134,7 @@ export default function Contact() {
                 <div className="reach-orbit-center">
                   <span className="reach-orbit-ring r1" />
                   <span className="reach-orbit-ring r2" />
-                  <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                  <Link to="/">
                     <img src={logoIcon} alt="Oma Synergies – go to home" />
                   </Link>
                 </div>
