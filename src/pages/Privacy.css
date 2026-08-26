@@ -1,27 +1,32 @@
-.privacy-page {
-  padding: 150px 0 100px;
-}
-.privacy-page .wrap {
-  max-width: 760px;
-}
-.privacy-page h1 {
-  font-size: clamp(28px, 3.6vw, 40px);
-  margin-top: 16px;
-}
-.privacy-page p {
-  color: var(--slate);
-  font-size: 15px;
-  margin-top: 20px;
-}
-.privacy-page .notice {
-  margin-top: 34px;
-  background: #FFF7E8;
-  border: 1px solid rgba(240, 177, 36, 0.35);
-  border-radius: 12px;
-  padding: 20px 24px;
-  font-size: 14px;
-}
-.privacy-page .notice strong {
-  display: block;
-  margin-bottom: 6px;
-}
+/* Shares the legal-hero, legal-body, legal-grid, toc, legal-content,
+   clause, ack-box layout with Terms.css — kept as a separate file so
+   either page can diverge in future without affecting the other. */
+
+.legal-hero{background:radial-gradient(120% 100% at 15% 0%, var(--navy-soft), var(--navy-deep) 65%);color:var(--white);padding:70px 0 56px;}
+.legal-hero h1{color:var(--white);font-size:clamp(28px,3.6vw,42px);margin-top:14px;max-width:700px;}
+.legal-hero .meta-line{margin-top:16px;font-family:var(--font-mono);font-size:12.5px;color:var(--ink-muted);}
+.legal-hero .party{margin-top:20px;font-size:15px;color:var(--ink-muted);max-width:640px;}
+.legal-hero .party strong{color:var(--white);}
+
+.legal-body{padding:64px 0 100px;}
+.legal-grid{display:grid;grid-template-columns:260px 1fr;gap:56px;align-items:start;}
+@media(max-width:900px){.legal-grid{grid-template-columns:1fr;}}
+.toc{position:sticky;top:100px;background:var(--white);border:1px solid var(--line-dark);border-radius:14px;padding:22px;}
+.toc h4{font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--slate);margin-bottom:14px;}
+.toc a{display:block;font-size:13.5px;color:var(--navy);padding:7px 0;border-bottom:1px solid var(--line-dark);transition:color .2s ease, padding-left .2s ease;}
+.toc a:last-child{border-bottom:none;}
+.toc a:hover{color:var(--gold);padding-left:4px;}
+
+.legal-content section{margin-bottom:44px;scroll-margin-top:100px;}
+.legal-content h2{font-size:22px;display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.legal-content h2 .num{font-family:var(--font-mono);font-size:13px;color:var(--white);background:var(--navy);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.legal-content .clause{margin-bottom:16px;padding-left:20px;border-left:2px solid var(--line-dark);}
+.legal-content .clause strong{display:block;color:var(--navy);margin-bottom:4px;font-size:14.5px;}
+.legal-content .clause p{font-size:14.5px;color:var(--slate);line-height:1.7;}
+.legal-content .clause a{color:var(--navy);font-weight:600;text-decoration:underline;text-underline-offset:3px;}
+.legal-content .clause a:hover{color:var(--gold);}
+
+.ack-box{background:var(--navy);color:var(--white);border-radius:16px;padding:32px 36px;margin-top:56px;}
+.ack-box .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);margin-bottom:10px;display:inline-block;}
+.ack-box p{font-size:15px;color:var(--ink-muted);line-height:1.7;}
+.ack-box strong{color:var(--white);}
