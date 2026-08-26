@@ -42,7 +42,11 @@ export default function Footer() {
         </div>
         <div className="footer-bottom">
           <span>© 2026 Oma Synergies Travels and Tours Ltd. All Rights Reserved.</span>
-          <span><Link to="/privacy">Privacy Policy</Link> · <Link to="/terms">Terms of Service</Link></span>
+          <span>
+            <Link to="/privacy" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Privacy Policy</Link>
+            {' · '}
+            <Link to="/terms" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Terms of Service</Link>
+          </span>
         </div>
       </div>
     </footer>
