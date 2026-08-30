@@ -141,6 +141,9 @@ export default function Admin() {
             <div className="brand"><img src={logoIcon} alt="Oma Synergies" style={{ height: 30 }} /><span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 14 }}>ADMIN PANEL</span></div>
             <h2>Staff Sign In</h2>
             <div className="sub">Access restricted to Oma Synergies team members</div>
+            {auth.suspended && (
+              <div className="login-error">This account has been suspended. Contact the CEO if you believe this is a mistake.</div>
+            )}
             <div className="form-row">
               <label>Email</label>
               <input
