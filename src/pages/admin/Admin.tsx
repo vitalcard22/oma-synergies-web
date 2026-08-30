@@ -1,22 +1,25 @@
 import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
+import { useClients, useDashboardStats, useRecentActivity, type ClientWithDetails } from '../../hooks/useAdminData';
+import { TOURS } from '../../data/tours';
+import { DESTINATIONS } from '../../data/destinations';
 import {
-  ADMIN_CLIENTS, ADMIN_INQUIRIES, ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
+  ADMIN_INQUIRIES, ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
   ADMIN_PAYMENTS, ADMIN_TESTIMONIALS, ADMIN_DESTINATIONS, ADMIN_TOURS,
-  ADMIN_STAFF, ADMIN_ACTIVITY, ADMIN_NOTIFICATIONS,
+  ADMIN_STAFF, ADMIN_NOTIFICATIONS,
 } from './adminData';
 import './Admin.css';
 
 type ViewId = 'dashboard' | 'clients' | 'inquiries' | 'calendar' | 'documents' | 'payments' | 'testimonials' | 'destinations' | 'tours' | 'staff';
 
-const NAV: { section: string; items: { id: ViewId; icon: string; label: string; badge?: number }[] }[] = [
+const NAV: { section: string; items: { id: ViewId; icon: string; label: string }[] }[] = [
   { section: 'Overview', items: [{ id: 'dashboard', icon: '◆', label: 'Dashboard' }] },
   {
     section: 'Operations',
     items: [
-      { id: 'clients', icon: '◈', label: 'Clients & Cases', badge: 9 },
-      { id: 'inquiries', icon: '✉', label: 'Inquiries', badge: 4 },
+      { id: 'clients', icon: '◈', label: 'Clients & Cases' },
+      { id: 'inquiries', icon: '✉', label: 'Inquiries' },
       { id: 'calendar', icon: '▦', label: 'Consultation Calendar' },
       { id: 'documents', icon: '▤', label: 'Documents' },
       { id: 'payments', icon: '₦', label: 'Payments' },
@@ -62,15 +65,25 @@ export default function Admin() {
   const [clientServiceFilter, setClientServiceFilter] = useState('all');
   const [inquiryStatusFilter, setInquiryStatusFilter] = useState('all');
   const [paymentsFilter, setPaymentsFilter] = useState('all');
-  const [caseModalClient, setCaseModalClient] = useState<(typeof ADMIN_CLIENTS)[number] | null>(null);
+  const [caseModalClient, setCaseModalClient] = useState<ClientWithDetails | null>(null);
   const [addModal, setAddModal] = useState<{ label: string; fields: string[] } | null>(null);
   const [toggles, setToggles] = useState<Record<string, boolean>>({});
 
-  const filteredClients = ADMIN_CLIENTS.filter((c) => {
-    const matchesSearch = c.name.toLowerCase().includes(clientSearch.toLowerCase());
-    const matchesService = clientServiceFilter === 'all' || c.service === clientServiceFilter;
+  // Only fire these once someone is confirmed as a signed-in admin - not
+  // on the bare login screen (where they'd fail RLS/be blocked anyway,
+  // but there's no reason to send them at all before someone's signed in).
+  const isAuthedAdmin = !auth.loading && !!auth.userId && (auth.role === 'super_admin' || auth.role === 'staff_admin');
+  const { clients, loading: clientsLoading } = useClients(isAuthedAdmin);
+  const dashboardStats = useDashboardStats(isAuthedAdmin);
+  const { activity: recentActivity, loading: activityLoading } = useRecentActivity(8, isAuthedAdmin);
+
+  const filteredClients = clients.filter((c) => {
+    const name = c.profile?.full_name ?? '';
+    const matchesSearch = name.toLowerCase().includes(clientSearch.toLowerCase());
+    const matchesService = clientServiceFilter === 'all' || c.service_type === clientServiceFilter;
     return matchesSearch && matchesService;
   });
+
 
   const filteredInquiries = ADMIN_INQUIRIES.filter((i) => inquiryStatusFilter === 'all' || i.status === inquiryStatusFilter);
   const filteredPayments = ADMIN_PAYMENTS.filter((p) => paymentsFilter === 'all' || p.status === paymentsFilter);
@@ -205,17 +218,26 @@ export default function Admin() {
           {NAV.map((sec) => (
             <div key={sec.section}>
               <div className="nav-section-label">{sec.section}</div>
-              {sec.items.map((item) => (
-                <a
-                  key={item.id}
-                  className={activeView === item.id ? 'nav-item active' : 'nav-item'}
-                  onClick={() => { setActiveView(item.id); setMobileOpen(false); }}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <span className="ic">{item.icon}</span> {item.label}
-                  {item.badge && <span className="nav-badge">{item.badge}</span>}
-                </a>
-              ))}
+              {sec.items.map((item) => {
+                // Live counts only for the two nav items that have real data
+                // behind them so far - everything else stays badge-free
+                // rather than showing a stale or fake number.
+                const liveBadge =
+                  item.id === 'clients' ? clients.length :
+                  item.id === 'inquiries' ? dashboardStats.newInquiries :
+                  undefined;
+                return (
+                  <a
+                    key={item.id}
+                    className={activeView === item.id ? 'nav-item active' : 'nav-item'}
+                    onClick={() => { setActiveView(item.id); setMobileOpen(false); }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <span className="ic">{item.icon}</span> {item.label}
+                    {!!liveBadge && <span className="nav-badge">{liveBadge}</span>}
+                  </a>
+                );
+              })}
             </div>
           ))}
         </aside>
@@ -230,24 +252,30 @@ export default function Admin() {
                 </div>
               </div>
               <div className="stat-cards">
-                <div className="stat-card"><div className="n">9</div><div className="l">Active Clients</div></div>
-                <div className="stat-card"><div className="n">4</div><div className="l">New Inquiries</div></div>
-                <div className="stat-card"><div className="n">12</div><div className="l">Destinations Live</div></div>
-                <div className="stat-card"><div className="n">6</div><div className="l">Tours Live</div></div>
+                <div className="stat-card"><div className="n">{dashboardStats.loading ? '—' : dashboardStats.activeClients}</div><div className="l">Active Clients</div></div>
+                <div className="stat-card"><div className="n">{dashboardStats.loading ? '—' : dashboardStats.newInquiries}</div><div className="l">New Inquiries</div></div>
+                <div className="stat-card"><div className="n">{DESTINATIONS.length}</div><div className="l">Destinations Live</div></div>
+                <div className="stat-card"><div className="n">{TOURS.length}</div><div className="l">Tours Live</div></div>
               </div>
               <div className="panel">
                 <div className="panel-head"><h3>Recent Activity</h3></div>
-                <table>
-                  <thead><tr><th>Client</th><th>Update</th><th>Service</th><th>When</th></tr></thead>
-                  <tbody>
-                    {ADMIN_ACTIVITY.map((a) => (
-                      <tr key={a.update}>
-                        <td>{a.initials && <span className="avatar-sm">{a.initials}</span>}{a.who}</td>
-                        <td>{a.update}</td><td>{a.tag}</td><td>{a.when}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {activityLoading ? (
+                  <div className="empty-state">Loading…</div>
+                ) : recentActivity.length === 0 ? (
+                  <div className="empty-state">No activity yet — this fills in as client applications get updated.</div>
+                ) : (
+                  <table>
+                    <thead><tr><th>Client</th><th>Update</th><th>Service</th><th>When</th></tr></thead>
+                    <tbody>
+                      {recentActivity.map((a) => (
+                        <tr key={a.id}>
+                          <td><span className="avatar-sm">{getInitials(a.clientName)}</span>{a.clientName}</td>
+                          <td>{a.update}</td><td>{a.service}</td><td>{a.when}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </div>
           )}
@@ -267,19 +295,33 @@ export default function Admin() {
                     <button className="btn-add" onClick={() => setAddModal({ label: 'Client', fields: ['Full Name', 'Email', 'Phone', 'Destination', 'Service'] })}>+ Add Client</button>
                   </div>
                 </div>
-                <table>
-                  <thead><tr><th>Client</th><th>Destination</th><th>Service</th><th>Status</th><th></th></tr></thead>
-                  <tbody>
-                    {filteredClients.map((c) => (
-                      <tr key={c.name}>
-                        <td><span className="avatar-sm">{c.initials}</span>{c.name}</td>
-                        <td>{c.destination}</td><td>{c.service}</td>
-                        <td><Badge status={c.status} /></td>
-                        <td className="row-actions"><button className="icon-btn" onClick={() => setCaseModalClient(c)}>⤢</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {clientsLoading ? (
+                  <div className="empty-state">Loading…</div>
+                ) : filteredClients.length === 0 ? (
+                  <div className="empty-state">
+                    {clients.length === 0
+                      ? 'No clients yet. Register your first client to get started.'
+                      : 'No clients match this search or filter.'}
+                  </div>
+                ) : (
+                  <table>
+                    <thead><tr><th>Client</th><th>Destination</th><th>Service</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      {filteredClients.map((c) => {
+                        const latestApp = c.applications[0];
+                        const name = c.profile?.full_name ?? 'Unknown';
+                        return (
+                          <tr key={c.id}>
+                            <td><span className="avatar-sm">{getInitials(name)}</span>{name}</td>
+                            <td>{latestApp?.destination ?? '—'}</td><td>{c.service_type}</td>
+                            <td><Badge status={latestApp?.stage.replace(/_/g, ' ') ?? 'No application'} /></td>
+                            <td className="row-actions"><button className="icon-btn" onClick={() => setCaseModalClient(c)}>⤢</button></td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </div>
           )}
@@ -497,8 +539,15 @@ export default function Admin() {
       {caseModalClient && (
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget) setCaseModalClient(null); }}>
           <div className="modal">
+            {/* Header above is wired to the real client - the track steps,
+               status dropdowns, and notes below are still the original
+               static mock content, not yet reading/writing real
+               applications/documents rows. Real client list + dashboard
+               stats were this pass's scope; wiring this modal's body to
+               real data (stage updates, document status, admin notes) is
+               the next piece of Phase 2, not done yet. */}
             <div className="modal-head">
-              <div><h3>{caseModalClient.name}'s Case</h3><div className="page-sub">{caseModalClient.destination} · {caseModalClient.service}</div></div>
+              <div><h3>{caseModalClient.profile?.full_name ?? 'Unknown'}'s Case</h3><div className="page-sub">{caseModalClient.applications[0]?.destination ?? '—'} · {caseModalClient.service_type}</div></div>
               <button className="modal-close" onClick={() => setCaseModalClient(null)}>✕</button>
             </div>
             <div className="track-group">

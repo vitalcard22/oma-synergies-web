@@ -49,6 +49,11 @@
   /* TABLE */
   .panel{background:var(--white);border:1px solid var(--line-dark);border-radius:14px;overflow:hidden;margin-bottom:24px;}
   .panel-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--line-dark);flex-wrap:wrap;gap:12px;}
+  /* Shown when a real (not mock) query genuinely returns nothing - a fresh
+     database with no clients yet, or a search with no matches. Styled to
+     read as an intentional, calm state rather than a blank gap that looks
+     like something failed to load. */
+  .empty-state{padding:48px 24px;text-align:center;color:var(--slate);font-size:13.5px;}
   .panel-head h3{font-family:var(--display);font-size:15.5px;}
   .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
   .search-input{font-family:var(--body);font-size:13px;padding:9px 14px;border:1px solid var(--line-dark);border-radius:8px;background:var(--paper);width:200px;}
