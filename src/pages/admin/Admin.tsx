@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
+import { useAuth } from '../../hooks/useAuth';
 import {
   ADMIN_CLIENTS, ADMIN_INQUIRIES, ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
   ADMIN_PAYMENTS, ADMIN_TESTIMONIALS, ADMIN_DESTINATIONS, ADMIN_TOURS,
@@ -32,6 +33,14 @@ const NAV: { section: string; items: { id: ViewId; icon: string; label: string; 
   { section: 'Team', items: [{ id: 'staff', icon: '☺', label: 'Staff & Roles' }] },
 ];
 
+function getInitials(name: string | null): string {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  const first = parts[0]?.[0] ?? '';
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+  return (first + last).toUpperCase();
+}
+
 function Badge({ status }: { status: string }) {
   let cls = 'status-pending';
   if (['Approved', 'Paid', 'Confirmed', 'Done'].includes(status)) cls = 'status-done';
@@ -41,7 +50,11 @@ function Badge({ status }: { status: string }) {
 }
 
 export default function Admin() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const auth = useAuth();
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [signingIn, setSigningIn] = useState(false);
   const [activeView, setActiveView] = useState<ViewId>('dashboard');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -72,7 +85,55 @@ export default function Admin() {
     setToggles((t) => ({ ...t, [k]: !(k in t ? t[k] : defaultVal) }));
   };
 
-  if (!loggedIn) {
+  async function handleSignIn() {
+    setLoginError(null);
+    if (!loginEmail || !loginPassword) {
+      setLoginError('Enter both email and password.');
+      return;
+    }
+    setSigningIn(true);
+    const errorMessage = await auth.signIn(loginEmail, loginPassword);
+    setSigningIn(false);
+    if (errorMessage) {
+      setLoginError(errorMessage === 'Invalid login credentials'
+        ? 'Incorrect email or password.'
+        : errorMessage);
+    }
+    // On success, useAuth's onAuthStateChange listener updates auth.role
+    // automatically - no need to set any local "logged in" flag here.
+  }
+
+  if (auth.loading) {
+    return (
+      <div className="admin-root">
+        <div id="loginScreen">
+          <div className="login-card">
+            <div className="sub">Checking session…</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Signed in, but the account isn't an admin (e.g. a client accidentally
+  // trying their portal credentials here) - block access, don't just fall
+  // through to the panel.
+  if (auth.userId && auth.role === 'client') {
+    return (
+      <div className="admin-root">
+        <div id="loginScreen">
+          <div className="login-card">
+            <div className="brand"><img src={logoIcon} alt="Oma Synergies" style={{ height: 30 }} /><span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 14 }}>ADMIN PANEL</span></div>
+            <h2>Access Restricted</h2>
+            <div className="sub">This account doesn't have admin access. If you're a client, please use the <a href="/portal">client portal</a> instead.</div>
+            <button className="login-btn" onClick={() => auth.signOut()}>Sign Out</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!auth.userId || !auth.role) {
     return (
       <div className="admin-root">
         <div id="loginScreen">
@@ -80,10 +141,30 @@ export default function Admin() {
             <div className="brand"><img src={logoIcon} alt="Oma Synergies" style={{ height: 30 }} /><span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 14 }}>ADMIN PANEL</span></div>
             <h2>Staff Sign In</h2>
             <div className="sub">Access restricted to Oma Synergies team members</div>
-            <div className="form-row"><label>Email</label><input type="email" placeholder="you@omasynergiestravel.com" /></div>
-            <div className="form-row"><label>Password</label><input type="password" placeholder="••••••••" /></div>
-            <button className="login-btn" onClick={() => setLoggedIn(true)}>Sign In</button>
-            <div className="login-note">Demo only. Click Sign In to preview the panel. No real authentication yet.</div>
+            <div className="form-row">
+              <label>Email</label>
+              <input
+                type="email"
+                placeholder="you@omasynergiestravel.com"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+              />
+            </div>
+            <div className="form-row">
+              <label>Password</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+              />
+            </div>
+            {loginError && <div className="login-error">{loginError}</div>}
+            <button className="login-btn" onClick={handleSignIn} disabled={signingIn}>
+              {signingIn ? 'Signing In…' : 'Sign In'}
+            </button>
           </div>
         </div>
       </div>
@@ -92,7 +173,7 @@ export default function Admin() {
 
   return (
     <div className="admin-root">
-      <div className="demo-banner"><strong>PROTOTYPE</strong>: visual design only, using sample data. Not yet connected to a real backend.</div>
+      <div className="demo-banner"><strong>Sign-in is live.</strong> Client list, inquiries, payments and other data below are still sample data — real data connects in the next phase.</div>
 
       {mobileOpen && <div className="sidebar-overlay open" onClick={() => setMobileOpen(false)} />}
 
@@ -141,7 +222,9 @@ export default function Admin() {
             <div className="view active">
               <div className="topbar">
                 <div><div className="page-title">Dashboard</div><div className="page-sub">Overview of all activity across the agency</div></div>
-                <div className="admin-user"><div className="avatar-sm">A.O.</div> Adaeze O.</div>
+                <div className="admin-user" onClick={() => auth.signOut()} style={{ cursor: 'pointer' }} title="Click to sign out">
+                  <div className="avatar-sm">{getInitials(auth.fullName)}</div> {auth.fullName ?? auth.email}
+                </div>
               </div>
               <div className="stat-cards">
                 <div className="stat-card"><div className="n">9</div><div className="l">Active Clients</div></div>

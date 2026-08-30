@@ -53,6 +53,7 @@ export interface Database {
           full_name: string;
         };
         Update: Partial<Database['public']['Tables']['profiles']['Row']>;
+        Relationships: [];
       };
       clients: {
         Row: {
@@ -71,6 +72,7 @@ export interface Database {
           created_by: string;
         };
         Update: Partial<Database['public']['Tables']['clients']['Row']>;
+        Relationships: [];
       };
       applications: {
         Row: {
@@ -99,6 +101,7 @@ export interface Database {
           service_type: string;
         };
         Update: Partial<Database['public']['Tables']['applications']['Row']>;
+        Relationships: [];
       };
       stage_history: {
         Row: {
@@ -113,6 +116,7 @@ export interface Database {
           stage: ApplicationStage;
         };
         Update: Partial<Database['public']['Tables']['stage_history']['Row']>;
+        Relationships: [];
       };
       document_requirements: {
         Row: {
@@ -127,6 +131,7 @@ export interface Database {
           document_name: string;
         };
         Update: Partial<Database['public']['Tables']['document_requirements']['Row']>;
+        Relationships: [];
       };
       documents: {
         Row: {
@@ -146,6 +151,7 @@ export interface Database {
           document_name: string;
         };
         Update: Partial<Database['public']['Tables']['documents']['Row']>;
+        Relationships: [];
       };
       messages: {
         Row: {
@@ -163,6 +169,7 @@ export interface Database {
           body: string;
         };
         Update: Partial<Database['public']['Tables']['messages']['Row']>;
+        Relationships: [];
       };
       consultant_reminders: {
         Row: {
@@ -179,6 +186,7 @@ export interface Database {
           note: string;
         };
         Update: Partial<Database['public']['Tables']['consultant_reminders']['Row']>;
+        Relationships: [];
       };
       payments: {
         Row: {
@@ -199,6 +207,7 @@ export interface Database {
           expected_amount: number;
         };
         Update: Partial<Database['public']['Tables']['payments']['Row']>;
+        Relationships: [];
       };
       refunds: {
         Row: {
@@ -217,6 +226,7 @@ export interface Database {
           reason: string;
         };
         Update: Partial<Database['public']['Tables']['refunds']['Row']>;
+        Relationships: [];
       };
       disputes: {
         Row: {
@@ -232,6 +242,7 @@ export interface Database {
           description: string;
         };
         Update: Partial<Database['public']['Tables']['disputes']['Row']>;
+        Relationships: [];
       };
       contact_submissions: {
         Row: {
@@ -251,6 +262,7 @@ export interface Database {
           email: string;
         };
         Update: Partial<Database['public']['Tables']['contact_submissions']['Row']>;
+        Relationships: [];
       };
       tour_packages: {
         Row: {
@@ -273,6 +285,7 @@ export interface Database {
           from_price: number;
         };
         Update: Partial<Database['public']['Tables']['tour_packages']['Row']>;
+        Relationships: [];
       };
       masterclasses: {
         Row: {
@@ -300,6 +313,7 @@ export interface Database {
           seats_remaining: number;
         };
         Update: Partial<Database['public']['Tables']['masterclasses']['Row']>;
+        Relationships: [];
       };
       testimonials: {
         Row: {
@@ -319,6 +333,7 @@ export interface Database {
           quote: string;
         };
         Update: Partial<Database['public']['Tables']['testimonials']['Row']>;
+        Relationships: [];
       };
       partners: {
         Row: {
@@ -334,6 +349,7 @@ export interface Database {
           logo_url: string;
         };
         Update: Partial<Database['public']['Tables']['partners']['Row']>;
+        Relationships: [];
       };
       audit_log: {
         Row: {
@@ -350,6 +366,7 @@ export interface Database {
           target_table: string;
         };
         Update: Partial<Database['public']['Tables']['audit_log']['Row']>;
+        Relationships: [];
       };
       consent_log: {
         Row: {
@@ -363,7 +380,10 @@ export interface Database {
           document: 'terms' | 'privacy';
         };
         Update: Partial<Database['public']['Tables']['consent_log']['Row']>;
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
   };
 }
