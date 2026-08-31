@@ -8,6 +8,8 @@ type ApplicationRow = Database['public']['Tables']['applications']['Row'];
 type DocumentRow = Database['public']['Tables']['documents']['Row'];
 type ApplicationStage = Database['public']['Tables']['stage_history']['Row']['stage'];
 type DocumentStatus = DocumentRow['status'];
+type ContactSubmissionRow = Database['public']['Tables']['contact_submissions']['Row'];
+type EnquiryStatus = ContactSubmissionRow['status'];
 
 export interface ClientWithDetails extends ClientRow {
   profile: Pick<ProfileRow, 'id' | 'full_name'> | null;
@@ -276,6 +278,41 @@ export async function updateDocumentStatus(
     .from('documents')
     .update({ status, rejection_reason: status === 'rejected' ? rejectionReason : null, updated_at: new Date().toISOString() })
     .eq('id', documentId);
+  return error?.message ?? null;
+}
+
+/**
+ * The website's real contact form (Contact.tsx) inserts here anonymously -
+ * RLS allows public INSERT but only admins can SELECT, so this is the one
+ * place these submissions become visible at all.
+ */
+export function useContactSubmissions(enabled = true) {
+  const [submissions, setSubmissions] = useState<ContactSubmissionRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refetch = useCallback(async () => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const { data } = await supabase
+      .from('contact_submissions')
+      .select('*')
+      .order('created_at', { ascending: false });
+    setSubmissions(data ?? []);
+    setLoading(false);
+  }, [enabled]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return { submissions, loading, refetch };
+}
+
+export async function updateSubmissionStatus(id: string, status: EnquiryStatus): Promise<string | null> {
+  const { error } = await supabase.from('contact_submissions').update({ status }).eq('id', id);
   return error?.message ?? null;
 }
 

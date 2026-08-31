@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, type ClientWithDetails } from '../../hooks/useAdminData';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
 import { TOURS } from '../../data/tours';
 import { DESTINATIONS } from '../../data/destinations';
 import {
-  ADMIN_INQUIRIES, ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
+  ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
   ADMIN_PAYMENTS, ADMIN_TESTIMONIALS, ADMIN_DESTINATIONS, ADMIN_TOURS,
   ADMIN_STAFF, ADMIN_NOTIFICATIONS,
 } from './adminData';
@@ -48,9 +48,9 @@ function getInitials(name: string | null): string {
 
 function Badge({ status }: { status: string }) {
   let cls = 'status-pending';
-  if (['Approved', 'Paid', 'Confirmed', 'Done'].includes(status)) cls = 'status-done';
+  if (['Approved', 'Paid', 'Confirmed', 'Done', 'converted'].includes(status)) cls = 'status-done';
   else if (['In Progress', 'Pending', 'Awaiting Confirmation'].includes(status)) cls = 'status-active';
-  else if (status === 'New') cls = 'status-new';
+  else if (status === 'New' || status === 'unread') cls = 'status-new';
   return <span className={`badge ${cls}`}>{status}</span>;
 }
 
@@ -230,6 +230,7 @@ export default function Admin() {
   const { clients, loading: clientsLoading, refetch: refetchClients } = useClients(isAuthedAdmin);
   const dashboardStats = useDashboardStats(isAuthedAdmin);
   const { activity: recentActivity, loading: activityLoading } = useRecentActivity(8, isAuthedAdmin);
+  const { submissions, loading: submissionsLoading, refetch: refetchSubmissions } = useContactSubmissions(isAuthedAdmin);
 
   const filteredClients = clients.filter((c) => {
     const name = c.profile?.full_name ?? '';
@@ -239,7 +240,12 @@ export default function Admin() {
   });
 
 
-  const filteredInquiries = ADMIN_INQUIRIES.filter((i) => inquiryStatusFilter === 'all' || i.status === inquiryStatusFilter);
+  const filteredInquiries = submissions.filter((i) => inquiryStatusFilter === 'all' || i.status === inquiryStatusFilter);
+
+  async function handleMarkSubmission(id: string, status: 'read' | 'converted' | 'no_action') {
+    await updateSubmissionStatus(id, status);
+    refetchSubmissions();
+  }
   const filteredPayments = ADMIN_PAYMENTS.filter((p) => paymentsFilter === 'all' || p.status === paymentsFilter);
 
   const toggleKey = (prefix: string, name: string) => `${prefix}:${name}`;
@@ -491,23 +497,40 @@ export default function Admin() {
                   <h3>Inbox ({filteredInquiries.length})</h3>
                   <div className="toolbar">
                     <select className="select-filter" value={inquiryStatusFilter} onChange={(e) => setInquiryStatusFilter(e.target.value)}>
-                      <option value="all">All Status</option><option>New</option><option>Contacted</option><option>Closed</option>
+                      <option value="all">All Status</option>
+                      <option value="unread">Unread</option>
+                      <option value="read">Read</option>
+                      <option value="converted">Converted</option>
+                      <option value="no_action">No Action Needed</option>
                     </select>
                   </div>
                 </div>
-                <table>
-                  <thead><tr><th>Name</th><th>Service Interested</th><th>Destination</th><th>Status</th><th></th></tr></thead>
-                  <tbody>
-                    {filteredInquiries.map((i) => (
-                      <tr key={i.email}>
-                        <td className="cell-name">{i.name}<div className="cell-sub">{i.email}</div></td>
-                        <td>{i.service}</td><td>{i.destination}</td>
-                        <td><Badge status={i.status} /></td>
-                        <td className="row-actions"><button className="icon-btn">✉</button><button className="icon-btn">✓</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {submissionsLoading ? (
+                  <div className="empty-state">Loading…</div>
+                ) : filteredInquiries.length === 0 ? (
+                  <div className="empty-state">
+                    {submissions.length === 0
+                      ? 'No inquiries yet - real submissions from the website contact form will appear here.'
+                      : 'No inquiries match this filter.'}
+                  </div>
+                ) : (
+                  <table>
+                    <thead><tr><th>Name</th><th>Service Interested</th><th>Destination</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      {filteredInquiries.map((i) => (
+                        <tr key={i.id}>
+                          <td className="cell-name">{i.full_name}<div className="cell-sub">{i.email}{i.phone ? ` · ${i.phone}` : ''}</div></td>
+                          <td>{i.service_interested ?? '—'}</td><td>{i.destination ?? '—'}</td>
+                          <td><Badge status={i.status.replace(/_/g, ' ')} /></td>
+                          <td className="row-actions">
+                            <button className="icon-btn" title="Mark as read" onClick={() => handleMarkSubmission(i.id, 'read')}>✉</button>
+                            <button className="icon-btn" title="Mark as converted" onClick={() => handleMarkSubmission(i.id, 'converted')}>✓</button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </div>
           )}

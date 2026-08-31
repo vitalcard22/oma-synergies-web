@@ -4,22 +4,44 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import officePhoto from '../assets/office.jpg';
 import logoIcon from '../assets/logo-icon.png';
+import { supabase } from '../lib/supabase';
 import { MailIcon, WhatsAppIcon, MapPinIcon, InstagramIcon, TikTokIcon, LinkedInIcon, XIcon } from '../components/Icons';
 import './Contact.css';
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleSubmit = (e: FormEvent) => {
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [service, setService] = useState('');
+  const [destination, setDestination] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
     setSending(true);
-    // NOTE: front-end only for now. Once the backend exists, this will POST to the inquiry API.
-    setTimeout(() => {
-      setSubmitted(true);
-      setSending(false);
-    }, 700);
+
+    const { error } = await supabase.from('contact_submissions').insert({
+      full_name: fullName.trim(),
+      email: email.trim(),
+      phone: phone.trim() || null,
+      service_interested: service || null,
+      destination: destination || null,
+      message: message.trim() || null,
+    });
+
+    setSending(false);
+    if (error) {
+      setSubmitError('Something went wrong sending your message. Please try again, or reach us directly on WhatsApp.');
+      return;
+    }
+    setSubmitted(true);
   };
+
 
   return (
     <>
@@ -68,21 +90,21 @@ export default function Contact() {
                 <form onSubmit={handleSubmit}>
                   <div className="form-row">
                     <label htmlFor="fullName">Full Name</label>
-                    <input type="text" id="fullName" required placeholder="Your full name" />
+                    <input type="text" id="fullName" required placeholder="Your full name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
                 </div>
                 <div className="form-two">
                   <div className="form-row">
                     <label htmlFor="email">Email</label>
-                    <input type="email" id="email" required placeholder="you@example.com" />
+                    <input type="email" id="email" required placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
                   </div>
                   <div className="form-row">
                     <label htmlFor="phone">Phone Number</label>
-                    <input type="tel" id="phone" required placeholder="0800 000 0000" />
+                    <input type="tel" id="phone" required placeholder="0800 000 0000" value={phone} onChange={(e) => setPhone(e.target.value)} />
                   </div>
                 </div>
                 <div className="form-row">
                   <label htmlFor="service">Service Interested In</label>
-                  <select id="service" required defaultValue="">
+                  <select id="service" required value={service} onChange={(e) => setService(e.target.value)}>
                     <option value="" disabled>Select a service</option>
                     <option>Global Admissions Processing</option>
                     <option>Professional Academic & Career Branding</option>
@@ -97,7 +119,7 @@ export default function Contact() {
                 </div>
                 <div className="form-row">
                   <label htmlFor="destination">Destination (if applicable)</label>
-                  <select id="destination" defaultValue="">
+                  <select id="destination" value={destination} onChange={(e) => setDestination(e.target.value)}>
                     <option value="">Select a destination (optional)</option>
                     <option>Canada</option><option>USA</option><option>United Kingdom</option>
                     <option>Ireland</option><option>France</option><option>Italy</option>
@@ -108,8 +130,9 @@ export default function Contact() {
                 </div>
                 <div className="form-row">
                   <label htmlFor="message">Message</label>
-                  <textarea id="message" required placeholder="Tell us a bit about what you need help with..." />
+                  <textarea id="message" required placeholder="Tell us a bit about what you need help with..." value={message} onChange={(e) => setMessage(e.target.value)} />
                 </div>
+                {submitError && <div className="login-error" style={{ marginBottom: '14px' }}>{submitError}</div>}
                 <button type="submit" className="btn btn-gold" disabled={sending} style={{ width: '100%', justifyContent: 'center' }}>
                   {sending ? 'Sending...' : 'Send Inquiry'}
                 </button>
