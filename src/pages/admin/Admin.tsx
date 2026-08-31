@@ -119,6 +119,45 @@ export default function Admin() {
     setRegisterSubmitting(false);
   }
 
+  // ---- Delete Client (real, irreversible - requires typing the name to confirm) ----
+  const [deleteTarget, setDeleteTarget] = useState<ClientWithDetails | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  async function handleDeleteClient() {
+    if (!deleteTarget) return;
+    setDeleteError(null);
+    setDeleteSubmitting(true);
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setDeleteError('Your session has expired - please sign in again.');
+      setDeleteSubmitting(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/delete-client', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ clientId: deleteTarget.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setDeleteError(data.error ?? 'Something went wrong deleting this client.');
+        setDeleteSubmitting(false);
+        return;
+      }
+      setDeleteTarget(null);
+      setDeleteConfirmText('');
+      refetchClients();
+    } catch {
+      setDeleteError('Could not reach the server. Check your connection and try again.');
+    }
+    setDeleteSubmitting(false);
+  }
+
   // Only fire these once someone is confirmed as a signed-in admin - not
   // on the bare login screen (where they'd fail RLS/be blocked anyway,
   // but there's no reason to send them at all before someone's signed in).
@@ -365,7 +404,10 @@ export default function Admin() {
                             <td><span className="avatar-sm">{getInitials(name)}</span>{name}</td>
                             <td>{latestApp?.destination ?? '—'}</td><td>{c.service_type}</td>
                             <td><Badge status={latestApp?.stage.replace(/_/g, ' ') ?? 'No application'} /></td>
-                            <td className="row-actions"><button className="icon-btn" onClick={() => setCaseModalClient(c)}>⤢</button></td>
+                            <td className="row-actions">
+                              <button className="icon-btn" onClick={() => setCaseModalClient(c)}>⤢</button>
+                              <button className="icon-btn" title="Delete client" onClick={() => setDeleteTarget(c)}>🗑</button>
+                            </td>
                           </tr>
                         );
                       })}
@@ -617,6 +659,38 @@ export default function Admin() {
             <div className="modal-actions">
               <button className="btn-save">Save Changes</button>
               <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setCaseModalClient(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteTarget && (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !deleteSubmitting) { setDeleteTarget(null); setDeleteConfirmText(''); } }}>
+          <div className="modal" style={{ maxWidth: 460 }}>
+            <div className="modal-head">
+              <div><h3>Delete {deleteTarget.profile?.full_name ?? 'this client'}?</h3><div className="page-sub">This permanently removes their login, application, documents, and message history. It cannot be undone.</div></div>
+              <button className="modal-close" onClick={() => { setDeleteTarget(null); setDeleteConfirmText(''); }}>✕</button>
+            </div>
+            <div className="form-row">
+              <label>Type "{deleteTarget.profile?.full_name}" to confirm</label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder={deleteTarget.profile?.full_name ?? ''}
+              />
+            </div>
+            {deleteError && <div className="login-error">{deleteError}</div>}
+            <div className="modal-actions">
+              <button
+                className="login-btn"
+                style={{ background: '#B3261E' }}
+                disabled={deleteSubmitting || !deleteTarget.profile?.full_name || deleteConfirmText !== deleteTarget.profile.full_name}
+                onClick={handleDeleteClient}
+              >
+                {deleteSubmitting ? 'Deleting…' : 'Delete Permanently'}
+              </button>
+              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => { setDeleteTarget(null); setDeleteConfirmText(''); }} disabled={deleteSubmitting}>Cancel</button>
             </div>
           </div>
         </div>
