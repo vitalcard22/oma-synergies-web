@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, type ClientWithDetails } from '../../hooks/useAdminData';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
 import { TOURS } from '../../data/tours';
@@ -9,7 +9,7 @@ import { DESTINATIONS } from '../../data/destinations';
 import {
   ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
   ADMIN_PAYMENTS, ADMIN_TESTIMONIALS, ADMIN_DESTINATIONS, ADMIN_TOURS,
-  ADMIN_STAFF, ADMIN_NOTIFICATIONS,
+  ADMIN_NOTIFICATIONS,
 } from './adminData';
 import './Admin.css';
 
@@ -184,6 +184,61 @@ export default function Admin() {
     setRegisterSubmitting(false);
   }
 
+  // ---- Register New Staff (Super Admin only, mirrors client registration) ----
+  const [registerStaffOpen, setRegisterStaffOpen] = useState(false);
+  const [staffForm, setStaffForm] = useState({ fullName: '', email: '', phone: '', title: 'Visa Consultant' });
+  const [staffSubmitting, setStaffSubmitting] = useState(false);
+  const [staffError, setStaffError] = useState<string | null>(null);
+  const [staffResult, setStaffResult] = useState<{ tempPassword: string } | null>(null);
+
+  function openRegisterStaffModal() {
+    setStaffForm({ fullName: '', email: '', phone: '', title: 'Visa Consultant' });
+    setStaffError(null);
+    setStaffResult(null);
+    setRegisterStaffOpen(true);
+  }
+
+  async function handleRegisterStaff() {
+    setStaffError(null);
+    if (!staffForm.fullName.trim() || !staffForm.email.trim()) {
+      setStaffError('Full name and email are required.');
+      return;
+    }
+    setStaffSubmitting(true);
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setStaffError('Your session has expired - please sign in again.');
+      setStaffSubmitting(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/create-staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify(staffForm),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setStaffError(data.error ?? 'Something went wrong creating this account.');
+        setStaffSubmitting(false);
+        return;
+      }
+      setStaffResult({ tempPassword: data.tempPassword });
+      refetchStaff();
+    } catch {
+      setStaffError('Could not reach the server. Check your connection and try again.');
+    }
+    setStaffSubmitting(false);
+  }
+
+  async function handleToggleStaffStatus(staffId: string, currentStatus: string) {
+    const newStatus = currentStatus === 'suspended' ? 'active' : 'suspended';
+    await updateStaffStatus(staffId, newStatus);
+    refetchStaff();
+  }
+
   // ---- Delete Client (real, irreversible - requires typing the name to confirm) ----
   const [deleteTarget, setDeleteTarget] = useState<ClientWithDetails | null>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
@@ -231,6 +286,8 @@ export default function Admin() {
   const dashboardStats = useDashboardStats(isAuthedAdmin);
   const { activity: recentActivity, loading: activityLoading } = useRecentActivity(8, isAuthedAdmin);
   const { submissions, loading: submissionsLoading, refetch: refetchSubmissions } = useContactSubmissions(isAuthedAdmin);
+  const isSuperAdmin = !auth.loading && auth.role === 'super_admin';
+  const { staff, loading: staffLoading, refetch: refetchStaff } = useStaffList(isSuperAdmin);
 
   const filteredClients = clients.filter((c) => {
     const name = c.profile?.full_name ?? '';
@@ -375,16 +432,17 @@ export default function Admin() {
       <div className="app">
         <aside className={mobileOpen ? 'sidebar mobile-open' : 'sidebar'}>
           <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>ADMIN PANEL</span></div>
-          {NAV.map((sec) => (
+          {NAV.filter((sec) => sec.section !== 'Team' || isSuperAdmin).map((sec) => (
             <div key={sec.section}>
               <div className="nav-section-label">{sec.section}</div>
               {sec.items.map((item) => {
-                // Live counts only for the two nav items that have real data
-                // behind them so far - everything else stays badge-free
-                // rather than showing a stale or fake number.
+                // Live counts only for nav items that have real data behind
+                // them so far - everything else stays badge-free rather
+                // than showing a stale or fake number.
                 const liveBadge =
                   item.id === 'clients' ? clients.length :
                   item.id === 'inquiries' ? dashboardStats.newInquiries :
+                  item.id === 'staff' ? staff.length :
                   undefined;
                 return (
                   <a
@@ -690,31 +748,90 @@ export default function Admin() {
 
           {activeView === 'staff' && (
             <div className="view active">
-              <div className="topbar">
-                <div><div className="page-title">Staff & Roles</div><div className="page-sub">Manage team access to the admin panel</div></div>
-                <button className="btn-add" onClick={() => setAddModal({ label: 'Staff Member', fields: ['Full Name', 'Email', 'Role', 'Permission Level'] })}>+ Invite Staff</button>
-              </div>
-              <div className="panel">
-                <div className="panel-head"><h3>Team Members ({ADMIN_STAFF.length})</h3></div>
-                <table>
-                  <thead><tr><th>Name</th><th>Role</th><th>Permission</th><th>Status</th><th></th></tr></thead>
-                  <tbody>
-                    {ADMIN_STAFF.map((s) => (
-                      <tr key={s.name}>
-                        <td><span className="avatar-sm">{s.initials}</span>{s.name}</td><td>{s.role}</td>
-                        <td><span className={s.admin ? 'role-badge admin' : 'role-badge'}>{s.permission}</span></td>
-                        <td><span className="badge status-done">Active</span></td>
-                        <td className="row-actions"><button className="icon-btn">✎</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div className="upload-note"><strong>Permission levels (planned)</strong>Admin: full access to everything. Staff (Content Only): can manage testimonials, destinations, tours. Staff (View Only): can view clients/inquiries but not edit case status.</div>
+              {!isSuperAdmin ? (
+                <div className="empty-state">Staff management is restricted to the Super Admin account.</div>
+              ) : (
+                <>
+                  <div className="topbar">
+                    <div><div className="page-title">Staff & Roles</div><div className="page-sub">Manage team access to the admin panel</div></div>
+                    <button className="btn-add" onClick={openRegisterStaffModal}>+ Add Staff</button>
+                  </div>
+                  <div className="panel">
+                    <div className="panel-head"><h3>Team Members ({staff.length})</h3></div>
+                    {staffLoading ? (
+                      <div className="empty-state">Loading…</div>
+                    ) : (
+                      <table>
+                        <thead><tr><th>Name</th><th>Role</th><th>Active Clients</th><th>Status</th><th></th></tr></thead>
+                        <tbody>
+                          {staff.map((s) => (
+                            <tr key={s.id}>
+                              <td><span className="avatar-sm">{getInitials(s.full_name)}</span>{s.full_name}{s.id === auth.userId && ' (you)'}</td>
+                              <td>{s.role === 'super_admin' ? 'Super Admin' : (s.title || 'Staff Admin')}</td>
+                              <td>{s.clientCount}</td>
+                              <td><Badge status={s.status === 'active' ? 'Active' : 'Suspended'} /></td>
+                              <td className="row-actions">
+                                {s.role !== 'super_admin' && (
+                                  <button className="icon-btn" title={s.status === 'suspended' ? 'Reactivate' : 'Suspend'} onClick={() => handleToggleStaffStatus(s.id, s.status)}>
+                                    {s.status === 'suspended' ? '↺' : '⏸'}
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </main>
       </div>
+
+      {registerStaffOpen && (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !staffSubmitting) setRegisterStaffOpen(false); }}>
+          <div className="modal" style={{ maxWidth: 480 }}>
+            {staffResult ? (
+              <>
+                <div className="modal-head">
+                  <div><h3>Staff Account Created</h3><div className="page-sub">Share these login details with them directly - they won't be shown again</div></div>
+                  <button className="modal-close" onClick={() => setRegisterStaffOpen(false)}>✕</button>
+                </div>
+                <div className="form-row"><label>Email</label><input type="text" readOnly value={staffForm.email} /></div>
+                <div className="form-row"><label>Temporary Password</label><input type="text" readOnly value={staffResult.tempPassword} /></div>
+                <div className="modal-actions">
+                  <button className="btn-save" onClick={() => setRegisterStaffOpen(false)}>Done</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="modal-head">
+                  <div><h3>Add Staff Member</h3><div className="page-sub">Creates their admin login automatically</div></div>
+                  <button className="modal-close" onClick={() => setRegisterStaffOpen(false)}>✕</button>
+                </div>
+                <div className="form-row"><label>Full Name</label><input type="text" placeholder="Adaeze Okafor" value={staffForm.fullName} onChange={(e) => setStaffForm((f) => ({ ...f, fullName: e.target.value }))} /></div>
+                <div className="form-row"><label>Email</label><input type="email" placeholder="adaeze@omasynergiestravel.com" value={staffForm.email} onChange={(e) => setStaffForm((f) => ({ ...f, email: e.target.value }))} /></div>
+                <div className="form-row"><label>Phone</label><input type="text" placeholder="0801 234 5678" value={staffForm.phone} onChange={(e) => setStaffForm((f) => ({ ...f, phone: e.target.value }))} /></div>
+                <div className="form-row">
+                  <label>Title</label>
+                  <select value={staffForm.title} onChange={(e) => setStaffForm((f) => ({ ...f, title: e.target.value }))}>
+                    <option>Visa Consultant</option>
+                    <option>Travel Coordinator</option>
+                    <option>Admissions Officer</option>
+                  </select>
+                </div>
+                {staffError && <div className="login-error">{staffError}</div>}
+                <div className="modal-actions">
+                  <button className="btn-save" onClick={handleRegisterStaff} disabled={staffSubmitting}>{staffSubmitting ? 'Creating…' : 'Create Account'}</button>
+                  <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setRegisterStaffOpen(false)} disabled={staffSubmitting}>Cancel</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {caseModalClient && (
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget) setCaseModalClient(null); }}>

@@ -316,3 +316,65 @@ export async function updateSubmissionStatus(id: string, status: EnquiryStatus):
   return error?.message ?? null;
 }
 
+/**
+ * Staff (and the Super Admin's own row) - both are just profiles with
+ * role in (super_admin, staff_admin). Fetched with a real client count
+ * per staff member (how many clients.assigned_to points at them), used
+ * to show workload at a glance.
+ */
+export interface StaffWithCount extends ProfileRow {
+  clientCount: number;
+}
+
+export function useStaffList(enabled = true) {
+  const [staff, setStaff] = useState<StaffWithCount[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refetch = useCallback(async () => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('*')
+      .in('role', ['super_admin', 'staff_admin'])
+      .order('created_at', { ascending: true });
+
+    if (!profiles || profiles.length === 0) {
+      setStaff([]);
+      setLoading(false);
+      return;
+    }
+
+    const { data: clients } = await supabase.from('clients').select('assigned_to');
+    const counts = new Map<string, number>();
+    (clients ?? []).forEach((c) => {
+      if (c.assigned_to) counts.set(c.assigned_to, (counts.get(c.assigned_to) ?? 0) + 1);
+    });
+
+    setStaff(profiles.map((p) => ({ ...p, clientCount: counts.get(p.id) ?? 0 })));
+    setLoading(false);
+  }, [enabled]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return { staff, loading, refetch };
+}
+
+/**
+ * Suspending/reactivating an existing staff account is a plain profiles
+ * UPDATE, not a serverless-function call - unlike creating one, this
+ * doesn't touch the auth layer at all, and RLS itself already restricts
+ * writes to profiles to super_admin only ("Super admin manages profiles"
+ * / for all using (is_super_admin())). A staff_admin session attempting
+ * this would be rejected by the database regardless of what the UI shows.
+ */
+export async function updateStaffStatus(staffId: string, status: 'active' | 'suspended'): Promise<string | null> {
+  const { error } = await supabase.from('profiles').update({ status }).eq('id', staffId);
+  return error?.message ?? null;
+}
+
