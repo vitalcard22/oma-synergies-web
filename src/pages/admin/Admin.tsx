@@ -2,6 +2,7 @@ import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
 import { useClients, useDashboardStats, useRecentActivity, type ClientWithDetails } from '../../hooks/useAdminData';
+import { supabase } from '../../lib/supabase';
 import { TOURS } from '../../data/tours';
 import { DESTINATIONS } from '../../data/destinations';
 import {
@@ -69,11 +70,60 @@ export default function Admin() {
   const [addModal, setAddModal] = useState<{ label: string; fields: string[] } | null>(null);
   const [toggles, setToggles] = useState<Record<string, boolean>>({});
 
+  // ---- Register New Client (real, calls the serverless function) ----
+  const [registerOpen, setRegisterOpen] = useState(false);
+  const [registerForm, setRegisterForm] = useState({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' });
+  const [registerSubmitting, setRegisterSubmitting] = useState(false);
+  const [registerError, setRegisterError] = useState<string | null>(null);
+  const [registerResult, setRegisterResult] = useState<{ tempPassword: string; documentsPopulated: number } | null>(null);
+
+  function openRegisterModal() {
+    setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' });
+    setRegisterError(null);
+    setRegisterResult(null);
+    setRegisterOpen(true);
+  }
+
+  async function handleRegisterClient() {
+    setRegisterError(null);
+    if (!registerForm.fullName.trim() || !registerForm.email.trim() || !registerForm.serviceType) {
+      setRegisterError('Full name, email, and service type are required.');
+      return;
+    }
+    setRegisterSubmitting(true);
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setRegisterError('Your session has expired - please sign in again.');
+      setRegisterSubmitting(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/create-client', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify(registerForm),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setRegisterError(data.error ?? 'Something went wrong creating this client.');
+        setRegisterSubmitting(false);
+        return;
+      }
+      setRegisterResult({ tempPassword: data.tempPassword, documentsPopulated: data.documentsPopulated });
+      refetchClients();
+    } catch {
+      setRegisterError('Could not reach the server. Check your connection and try again.');
+    }
+    setRegisterSubmitting(false);
+  }
+
   // Only fire these once someone is confirmed as a signed-in admin - not
   // on the bare login screen (where they'd fail RLS/be blocked anyway,
   // but there's no reason to send them at all before someone's signed in).
   const isAuthedAdmin = !auth.loading && !!auth.userId && (auth.role === 'super_admin' || auth.role === 'staff_admin');
-  const { clients, loading: clientsLoading } = useClients(isAuthedAdmin);
+  const { clients, loading: clientsLoading, refetch: refetchClients } = useClients(isAuthedAdmin);
   const dashboardStats = useDashboardStats(isAuthedAdmin);
   const { activity: recentActivity, loading: activityLoading } = useRecentActivity(8, isAuthedAdmin);
 
@@ -292,7 +342,7 @@ export default function Admin() {
                       <option value="all">All Services</option>
                       <option>Study Visa</option><option>Tourist Visa</option><option>Business Visa</option><option>Spousal Work Permit</option>
                     </select>
-                    <button className="btn-add" onClick={() => setAddModal({ label: 'Client', fields: ['Full Name', 'Email', 'Phone', 'Destination', 'Service'] })}>+ Add Client</button>
+                    <button className="btn-add" onClick={openRegisterModal}>+ Add Client</button>
                   </div>
                 </div>
                 {clientsLoading ? (
@@ -568,6 +618,75 @@ export default function Admin() {
               <button className="btn-save">Save Changes</button>
               <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setCaseModalClient(null)}>Cancel</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {registerOpen && (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !registerSubmitting) setRegisterOpen(false); }}>
+          <div className="modal" style={{ maxWidth: 480 }}>
+            {registerResult ? (
+              <>
+                <div className="modal-head">
+                  <div><h3>Client Registered</h3><div className="page-sub">Share these login details with them directly - they won't be shown again</div></div>
+                  <button className="modal-close" onClick={() => setRegisterOpen(false)}>✕</button>
+                </div>
+                <div className="form-row">
+                  <label>Email</label>
+                  <input type="text" readOnly value={registerForm.email} />
+                </div>
+                <div className="form-row">
+                  <label>Temporary Password</label>
+                  <input type="text" readOnly value={registerResult.tempPassword} />
+                </div>
+                <div className="login-note">
+                  {registerResult.documentsPopulated > 0
+                    ? `${registerResult.documentsPopulated} document checklist items were auto-added based on "${registerForm.serviceType}".`
+                    : `No document template exists yet for "${registerForm.serviceType}" - add items manually from the client's case.`}
+                </div>
+                <div className="modal-actions">
+                  <button className="btn-save" onClick={() => setRegisterOpen(false)}>Done</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="modal-head">
+                  <div><h3>Register New Client</h3><div className="page-sub">Creates their login automatically - share the password with them yourself for now</div></div>
+                  <button className="modal-close" onClick={() => setRegisterOpen(false)}>✕</button>
+                </div>
+                <div className="form-row">
+                  <label>Full Name</label>
+                  <input type="text" placeholder="Jane Okafor" value={registerForm.fullName} onChange={(e) => setRegisterForm((f) => ({ ...f, fullName: e.target.value }))} />
+                </div>
+                <div className="form-row">
+                  <label>Email</label>
+                  <input type="email" placeholder="jane@example.com" value={registerForm.email} onChange={(e) => setRegisterForm((f) => ({ ...f, email: e.target.value }))} />
+                </div>
+                <div className="form-row">
+                  <label>Phone</label>
+                  <input type="text" placeholder="0801 234 5678" value={registerForm.phone} onChange={(e) => setRegisterForm((f) => ({ ...f, phone: e.target.value }))} />
+                </div>
+                <div className="form-row">
+                  <label>Service Type</label>
+                  <select value={registerForm.serviceType} onChange={(e) => setRegisterForm((f) => ({ ...f, serviceType: e.target.value }))}>
+                    <option>UK Study Visa</option>
+                    <option>Tourist Visa</option>
+                    <option>Business Visa</option>
+                  </select>
+                </div>
+                <div className="form-row">
+                  <label>Destination (optional)</label>
+                  <input type="text" placeholder="United Kingdom" value={registerForm.destination} onChange={(e) => setRegisterForm((f) => ({ ...f, destination: e.target.value }))} />
+                </div>
+                {registerError && <div className="login-error">{registerError}</div>}
+                <div className="modal-actions">
+                  <button className="btn-save" onClick={handleRegisterClient} disabled={registerSubmitting}>
+                    {registerSubmitting ? 'Creating…' : 'Create Account'}
+                  </button>
+                  <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setRegisterOpen(false)} disabled={registerSubmitting}>Cancel</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
