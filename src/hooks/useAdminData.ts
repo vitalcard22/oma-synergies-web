@@ -5,6 +5,9 @@ import type { Database } from '../lib/database.types';
 type ClientRow = Database['public']['Tables']['clients']['Row'];
 type ProfileRow = Database['public']['Tables']['profiles']['Row'];
 type ApplicationRow = Database['public']['Tables']['applications']['Row'];
+type DocumentRow = Database['public']['Tables']['documents']['Row'];
+type ApplicationStage = Database['public']['Tables']['stage_history']['Row']['stage'];
+type DocumentStatus = DocumentRow['status'];
 
 export interface ClientWithDetails extends ClientRow {
   profile: Pick<ProfileRow, 'id' | 'full_name'> | null;
@@ -191,3 +194,88 @@ export function useRecentActivity(limit = 8, enabled = true) {
 
   return { activity, loading };
 }
+
+/**
+ * Documents for one specific application - fetched lazily, only when the
+ * case detail modal is actually open for a client (applicationId is null
+ * otherwise), rather than eagerly fetching every client's documents
+ * up front.
+ */
+export function useApplicationDocuments(applicationId: string | null) {
+  const [documents, setDocuments] = useState<DocumentRow[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const refetch = useCallback(async () => {
+    if (!applicationId) {
+      setDocuments([]);
+      return;
+    }
+    setLoading(true);
+    const { data } = await supabase
+      .from('documents')
+      .select('*')
+      .eq('application_id', applicationId)
+      .order('document_name', { ascending: true });
+    setDocuments(data ?? []);
+    setLoading(false);
+  }, [applicationId]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return { documents, loading, refetch };
+}
+
+/**
+ * Updates an application's stage. Uses the regular authenticated client
+ * (not a serverless function) - admins already have direct RLS permission
+ * to write applications/stage_history/audit_log, no elevated service-role
+ * access needed for this, unlike creating/deleting a login account.
+ */
+export async function updateApplicationStage(
+  applicationId: string,
+  newStage: ApplicationStage,
+  adminId: string
+): Promise<string | null> {
+  const { error: appError } = await supabase
+    .from('applications')
+    .update({ stage: newStage, stage_updated_at: new Date().toISOString() })
+    .eq('id', applicationId);
+  if (appError) return appError.message;
+
+  await supabase.from('stage_history').insert({ application_id: applicationId, stage: newStage, changed_by: adminId });
+  await supabase.from('audit_log').insert({
+    admin_id: adminId,
+    action: 'stage_updated',
+    target_table: 'applications',
+    target_id: applicationId,
+    detail: `Stage changed to "${newStage.replace(/_/g, ' ')}"`,
+  });
+  return null;
+}
+
+export async function updateApplicationNotes(
+  applicationId: string,
+  adminNotes: string,
+  clientVisibleMessage: string
+): Promise<string | null> {
+  const { error } = await supabase
+    .from('applications')
+    .update({ admin_notes: adminNotes, client_visible_message: clientVisibleMessage })
+    .eq('id', applicationId);
+  return error?.message ?? null;
+}
+
+export async function updateDocumentStatus(
+  documentId: string,
+  status: DocumentStatus,
+  rejectionReason: string | null
+): Promise<string | null> {
+  const { error } = await supabase
+    .from('documents')
+    .update({ status, rejection_reason: status === 'rejected' ? rejectionReason : null, updated_at: new Date().toISOString() })
+    .eq('id', documentId);
+  return error?.message ?? null;
+}
+

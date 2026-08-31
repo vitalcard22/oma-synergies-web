@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, type ClientWithDetails } from '../../hooks/useAdminData';
 import { supabase } from '../../lib/supabase';
+import type { Database } from '../../lib/database.types';
 import { TOURS } from '../../data/tours';
 import { DESTINATIONS } from '../../data/destinations';
 import {
@@ -67,6 +68,70 @@ export default function Admin() {
   const [inquiryStatusFilter, setInquiryStatusFilter] = useState('all');
   const [paymentsFilter, setPaymentsFilter] = useState('all');
   const [caseModalClient, setCaseModalClient] = useState<ClientWithDetails | null>(null);
+  const [caseStageEdit, setCaseStageEdit] = useState('documents_requested');
+  const [caseAdminNotes, setCaseAdminNotes] = useState('');
+  const [caseClientMessage, setCaseClientMessage] = useState('');
+  const [caseSaving, setCaseSaving] = useState(false);
+  const [caseSaveError, setCaseSaveError] = useState<string | null>(null);
+  const [caseSaveSuccess, setCaseSaveSuccess] = useState(false);
+  const [caseDocSavingId, setCaseDocSavingId] = useState<string | null>(null);
+  const [caseRejectReasons, setCaseRejectReasons] = useState<Record<string, string>>({});
+
+  const caseApplication = caseModalClient?.applications[0] ?? null;
+  const { documents: caseDocuments, refetch: refetchCaseDocuments } = useApplicationDocuments(caseApplication?.id ?? null);
+
+  function openCaseModal(client: ClientWithDetails) {
+    const app = client.applications[0];
+    setCaseModalClient(client);
+    setCaseStageEdit(app?.stage ?? 'documents_requested');
+    setCaseAdminNotes(app?.admin_notes ?? '');
+    setCaseClientMessage(app?.client_visible_message ?? '');
+    setCaseSaveError(null);
+    setCaseSaveSuccess(false);
+  }
+
+  async function handleSaveCase() {
+    if (!caseApplication || !auth.userId) return;
+    setCaseSaving(true);
+    setCaseSaveError(null);
+    setCaseSaveSuccess(false);
+
+    if (caseStageEdit !== caseApplication.stage) {
+      const stageErr = await updateApplicationStage(caseApplication.id, caseStageEdit as typeof caseApplication.stage, auth.userId);
+      if (stageErr) {
+        setCaseSaveError(stageErr);
+        setCaseSaving(false);
+        return;
+      }
+    }
+
+    const notesErr = await updateApplicationNotes(caseApplication.id, caseAdminNotes, caseClientMessage);
+    if (notesErr) {
+      setCaseSaveError(notesErr);
+      setCaseSaving(false);
+      return;
+    }
+
+    setCaseSaving(false);
+    setCaseSaveSuccess(true);
+    refetchClients();
+  }
+
+  async function handleDocumentStatusChange(docId: string, newStatus: string) {
+    setCaseDocSavingId(docId);
+    const reason = newStatus === 'rejected' ? (caseRejectReasons[docId] ?? '') : null;
+    await updateDocumentStatus(docId, newStatus as Database['public']['Tables']['documents']['Row']['status'], reason);
+    await refetchCaseDocuments();
+    setCaseDocSavingId(null);
+  }
+
+  async function handleRejectionReasonBlur(docId: string) {
+    setCaseDocSavingId(docId);
+    await updateDocumentStatus(docId, 'rejected', caseRejectReasons[docId] ?? '');
+    await refetchCaseDocuments();
+    setCaseDocSavingId(null);
+  }
+
   const [addModal, setAddModal] = useState<{ label: string; fields: string[] } | null>(null);
   const [toggles, setToggles] = useState<Record<string, boolean>>({});
 
@@ -405,7 +470,7 @@ export default function Admin() {
                             <td>{latestApp?.destination ?? '—'}</td><td>{c.service_type}</td>
                             <td><Badge status={latestApp?.stage.replace(/_/g, ' ') ?? 'No application'} /></td>
                             <td className="row-actions">
-                              <button className="icon-btn" onClick={() => setCaseModalClient(c)}>⤢</button>
+                              <button className="icon-btn" onClick={() => openCaseModal(c)}>⤢</button>
                               <button className="icon-btn" title="Delete client" onClick={() => setDeleteTarget(c)}>🗑</button>
                             </td>
                           </tr>
@@ -631,35 +696,90 @@ export default function Admin() {
       {caseModalClient && (
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget) setCaseModalClient(null); }}>
           <div className="modal">
-            {/* Header above is wired to the real client - the track steps,
-               status dropdowns, and notes below are still the original
-               static mock content, not yet reading/writing real
-               applications/documents rows. Real client list + dashboard
-               stats were this pass's scope; wiring this modal's body to
-               real data (stage updates, document status, admin notes) is
-               the next piece of Phase 2, not done yet. */}
             <div className="modal-head">
-              <div><h3>{caseModalClient.profile?.full_name ?? 'Unknown'}'s Case</h3><div className="page-sub">{caseModalClient.applications[0]?.destination ?? '—'} · {caseModalClient.service_type}</div></div>
+              <div><h3>{caseModalClient.profile?.full_name ?? 'Unknown'}'s Case</h3><div className="page-sub">{caseApplication?.destination ?? '—'} · {caseModalClient.service_type}</div></div>
               <button className="modal-close" onClick={() => setCaseModalClient(null)}>✕</button>
             </div>
-            <div className="track-group">
-              <div className="track-label">Admission Track</div>
-              <div className="track-row"><span className="step-name">Consultation & Profile Evaluation</span><select className="status-select" defaultValue="Done"><option>Done</option><option>In Progress</option><option>Pending</option></select></div>
-              <div className="track-row"><span className="step-name">School Admission & Document Prep</span><select className="status-select" defaultValue="Done"><option>Done</option><option>In Progress</option><option>Pending</option></select></div>
-            </div>
-            <div className="track-group">
-              <div className="track-label">Visa Track</div>
-              <div className="track-row"><span className="step-name">Visa Support & Study Loans</span><select className="status-select" defaultValue="In Progress"><option>Done</option><option>In Progress</option><option>Pending</option></select></div>
-              <div className="track-row"><span className="step-name">Flight Booking & Relocation</span><select className="status-select" defaultValue="Pending"><option>Done</option><option>In Progress</option><option>Pending</option></select></div>
-            </div>
-            <div className="track-group">
-              <div className="track-label">Internal Notes (not visible to client)</div>
-              <textarea className="notes-box" defaultValue="Awaiting updated bank statement before visa submission." />
-            </div>
-            <div className="modal-actions">
-              <button className="btn-save">Save Changes</button>
-              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setCaseModalClient(null)}>Cancel</button>
-            </div>
+
+            {!caseApplication ? (
+              <div className="empty-state">No application record exists for this client yet.</div>
+            ) : (
+              <>
+                <div className="track-group">
+                  <div className="track-label">Application Stage</div>
+                  <div className="track-row">
+                    <span className="step-name">Current stage</span>
+                    <select className="status-select" value={caseStageEdit} onChange={(e) => setCaseStageEdit(e.target.value)}>
+                      <option value="documents_requested">Documents Requested</option>
+                      <option value="documents_received">Documents Received</option>
+                      <option value="application_prepared">Application Prepared</option>
+                      <option value="submitted">Submitted</option>
+                      <option value="decision_pending">Decision Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="refused">Refused</option>
+                      <option value="withdrawn">Withdrawn</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="track-group">
+                  <div className="track-label">Document Checklist {caseDocuments.length > 0 && `(${caseDocuments.length})`}</div>
+                  {caseDocuments.length === 0 ? (
+                    <div className="empty-state" style={{ padding: '16px 0' }}>No documents on this checklist.</div>
+                  ) : (
+                    caseDocuments.map((doc) => (
+                      <div key={doc.id}>
+                        <div className="track-row">
+                          <span className="step-name">{doc.document_name}{caseDocSavingId === doc.id && ' — saving…'}</span>
+                          <select
+                            className="status-select"
+                            value={doc.status}
+                            onChange={(e) => handleDocumentStatusChange(doc.id, e.target.value)}
+                          >
+                            <option value="required">Required</option>
+                            <option value="pending">Pending</option>
+                            <option value="received">Received</option>
+                            <option value="under_review">Under Review</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="submitted_to_embassy">Submitted to Embassy</option>
+                            <option value="returned">Returned</option>
+                          </select>
+                        </div>
+                        {doc.status === 'rejected' && (
+                          <input
+                            type="text"
+                            placeholder="Reason for rejection (shown to client)"
+                            defaultValue={doc.rejection_reason ?? ''}
+                            onChange={(e) => setCaseRejectReasons((r) => ({ ...r, [doc.id]: e.target.value }))}
+                            onBlur={() => handleRejectionReasonBlur(doc.id)}
+                            style={{ width: '100%', marginTop: '-8px', marginBottom: '10px', padding: '8px 10px', fontSize: '12.5px', borderRadius: '8px', border: '1px solid var(--line-dark)' }}
+                          />
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                <div className="track-group">
+                  <div className="track-label">Message to Client (they'll see this in their portal)</div>
+                  <textarea className="notes-box" value={caseClientMessage} onChange={(e) => setCaseClientMessage(e.target.value)} placeholder="e.g. Your file has been submitted to the embassy. No action needed from you right now." />
+                </div>
+
+                <div className="track-group">
+                  <div className="track-label">Internal Notes (not visible to client)</div>
+                  <textarea className="notes-box" value={caseAdminNotes} onChange={(e) => setCaseAdminNotes(e.target.value)} />
+                </div>
+
+                {caseSaveError && <div className="login-error">{caseSaveError}</div>}
+                {caseSaveSuccess && <div className="login-note">Saved.</div>}
+
+                <div className="modal-actions">
+                  <button className="btn-save" onClick={handleSaveCase} disabled={caseSaving}>{caseSaving ? 'Saving…' : 'Save Changes'}</button>
+                  <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setCaseModalClient(null)}>Close</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
