@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, type ClientWithDetails } from '../../hooks/useAdminData';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
-import { TOURS } from '../../data/tours';
+import { TOURS, formatNaira } from '../../data/tours';
 import { DESTINATIONS } from '../../data/destinations';
 import {
   ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
-  ADMIN_PAYMENTS, ADMIN_TESTIMONIALS, ADMIN_DESTINATIONS, ADMIN_TOURS,
+  ADMIN_TESTIMONIALS, ADMIN_DESTINATIONS, ADMIN_TOURS,
   ADMIN_NOTIFICATIONS,
 } from './adminData';
 import './Admin.css';
@@ -184,6 +184,48 @@ export default function Admin() {
     setRegisterSubmitting(false);
   }
 
+  // ---- Add Manual Payment (real, no serverless function needed - admins
+  // already have direct RLS write access to payments) ----
+  const [addPaymentOpen, setAddPaymentOpen] = useState(false);
+  const [paymentForm, setPaymentForm] = useState({ clientId: '', expectedAmount: '', amountPaid: '', status: 'confirmed' as string, selarOrderId: '' });
+  const [paymentSubmitting, setPaymentSubmitting] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
+  function openAddPaymentModal() {
+    setPaymentForm({ clientId: '', expectedAmount: '', amountPaid: '', status: 'confirmed', selarOrderId: '' });
+    setPaymentError(null);
+    setAddPaymentOpen(true);
+  }
+
+  async function handleAddPayment() {
+    setPaymentError(null);
+    const expected = Number(paymentForm.expectedAmount);
+    const paid = Number(paymentForm.amountPaid);
+    if (!paymentForm.clientId) {
+      setPaymentError('Select which client this payment is for.');
+      return;
+    }
+    if (!expected || expected <= 0) {
+      setPaymentError('Enter a valid expected amount.');
+      return;
+    }
+    setPaymentSubmitting(true);
+    const err = await addPayment({
+      clientId: paymentForm.clientId,
+      expectedAmount: expected,
+      amountPaid: Number.isFinite(paid) ? paid : 0,
+      status: paymentForm.status as Database['public']['Tables']['payments']['Row']['status'],
+      selarOrderId: paymentForm.selarOrderId,
+    });
+    setPaymentSubmitting(false);
+    if (err) {
+      setPaymentError(err);
+      return;
+    }
+    setAddPaymentOpen(false);
+    refetchPayments();
+  }
+
   // ---- Register New Staff (Super Admin only, mirrors client registration) ----
   const [registerStaffOpen, setRegisterStaffOpen] = useState(false);
   const [staffForm, setStaffForm] = useState({ fullName: '', email: '', phone: '', title: 'Visa Consultant' });
@@ -288,6 +330,7 @@ export default function Admin() {
   const { submissions, loading: submissionsLoading, refetch: refetchSubmissions } = useContactSubmissions(isAuthedAdmin);
   const isSuperAdmin = !auth.loading && auth.role === 'super_admin';
   const { staff, loading: staffLoading, refetch: refetchStaff } = useStaffList(isSuperAdmin);
+  const { payments, loading: paymentsLoading, refetch: refetchPayments } = usePayments(isAuthedAdmin);
 
   const filteredClients = clients.filter((c) => {
     const name = c.profile?.full_name ?? '';
@@ -303,7 +346,10 @@ export default function Admin() {
     await updateSubmissionStatus(id, status);
     refetchSubmissions();
   }
-  const filteredPayments = ADMIN_PAYMENTS.filter((p) => paymentsFilter === 'all' || p.status === paymentsFilter);
+  const filteredPayments = payments.filter((p) => paymentsFilter === 'all' || p.status === paymentsFilter);
+  const totalReceived = payments.reduce((sum, p) => sum + p.amount_paid, 0);
+  const completedCount = payments.filter((p) => p.status === 'confirmed').length;
+  const pendingCount = payments.filter((p) => p.status === 'pending' || p.status === 'partially_paid').length;
 
   const toggleKey = (prefix: string, name: string) => `${prefix}:${name}`;
   const isOn = (prefix: string, name: string, defaultVal: boolean) => {
@@ -640,34 +686,53 @@ export default function Admin() {
 
           {activeView === 'payments' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Payments</div><div className="page-sub">Transactions processed via Selar</div></div></div>
+              <div className="topbar">
+                <div><div className="page-title">Payments</div><div className="page-sub">Manually recorded until Selar checkout syncs automatically</div></div>
+                <button className="btn-add" onClick={openAddPaymentModal}>+ Add Payment</button>
+              </div>
               <div className="stat-cards">
-                <div className="stat-card"><div className="n">₦4.2M</div><div className="l">Total Received <span style={{ color: 'var(--slate)', fontWeight: 400 }}>(sample)</span></div></div>
-                <div className="stat-card"><div className="n">6</div><div className="l">Completed Payments</div></div>
-                <div className="stat-card"><div className="n">2</div><div className="l">Pending</div></div>
+                <div className="stat-card"><div className="n">{formatNaira(totalReceived)}</div><div className="l">Total Received</div></div>
+                <div className="stat-card"><div className="n">{completedCount}</div><div className="l">Completed Payments</div></div>
+                <div className="stat-card"><div className="n">{pendingCount}</div><div className="l">Pending</div></div>
               </div>
               <div className="panel">
                 <div className="panel-head">
-                  <h3>Recent Transactions</h3>
+                  <h3>All Transactions ({filteredPayments.length})</h3>
                   <div className="toolbar">
                     <select className="select-filter" value={paymentsFilter} onChange={(e) => setPaymentsFilter(e.target.value)}>
-                      <option value="all">All Status</option><option>Paid</option><option>Pending</option>
+                      <option value="all">All Status</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="pending">Pending</option>
+                      <option value="partially_paid">Partially Paid</option>
+                      <option value="refunded">Refunded</option>
                     </select>
                   </div>
                 </div>
-                <table>
-                  <thead><tr><th>Client</th><th>Item</th><th>Amount</th><th>Selar Ref</th><th>Status</th></tr></thead>
-                  <tbody>
-                    {filteredPayments.map((p) => (
-                      <tr key={p.ref}>
-                        <td className="cell-name">{p.client}</td><td>{p.item}</td><td>{p.amount}</td><td>{p.ref}</td>
-                        <td><Badge status={p.status} /></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {paymentsLoading ? (
+                  <div className="empty-state">Loading…</div>
+                ) : filteredPayments.length === 0 ? (
+                  <div className="empty-state">
+                    {payments.length === 0
+                      ? 'No payments recorded yet.'
+                      : 'No payments match this filter.'}
+                  </div>
+                ) : (
+                  <table>
+                    <thead><tr><th>Client</th><th>Expected</th><th>Paid</th><th>Selar Ref</th><th>Status</th></tr></thead>
+                    <tbody>
+                      {filteredPayments.map((p) => (
+                        <tr key={p.id}>
+                          <td className="cell-name">{p.clientName}</td>
+                          <td>{formatNaira(p.expected_amount)}</td>
+                          <td>{formatNaira(p.amount_paid)}</td>
+                          <td>{p.selar_order_id ?? '—'}</td>
+                          <td><Badge status={p.status.replace(/_/g, ' ')} /></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
-              <div className="upload-note"><strong>Selar Integration</strong>These transactions will sync automatically once Selar checkout is wired up on the live site. For now this table reflects manually recorded sample data.</div>
             </div>
           )}
 
@@ -789,6 +854,53 @@ export default function Admin() {
           )}
         </main>
       </div>
+
+      {addPaymentOpen && (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !paymentSubmitting) setAddPaymentOpen(false); }}>
+          <div className="modal" style={{ maxWidth: 460 }}>
+            <div className="modal-head">
+              <div><h3>Record a Payment</h3><div className="page-sub">For cash, bank transfer, or any payment not yet auto-synced from Selar</div></div>
+              <button className="modal-close" onClick={() => setAddPaymentOpen(false)}>✕</button>
+            </div>
+            <div className="form-row">
+              <label>Client</label>
+              <select value={paymentForm.clientId} onChange={(e) => setPaymentForm((f) => ({ ...f, clientId: e.target.value }))}>
+                <option value="">Select a client</option>
+                {clients.map((c) => (
+                  <option key={c.id} value={c.id}>{c.profile?.full_name ?? 'Unknown'} — {c.service_type}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-two">
+              <div className="form-row">
+                <label>Expected Amount (₦)</label>
+                <input type="number" placeholder="150000" value={paymentForm.expectedAmount} onChange={(e) => setPaymentForm((f) => ({ ...f, expectedAmount: e.target.value }))} />
+              </div>
+              <div className="form-row">
+                <label>Amount Paid (₦)</label>
+                <input type="number" placeholder="150000" value={paymentForm.amountPaid} onChange={(e) => setPaymentForm((f) => ({ ...f, amountPaid: e.target.value }))} />
+              </div>
+            </div>
+            <div className="form-row">
+              <label>Status</label>
+              <select value={paymentForm.status} onChange={(e) => setPaymentForm((f) => ({ ...f, status: e.target.value }))}>
+                <option value="confirmed">Confirmed</option>
+                <option value="pending">Pending</option>
+                <option value="partially_paid">Partially Paid</option>
+              </select>
+            </div>
+            <div className="form-row">
+              <label>Reference (optional)</label>
+              <input type="text" placeholder="Selar order ID, bank transfer ref, etc." value={paymentForm.selarOrderId} onChange={(e) => setPaymentForm((f) => ({ ...f, selarOrderId: e.target.value }))} />
+            </div>
+            {paymentError && <div className="login-error">{paymentError}</div>}
+            <div className="modal-actions">
+              <button className="btn-save" onClick={handleAddPayment} disabled={paymentSubmitting}>{paymentSubmitting ? 'Saving…' : 'Record Payment'}</button>
+              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setAddPaymentOpen(false)} disabled={paymentSubmitting}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {registerStaffOpen && (
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !staffSubmitting) setRegisterStaffOpen(false); }}>

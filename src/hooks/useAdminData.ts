@@ -10,6 +10,8 @@ type ApplicationStage = Database['public']['Tables']['stage_history']['Row']['st
 type DocumentStatus = DocumentRow['status'];
 type ContactSubmissionRow = Database['public']['Tables']['contact_submissions']['Row'];
 type EnquiryStatus = ContactSubmissionRow['status'];
+type PaymentRow = Database['public']['Tables']['payments']['Row'];
+type PaymentStatus = PaymentRow['status'];
 
 export interface ClientWithDetails extends ClientRow {
   profile: Pick<ProfileRow, 'id' | 'full_name'> | null;
@@ -375,6 +377,80 @@ export function useStaffList(enabled = true) {
  */
 export async function updateStaffStatus(staffId: string, status: 'active' | 'suspended'): Promise<string | null> {
   const { error } = await supabase.from('profiles').update({ status }).eq('id', staffId);
+  return error?.message ?? null;
+}
+
+export interface PaymentWithClient extends PaymentRow {
+  clientName: string;
+}
+
+/**
+ * Every payment record, joined with the paying client's name in JavaScript
+ * (same reasoning as useClients - avoids relying on Postgrest's embedded-
+ * select syntax given database.types.ts's Relationships arrays are empty).
+ */
+export function usePayments(enabled = true) {
+  const [payments, setPayments] = useState<PaymentWithClient[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refetch = useCallback(async () => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const { data: paymentRows } = await supabase
+      .from('payments')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!paymentRows || paymentRows.length === 0) {
+      setPayments([]);
+      setLoading(false);
+      return;
+    }
+
+    const clientIds = [...new Set(paymentRows.map((p) => p.client_id))];
+    const { data: clients } = await supabase.from('clients').select('id, profile_id').in('id', clientIds);
+    const profileIds = [...new Set((clients ?? []).map((c) => c.profile_id))];
+    const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', profileIds);
+
+    const merged: PaymentWithClient[] = paymentRows.map((p) => {
+      const client = clients?.find((c) => c.id === p.client_id);
+      const profile = client ? profiles?.find((pr) => pr.id === client.profile_id) : undefined;
+      return { ...p, clientName: profile?.full_name ?? 'Unknown client' };
+    });
+
+    setPayments(merged);
+    setLoading(false);
+  }, [enabled]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return { payments, loading, refetch };
+}
+
+export interface NewPaymentInput {
+  clientId: string;
+  expectedAmount: number;
+  amountPaid: number;
+  status: PaymentStatus;
+  selarOrderId?: string;
+  selarProductName?: string;
+}
+
+export async function addPayment(input: NewPaymentInput): Promise<string | null> {
+  const { error } = await supabase.from('payments').insert({
+    client_id: input.clientId,
+    expected_amount: input.expectedAmount,
+    amount_paid: input.amountPaid,
+    status: input.status,
+    selar_order_id: input.selarOrderId || null,
+    selar_product_name: input.selarProductName || null,
+    paid_at: input.status === 'confirmed' ? new Date().toISOString() : null,
+  });
   return error?.message ?? null;
 }
 
