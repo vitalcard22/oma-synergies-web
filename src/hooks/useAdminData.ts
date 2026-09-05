@@ -483,3 +483,108 @@ export async function addTestimonial(input: NewTestimonialInput): Promise<string
   return error?.message ?? null;
 }
 
+// ---- Tour Packages ----
+
+type TourPackageRow = Database['public']['Tables']['tour_packages']['Row'];
+
+export function useTourPackages(enabled = true) {
+  const [tours, setTours] = useState<TourPackageRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refetch = useCallback(async () => {
+    if (!enabled) { setLoading(false); return; }
+    setLoading(true);
+    const { data } = await supabase.from('tour_packages').select('*').order('display_order', { ascending: true });
+    setTours(data ?? []);
+    setLoading(false);
+  }, [enabled]);
+
+  useEffect(() => { refetch(); }, [refetch]);
+  return { tours, loading, refetch };
+}
+
+export interface TourPackageInput {
+  name: string;
+  destination: string;
+  nights: number;
+  fromPrice: number;
+  perPersonSharing: boolean;
+  categories: string[];
+  status: 'active' | 'hidden';
+}
+
+export async function upsertTourPackage(id: string | null, input: TourPackageInput): Promise<string | null> {
+  const payload = {
+    name: input.name,
+    destination: input.destination,
+    nights: input.nights,
+    from_price: input.fromPrice,
+    per_person_sharing: input.perPersonSharing,
+    categories: input.categories,
+    status: input.status,
+    updated_at: new Date().toISOString(),
+  };
+  const { error } = id
+    ? await supabase.from('tour_packages').update(payload).eq('id', id)
+    : await supabase.from('tour_packages').insert({ ...payload, display_order: 99 });
+  return error?.message ?? null;
+}
+
+export async function updateTourStatus(id: string, status: 'active' | 'hidden'): Promise<string | null> {
+  const { error } = await supabase.from('tour_packages').update({ status, updated_at: new Date().toISOString() }).eq('id', id);
+  return error?.message ?? null;
+}
+
+// ---- Masterclasses ----
+
+type MasterclassRow = Database['public']['Tables']['masterclasses']['Row'];
+
+export function useMasterclasses(enabled = true) {
+  const [masterclasses, setMasterclasses] = useState<MasterclassRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refetch = useCallback(async () => {
+    if (!enabled) { setLoading(false); return; }
+    setLoading(true);
+    const { data } = await supabase.from('masterclasses').select('*').order('class_date', { ascending: true });
+    setMasterclasses(data ?? []);
+    setLoading(false);
+  }, [enabled]);
+
+  useEffect(() => { refetch(); }, [refetch]);
+  return { masterclasses, loading, refetch };
+}
+
+export interface MasterclassInput {
+  title: string;
+  topic: string;
+  classDate: string;
+  classTime: string;
+  format: string;
+  price: number;
+  seatsTotal: number;
+  seatsRemaining: number;
+  status: 'open' | 'sold_out' | 'coming_soon' | 'completed';
+  bookingLink: string;
+}
+
+export async function upsertMasterclass(id: string | null, input: MasterclassInput): Promise<string | null> {
+  const payload = {
+    title: input.title,
+    topic: input.topic,
+    class_date: input.classDate,
+    class_time: input.classTime,
+    format: input.format,
+    price: input.price,
+    seats_total: input.seatsTotal,
+    seats_remaining: input.seatsRemaining,
+    status: input.status,
+    booking_link: input.bookingLink || null,
+  };
+  const { error } = id
+    ? await supabase.from('masterclasses').update(payload).eq('id', id)
+    : await supabase.from('masterclasses').insert(payload);
+  return error?.message ?? null;
+}
+
+

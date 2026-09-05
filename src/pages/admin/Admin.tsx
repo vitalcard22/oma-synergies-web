@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, updateTestimonialStatus, addTestimonial, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -10,7 +10,6 @@ import { TOURS, formatNaira } from '../../data/tours';
 import { DESTINATIONS } from '../../data/destinations';
 import {
   ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
-  ADMIN_DESTINATIONS, ADMIN_TOURS,
   ADMIN_NOTIFICATIONS,
 } from './adminData';
 import './Admin.css';
@@ -128,7 +127,6 @@ export default function Admin() {
   }
 
   const [addModal, setAddModal] = useState<{ label: string; fields: string[] } | null>(null);
-  const [toggles, setToggles] = useState<Record<string, boolean>>({});
 
   // ---- Register New Client (real, calls the serverless function) ----
   const [registerOpen, setRegisterOpen] = useState(false);
@@ -177,6 +175,69 @@ export default function Admin() {
       setRegisterError('Could not reach the server. Check your connection and try again.');
     }
     setRegisterSubmitting(false);
+  }
+
+  // ---- Tour Package edit/add ----
+  type TourFormState = { id: string | null; name: string; destination: string; nights: string; fromPrice: string; status: string };
+  const emptyTourForm: TourFormState = { id: null, name: '', destination: '', nights: '3', fromPrice: '', status: 'active' };
+  const [tourModalOpen, setTourModalOpen] = useState(false);
+  const [tourForm, setTourForm] = useState<TourFormState>(emptyTourForm);
+  const [tourSaving, setTourSaving] = useState(false);
+  const [tourError, setTourError] = useState<string | null>(null);
+
+  function openTourModal(tour?: { id: string; name: string; destination: string; nights: number; from_price: number; status: string }) {
+    setTourForm(tour
+      ? { id: tour.id, name: tour.name, destination: tour.destination, nights: String(tour.nights), fromPrice: String(tour.from_price), status: tour.status }
+      : emptyTourForm);
+    setTourError(null);
+    setTourModalOpen(true);
+  }
+
+  async function handleSaveTour() {
+    if (!tourForm.name.trim() || !tourForm.fromPrice) { setTourError('Name and price are required.'); return; }
+    setTourSaving(true);
+    const err = await upsertTourPackage(tourForm.id, {
+      name: tourForm.name, destination: tourForm.destination || tourForm.name,
+      nights: Number(tourForm.nights) || 3, fromPrice: Number(tourForm.fromPrice),
+      perPersonSharing: true, categories: ['Group Tours', 'Honeymoon', 'Solo', 'Family'],
+      status: tourForm.status as 'active' | 'hidden',
+    });
+    setTourSaving(false);
+    if (err) { setTourError(err); return; }
+    setTourModalOpen(false);
+    refetchTours();
+  }
+
+  // ---- Masterclass add/edit ----
+  type MclassFormState = { id: string | null; title: string; topic: string; classDate: string; classTime: string; format: string; price: string; seatsTotal: string; seatsRemaining: string; status: string; bookingLink: string };
+  const emptyMclassForm: MclassFormState = { id: null, title: '', topic: '', classDate: '', classTime: '10:00 AM - 1:00 PM WAT', format: 'Online (Zoom)', price: '', seatsTotal: '30', seatsRemaining: '30', status: 'open', bookingLink: '' };
+  const [mclassModalOpen, setMclassModalOpen] = useState(false);
+  const [mclassForm, setMclassForm] = useState<MclassFormState>(emptyMclassForm);
+  const [mclassSaving, setMclassSaving] = useState(false);
+  const [mclassError, setMclassError] = useState<string | null>(null);
+
+  function openMclassModal(mc?: { id: string; title: string; topic: string; class_date: string; class_time: string; format: string; price: number; seats_total: number; seats_remaining: number; status: string; booking_link: string | null }) {
+    setMclassForm(mc
+      ? { id: mc.id, title: mc.title, topic: mc.topic, classDate: mc.class_date, classTime: mc.class_time, format: mc.format, price: String(mc.price), seatsTotal: String(mc.seats_total), seatsRemaining: String(mc.seats_remaining), status: mc.status, bookingLink: mc.booking_link ?? '' }
+      : emptyMclassForm);
+    setMclassError(null);
+    setMclassModalOpen(true);
+  }
+
+  async function handleSaveMclass() {
+    if (!mclassForm.title.trim() || !mclassForm.classDate || !mclassForm.price) { setMclassError('Title, date, and price are required.'); return; }
+    setMclassSaving(true);
+    const err = await upsertMasterclass(mclassForm.id, {
+      title: mclassForm.title, topic: mclassForm.topic, classDate: mclassForm.classDate,
+      classTime: mclassForm.classTime, format: mclassForm.format, price: Number(mclassForm.price),
+      seatsTotal: Number(mclassForm.seatsTotal), seatsRemaining: Number(mclassForm.seatsRemaining),
+      status: mclassForm.status as 'open' | 'sold_out' | 'coming_soon' | 'completed',
+      bookingLink: mclassForm.bookingLink,
+    });
+    setMclassSaving(false);
+    if (err) { setMclassError(err); return; }
+    setMclassModalOpen(false);
+    refetchMasterclasses();
   }
 
   // ---- Add / Approve / Reject Testimonial ----
@@ -368,6 +429,8 @@ export default function Admin() {
   const { staff, loading: staffLoading, refetch: refetchStaff } = useStaffList(isSuperAdmin);
   const { payments, loading: paymentsLoading, refetch: refetchPayments } = usePayments(isAuthedAdmin);
   const { testimonials, loading: testimonialsLoading, refetch: refetchTestimonials } = useTestimonials(isAuthedAdmin);
+  const { tours: dbTours, loading: toursLoading, refetch: refetchTours } = useTourPackages(isAuthedAdmin);
+  const { masterclasses, loading: masterclassesLoading, refetch: refetchMasterclasses } = useMasterclasses(isAuthedAdmin);
 
   const filteredClients = clients.filter((c) => {
     const name = c.profile?.full_name ?? '';
@@ -387,16 +450,6 @@ export default function Admin() {
   const totalReceived = payments.reduce((sum, p) => sum + p.amount_paid, 0);
   const completedCount = payments.filter((p) => p.status === 'confirmed').length;
   const pendingCount = payments.filter((p) => p.status === 'pending' || p.status === 'partially_paid').length;
-
-  const toggleKey = (prefix: string, name: string) => `${prefix}:${name}`;
-  const isOn = (prefix: string, name: string, defaultVal: boolean) => {
-    const k = toggleKey(prefix, name);
-    return k in toggles ? toggles[k] : defaultVal;
-  };
-  const flip = (prefix: string, name: string, defaultVal: boolean) => {
-    const k = toggleKey(prefix, name);
-    setToggles((t) => ({ ...t, [k]: !(k in t ? t[k] : defaultVal) }));
-  };
 
   async function handleSignIn() {
     setLoginError(null);
@@ -809,50 +862,78 @@ export default function Admin() {
 
           {activeView === 'destinations' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Destinations</div><div className="page-sub">Edit flagship destination details and processing times</div></div></div>
+              <div className="topbar"><div><div className="page-title">Destinations</div><div className="page-sub">The 12 flagship destinations are managed in code — contact your developer to add or remove one. Processing times are editable here once tours are seeded.</div></div></div>
               <div className="panel">
-                <div className="panel-head">
-                  <h3>Flagship Destinations (12)</h3>
-                  <div className="toolbar"><button className="btn-add" onClick={() => setAddModal({ label: 'Destination', fields: ['Country Name', 'Region', 'Avg. Processing Time', 'Photo Upload'] })}>+ Add Destination</button></div>
+                <div className="panel-head"><h3>Flagship Destinations (12)</h3></div>
+                <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
+                  <p style={{ marginBottom: 8 }}>Destination content (names, regions, photos, detail pages) is bundled as part of the site build. This is because each destination has its own photo imported as a code asset — making them editable without a full rebuild would require setting up Supabase Storage for image hosting first.</p>
+                  <p>For now: to update a processing time or add a destination, send the details and it can be updated in one commit. Tour package prices and availability are fully editable from the Tours section below.</p>
                 </div>
-                <table>
-                  <thead><tr><th>Country</th><th>Region</th><th>Processing Time</th><th>Live on Site</th><th></th></tr></thead>
-                  <tbody>
-                    {ADMIN_DESTINATIONS.map((d) => (
-                      <tr key={d.name}>
-                        <td className="cell-name">{d.name}</td><td>{d.region}</td>
-                        <td>{d.processing} <span style={{ color: 'var(--slate)', fontSize: 11 }}>(sample)</span></td>
-                        <td><button className={isOn('dest', d.name, d.live) ? 'toggle on' : 'toggle'} onClick={() => flip('dest', d.name, d.live)} /></td>
-                        <td className="row-actions"><button className="icon-btn">✎</button></td>
-                      </tr>
-                    ))}
-                    <tr><td className="cell-name">+ 8 more destinations</td><td colSpan={3} style={{ color: 'var(--slate)' }}>Same pattern, edit any country's details inline</td></tr>
-                  </tbody>
-                </table>
               </div>
             </div>
           )}
 
           {activeView === 'tours' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Tours & Packages</div><div className="page-sub">Manage curated trips shown on the Tours page</div></div></div>
+              <div className="topbar">
+                <div><div className="page-title">Tours & Packages</div><div className="page-sub">Prices and availability update live on the site immediately</div></div>
+                <button className="btn-add" onClick={() => openTourModal()}>+ Add Package</button>
+              </div>
               <div className="panel">
+                <div className="panel-head"><h3>All Packages ({dbTours.length})</h3></div>
+                {toursLoading ? (
+                  <div className="empty-state">Loading… (run migration 0003_seed_tours.sql in Supabase if this stays empty)</div>
+                ) : dbTours.length === 0 ? (
+                  <div className="empty-state">No tour packages in the database yet. Run supabase/migrations/0003_seed_tours.sql to seed the existing 9 packages, then they'll appear here.</div>
+                ) : (
+                  <table>
+                    <thead><tr><th>Package</th><th>Nights</th><th>From Price</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      {dbTours.map((t) => (
+                        <tr key={t.id}>
+                          <td className="cell-name">{t.name}</td>
+                          <td>{t.nights} nights</td>
+                          <td>{formatNaira(t.from_price)}</td>
+                          <td><Badge status={t.status} /></td>
+                          <td className="row-actions">
+                            <button className="icon-btn" title="Edit" onClick={() => openTourModal(t)}>✎</button>
+                            <button className="icon-btn" title={t.status === 'hidden' ? 'Show on site' : 'Hide from site'} onClick={() => updateTourStatus(t.id, t.status === 'hidden' ? 'active' : 'hidden').then(() => refetchTours())}>
+                              {t.status === 'hidden' ? '👁' : '🚫'}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+
+              <div className="panel" style={{ marginTop: 24 }}>
                 <div className="panel-head">
-                  <h3>All Packages (6)</h3>
-                  <div className="toolbar"><button className="btn-add" onClick={() => setAddModal({ label: 'Tour Package', fields: ['Package Name', 'Category', 'Duration', 'Price', 'Photo Upload'] })}>+ Add Package</button></div>
+                  <h3>Masterclasses ({masterclasses.length})</h3>
+                  <button className="btn-add" onClick={() => openMclassModal()}>+ Add Session</button>
                 </div>
-                <table>
-                  <thead><tr><th>Package</th><th>Category</th><th>Price</th><th>Live on Site</th><th></th></tr></thead>
-                  <tbody>
-                    {ADMIN_TOURS.map((t) => (
-                      <tr key={t.name}>
-                        <td className="cell-name">{t.name}</td><td>{t.category}</td><td>{t.price}</td>
-                        <td><button className={isOn('tour', t.name, t.live) ? 'toggle on' : 'toggle'} onClick={() => flip('tour', t.name, t.live)} /></td>
-                        <td className="row-actions"><button className="icon-btn">✎</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {masterclassesLoading ? (
+                  <div className="empty-state">Loading…</div>
+                ) : masterclasses.length === 0 ? (
+                  <div className="empty-state">No masterclass sessions yet. Add the first one with the button above.</div>
+                ) : (
+                  <table>
+                    <thead><tr><th>Title</th><th>Date</th><th>Price</th><th>Seats Left</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      {masterclasses.map((m) => (
+                        <tr key={m.id}>
+                          <td className="cell-name">{m.title}</td>
+                          <td>{m.class_date}</td>
+                          <td>{formatNaira(m.price)}</td>
+                          <td>{m.seats_remaining} / {m.seats_total}</td>
+                          <td><Badge status={m.status.replace(/_/g, ' ')} /></td>
+                          <td className="row-actions"><button className="icon-btn" onClick={() => openMclassModal(m)}>✎</button></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </div>
           )}
@@ -900,6 +981,84 @@ export default function Admin() {
           )}
         </main>
       </div>
+
+      {tourModalOpen && (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !tourSaving) setTourModalOpen(false); }}>
+          <div className="modal" style={{ maxWidth: 460 }}>
+            <div className="modal-head">
+              <div><h3>{tourForm.id ? 'Edit Package' : 'Add Package'}</h3></div>
+              <button className="modal-close" onClick={() => setTourModalOpen(false)}>✕</button>
+            </div>
+            <div className="form-row"><label>Package Name</label><input type="text" value={tourForm.name} onChange={(e) => setTourForm((f) => ({ ...f, name: e.target.value }))} /></div>
+            <div className="form-row"><label>Destination (if different from name)</label><input type="text" value={tourForm.destination} onChange={(e) => setTourForm((f) => ({ ...f, destination: e.target.value }))} /></div>
+            <div className="form-two">
+              <div className="form-row"><label>Nights</label><input type="number" value={tourForm.nights} onChange={(e) => setTourForm((f) => ({ ...f, nights: e.target.value }))} /></div>
+              <div className="form-row"><label>From Price (₦)</label><input type="number" value={tourForm.fromPrice} onChange={(e) => setTourForm((f) => ({ ...f, fromPrice: e.target.value }))} /></div>
+            </div>
+            <div className="form-row">
+              <label>Status</label>
+              <select value={tourForm.status} onChange={(e) => setTourForm((f) => ({ ...f, status: e.target.value }))}>
+                <option value="active">Active — visible on site</option>
+                <option value="hidden">Hidden — not shown</option>
+              </select>
+            </div>
+            {tourError && <div className="login-error">{tourError}</div>}
+            <div className="modal-actions">
+              <button className="btn-save" onClick={handleSaveTour} disabled={tourSaving}>{tourSaving ? 'Saving…' : 'Save'}</button>
+              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setTourModalOpen(false)} disabled={tourSaving}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {mclassModalOpen && (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !mclassSaving) setMclassModalOpen(false); }}>
+          <div className="modal" style={{ maxWidth: 520 }}>
+            <div className="modal-head">
+              <div><h3>{mclassForm.id ? 'Edit Masterclass' : 'Add Masterclass Session'}</h3></div>
+              <button className="modal-close" onClick={() => setMclassModalOpen(false)}>✕</button>
+            </div>
+            <div className="form-row"><label>Title</label><input type="text" placeholder="UK Student Visa Masterclass" value={mclassForm.title} onChange={(e) => setMclassForm((f) => ({ ...f, title: e.target.value }))} /></div>
+            <div className="form-row"><label>Topic (what's covered)</label><textarea value={mclassForm.topic} onChange={(e) => setMclassForm((f) => ({ ...f, topic: e.target.value }))} /></div>
+            <div className="form-two">
+              <div className="form-row"><label>Date</label><input type="date" value={mclassForm.classDate} onChange={(e) => setMclassForm((f) => ({ ...f, classDate: e.target.value }))} /></div>
+              <div className="form-row"><label>Time</label><input type="text" placeholder="10:00 AM - 1:00 PM WAT" value={mclassForm.classTime} onChange={(e) => setMclassForm((f) => ({ ...f, classTime: e.target.value }))} /></div>
+            </div>
+            <div className="form-two">
+              <div className="form-row">
+                <label>Format</label>
+                <select value={mclassForm.format} onChange={(e) => setMclassForm((f) => ({ ...f, format: e.target.value }))}>
+                  <option>Online (Zoom)</option>
+                  <option>In-Person, Abuja</option>
+                  <option>Hybrid</option>
+                </select>
+              </div>
+              <div className="form-row"><label>Price (₦)</label><input type="number" value={mclassForm.price} onChange={(e) => setMclassForm((f) => ({ ...f, price: e.target.value }))} /></div>
+            </div>
+            <div className="form-two">
+              <div className="form-row"><label>Total Seats</label><input type="number" value={mclassForm.seatsTotal} onChange={(e) => setMclassForm((f) => ({ ...f, seatsTotal: e.target.value }))} /></div>
+              <div className="form-row"><label>Seats Remaining</label><input type="number" value={mclassForm.seatsRemaining} onChange={(e) => setMclassForm((f) => ({ ...f, seatsRemaining: e.target.value }))} /></div>
+            </div>
+            <div className="form-two">
+              <div className="form-row">
+                <label>Status</label>
+                <select value={mclassForm.status} onChange={(e) => setMclassForm((f) => ({ ...f, status: e.target.value }))}>
+                  <option value="open">Open</option>
+                  <option value="sold_out">Sold Out</option>
+                  <option value="coming_soon">Coming Soon</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+              <div className="form-row"><label>Booking Link</label><input type="text" placeholder="Selar link or WhatsApp URL" value={mclassForm.bookingLink} onChange={(e) => setMclassForm((f) => ({ ...f, bookingLink: e.target.value }))} /></div>
+            </div>
+            {mclassError && <div className="login-error">{mclassError}</div>}
+            <div className="modal-actions">
+              <button className="btn-save" onClick={handleSaveMclass} disabled={mclassSaving}>{mclassSaving ? 'Saving…' : 'Save'}</button>
+              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setMclassModalOpen(false)} disabled={mclassSaving}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {addTestimonialOpen && (
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !testimonialSubmitting) setAddTestimonialOpen(false); }}>
