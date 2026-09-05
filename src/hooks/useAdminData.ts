@@ -587,4 +587,65 @@ export async function upsertMasterclass(id: string | null, input: MasterclassInp
   return error?.message ?? null;
 }
 
+// ---- Client Messages (two-way thread visible to admin) ----
+
+type MessageRow = Database['public']['Tables']['messages']['Row'];
+
+export interface MessageWithSender extends MessageRow {
+  senderName: string;
+  fromClient: boolean;
+}
+
+/**
+ * Fetches the message thread for one client, joining sender names from
+ * profiles. Gated on clientId being non-null so it only fires when a
+ * case modal is open, not on every admin panel render.
+ */
+export function useClientMessages(clientId: string | null, clientProfileId: string | null) {
+  const [messages, setMessages] = useState<MessageWithSender[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const refetch = useCallback(async () => {
+    if (!clientId) { setMessages([]); return; }
+    setLoading(true);
+    const { data: msgRows } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('client_id', clientId)
+      .order('created_at', { ascending: true });
+
+    if (!msgRows || msgRows.length === 0) {
+      setMessages([]);
+      setLoading(false);
+      return;
+    }
+
+    const senderIds = [...new Set(msgRows.map((m) => m.sender_id))];
+    const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', senderIds);
+
+    setMessages(msgRows.map((m) => ({
+      ...m,
+      senderName: profiles?.find((p) => p.id === m.sender_id)?.full_name ?? 'Unknown',
+      fromClient: m.sender_id === clientProfileId,
+    })));
+    setLoading(false);
+  }, [clientId, clientProfileId]);
+
+  useEffect(() => { refetch(); }, [refetch]);
+  return { messages, loading, refetch };
+}
+
+export async function sendAdminMessage(
+  clientId: string,
+  senderId: string,
+  body: string
+): Promise<string | null> {
+  const { error } = await supabase.from('messages').insert({
+    client_id: clientId,
+    sender_id: senderId,
+    body: body.trim(),
+  });
+  return error?.message ?? null;
+}
+
 

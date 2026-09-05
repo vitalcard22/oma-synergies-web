@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, sendAdminMessage, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -70,6 +70,12 @@ export default function Admin() {
 
   const caseApplication = caseModalClient?.applications[0] ?? null;
   const { documents: caseDocuments, refetch: refetchCaseDocuments } = useApplicationDocuments(caseApplication?.id ?? null);
+  const { messages: caseMessages, refetch: refetchCaseMessages } = useClientMessages(
+    caseModalClient?.id ?? null,
+    caseModalClient?.profile_id ?? null
+  );
+  const [caseReplyText, setCaseReplyText] = useState('');
+  const [caseSendingReply, setCaseSendingReply] = useState(false);
 
   function openCaseModal(client: ClientWithDetails) {
     const app = client.applications[0];
@@ -79,6 +85,7 @@ export default function Admin() {
     setCaseClientMessage(app?.client_visible_message ?? '');
     setCaseSaveError(null);
     setCaseSaveSuccess(false);
+    setCaseReplyText('');
   }
 
   async function handleSaveCase() {
@@ -121,6 +128,15 @@ export default function Admin() {
     await updateDocumentStatus(docId, 'rejected', caseRejectReasons[docId] ?? '');
     await refetchCaseDocuments();
     setCaseDocSavingId(null);
+  }
+
+  async function handleSendReply() {
+    if (!caseModalClient || !auth.userId || !caseReplyText.trim()) return;
+    setCaseSendingReply(true);
+    await sendAdminMessage(caseModalClient.id, auth.userId, caseReplyText);
+    setCaseReplyText('');
+    await refetchCaseMessages();
+    setCaseSendingReply(false);
   }
 
   const [addModal, setAddModal] = useState<{ label: string; fields: string[] } | null>(null);
@@ -1274,6 +1290,49 @@ export default function Admin() {
                 <div className="track-group">
                   <div className="track-label">Internal Notes (not visible to client)</div>
                   <textarea className="notes-box" value={caseAdminNotes} onChange={(e) => setCaseAdminNotes(e.target.value)} />
+                </div>
+
+                <div className="track-group">
+                  <div className="track-label">Message Thread</div>
+                  <div style={{ maxHeight: 220, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 10 }}>
+                    {caseMessages.length === 0 ? (
+                      <div style={{ color: 'var(--slate)', fontSize: 13, padding: '8px 0' }}>No messages yet.</div>
+                    ) : (
+                      caseMessages.map((m) => (
+                        <div key={m.id} style={{
+                          alignSelf: m.fromClient ? 'flex-start' : 'flex-end',
+                          maxWidth: '80%',
+                          background: m.fromClient ? 'var(--paper)' : 'var(--navy)',
+                          color: m.fromClient ? 'var(--navy)' : 'var(--white)',
+                          borderRadius: 10,
+                          padding: '8px 12px',
+                          fontSize: 13,
+                        }}>
+                          <div style={{ fontWeight: 600, fontSize: 11, marginBottom: 3, opacity: 0.7 }}>
+                            {m.fromClient ? m.senderName : `You (${m.senderName})`}
+                          </div>
+                          {m.body}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <textarea
+                      className="notes-box"
+                      style={{ marginBottom: 0, minHeight: 56 }}
+                      placeholder="Reply to client…"
+                      value={caseReplyText}
+                      onChange={(e) => setCaseReplyText(e.target.value)}
+                    />
+                    <button
+                      className="btn-save"
+                      style={{ alignSelf: 'flex-end', flexShrink: 0 }}
+                      disabled={caseSendingReply || !caseReplyText.trim()}
+                      onClick={handleSendReply}
+                    >
+                      {caseSendingReply ? '…' : 'Send'}
+                    </button>
+                  </div>
                 </div>
 
                 {caseSaveError && <div className="login-error">{caseSaveError}</div>}
