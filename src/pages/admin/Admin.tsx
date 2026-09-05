@@ -8,10 +8,7 @@ import type { Database } from '../../lib/database.types';
 import { getInitials } from '../../utils/initials';
 import { TOURS, formatNaira } from '../../data/tours';
 import { DESTINATIONS } from '../../data/destinations';
-import {
-  ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
-  ADMIN_NOTIFICATIONS,
-} from './adminData';
+
 import './Admin.css';
 
 type ViewId = 'dashboard' | 'clients' | 'inquiries' | 'calendar' | 'documents' | 'payments' | 'testimonials' | 'destinations' | 'tours' | 'staff';
@@ -439,6 +436,16 @@ export default function Admin() {
     return matchesSearch && matchesService;
   });
 
+  // Clients whose most recent application hasn't been updated in 7+ days.
+  // These appear in the real notifications bell as actionable alerts.
+  const OVERDUE_DAYS = 7;
+  const overdueClients = clients.filter((c) => {
+    const app = c.applications[0];
+    if (!app) return false;
+    const daysSince = (Date.now() - new Date(app.stage_updated_at).getTime()) / (1000 * 60 * 60 * 24);
+    return daysSince >= OVERDUE_DAYS;
+  });
+
 
   const filteredInquiries = submissions.filter((i) => inquiryStatusFilter === 'all' || i.status === inquiryStatusFilter);
 
@@ -552,16 +559,21 @@ export default function Admin() {
       </div>
 
       <div className="notif-wrap">
-        <button className="notif-btn" onClick={() => setNotifOpen((v) => !v)}>🔔<span className="notif-dot" /></button>
+        <button className="notif-btn" onClick={() => setNotifOpen((v) => !v)}>
+          🔔{overdueClients.length > 0 && <span className="notif-dot" />}
+        </button>
         <div className={notifOpen ? 'notif-dropdown open' : 'notif-dropdown'}>
-          <div className="notif-dropdown-head">Notifications</div>
-          {ADMIN_NOTIFICATIONS.map((n) => (
-            <div className="notif-item" key={n.title}>
-              <div className="t">{n.title}</div>
-              <div className="s">{n.sub}</div>
-              <div className="when">{n.when}</div>
-            </div>
-          ))}
+          <div className="notif-dropdown-head">Overdue Clients (7+ days no update)</div>
+          {overdueClients.length === 0 ? (
+            <div className="notif-item"><div className="t">All caught up</div><div className="s">No clients are overdue right now.</div></div>
+          ) : (
+            overdueClients.map((c) => (
+              <div className="notif-item" key={c.id} style={{ cursor: 'pointer' }} onClick={() => { openCaseModal(c); setNotifOpen(false); }}>
+                <div className="t">{c.profile?.full_name ?? 'Unknown'}</div>
+                <div className="s">{c.service_type} — click to open case</div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -731,45 +743,30 @@ export default function Admin() {
 
           {activeView === 'calendar' && (
             <div className="view active">
-              <div className="topbar">
-                <div><div className="page-title">Consultation Calendar</div><div className="page-sub">Upcoming booked consultations across the team</div></div>
-                <button className="btn-add" onClick={() => setAddModal({ label: 'Consultation', fields: ['Client Name', 'Date & Time', 'Service', 'Assigned Staff'] })}>+ Add Consultation</button>
-              </div>
+              <div className="topbar"><div><div className="page-title">Consultation Calendar</div><div className="page-sub">Key dates from active client applications</div></div></div>
               <div className="panel">
-                <div className="panel-head"><h3>This Week</h3></div>
-                <table>
-                  <thead><tr><th>Date & Time</th><th>Client</th><th>Service</th><th>Assigned To</th><th>Status</th></tr></thead>
-                  <tbody>
-                    {ADMIN_CONSULTATIONS.map((c) => (
-                      <tr key={c.client}>
-                        <td className="cell-name">{c.when}</td><td>{c.client}</td><td>{c.service}</td>
-                        <td><span className="avatar-sm">{c.staffInitials}</span>{c.staff}</td>
-                        <td><Badge status={c.status} /></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="panel-head"><h3>Upcoming Key Dates</h3></div>
+                <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
+                  <p style={{ marginBottom: 8 }}>
+                    Key dates (embassy appointments, biometrics, interviews, submission deadlines) are set per-client in the <strong>Clients & Cases</strong> section — open any client's case and update the relevant date fields there.
+                  </p>
+                  <p>A consolidated calendar view across all clients will be added in a future update. For now, check each client's case for their specific upcoming dates.</p>
+                </div>
               </div>
             </div>
           )}
 
           {activeView === 'documents' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Document Review</div><div className="page-sub">Review and approve documents uploaded by clients</div></div></div>
+              <div className="topbar"><div><div className="page-title">Document Review</div><div className="page-sub">Documents are managed per-client inside each case</div></div></div>
               <div className="panel">
-                <div className="panel-head"><h3>Pending Review ({ADMIN_DOCUMENTS.length})</h3></div>
-                <table>
-                  <thead><tr><th>Client</th><th>Document</th><th>Type</th><th>Status</th><th></th></tr></thead>
-                  <tbody>
-                    {ADMIN_DOCUMENTS.map((d) => (
-                      <tr key={d.doc}>
-                        <td><span className="avatar-sm">{d.initials}</span>{d.client}</td><td>{d.doc}</td><td>{d.type}</td>
-                        <td><Badge status={d.status} /></td>
-                        <td className="row-actions"><button className="icon-btn">✓</button><button className="icon-btn">✕</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="panel-head"><h3>Where to Review Documents</h3></div>
+                <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
+                  <p style={{ marginBottom: 8 }}>
+                    Document review happens inside each client's case. Go to <strong>Clients & Cases</strong>, open a client, and use the Document Checklist section to mark documents as Received, Under Review, Approved, or Rejected (with a reason the client will see in their portal).
+                  </p>
+                  <p>A cross-client "documents pending review" view is planned for a future update once client volume makes it necessary.</p>
+                </div>
               </div>
             </div>
           )}
