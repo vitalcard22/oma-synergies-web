@@ -3,14 +3,23 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { getDestinationBySlug } from '../data/destinations';
-import { getTestimonialsForDestination } from '../data/testimonials';
+import { useTestimonials } from '../hooks/useTestimonials';
 import { SERVICES } from '../data/services';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
 import './DestinationDetail.css';
 
+// 'United Kingdom' is the destination's stored name, but testimonials
+// naturally say 'UK' (e.g. "University of West Scotland, UK") - a plain
+// substring match against the destination name alone would silently miss
+// both UK testimonials, so aliases are handled explicitly per destination.
+const DESTINATION_ALIASES: Record<string, string[]> = {
+  'United Kingdom': ['UK', 'United Kingdom'],
+};
+
 export default function DestinationDetail() {
   const { slug } = useParams();
   const destination = getDestinationBySlug(slug);
+  const { testimonials } = useTestimonials();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -26,7 +35,8 @@ export default function DestinationDetail() {
   }
 
   const d = destination;
-  const relatedTestimonials = getTestimonialsForDestination(d.name);
+  const aliases = DESTINATION_ALIASES[d.name] || [d.name];
+  const relatedTestimonials = testimonials.filter((t) => aliases.some((alias) => t.destination?.includes(alias)));
 
   return (
     <>
@@ -77,9 +87,9 @@ export default function DestinationDetail() {
             <h2>Real {d.name} success stories</h2>
             <div className="dest-proof-grid">
               {relatedTestimonials.map((t) => (
-                <div className="dest-proof-card" key={t.name}>
+                <div className="dest-proof-card" key={t.id}>
                   <div className="dest-proof-quote">"{t.quote}"</div>
-                  <div className="dest-proof-name">{t.name} <span>· {t.meta}</span></div>
+                  <div className="dest-proof-name">{t.client_name} <span>· {t.destination}</span></div>
                 </div>
               ))}
             </div>

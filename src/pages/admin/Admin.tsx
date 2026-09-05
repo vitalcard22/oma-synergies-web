@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, updateTestimonialStatus, addTestimonial, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
+import { getInitials } from '../../utils/initials';
 import { TOURS, formatNaira } from '../../data/tours';
 import { DESTINATIONS } from '../../data/destinations';
 import {
   ADMIN_CONSULTATIONS, ADMIN_DOCUMENTS,
-  ADMIN_TESTIMONIALS, ADMIN_DESTINATIONS, ADMIN_TOURS,
+  ADMIN_DESTINATIONS, ADMIN_TOURS,
   ADMIN_NOTIFICATIONS,
 } from './adminData';
 import './Admin.css';
@@ -38,19 +40,12 @@ const NAV: { section: string; items: { id: ViewId; icon: string; label: string }
   { section: 'Team', items: [{ id: 'staff', icon: '☺', label: 'Staff & Roles' }] },
 ];
 
-function getInitials(name: string | null): string {
-  if (!name) return '?';
-  const parts = name.trim().split(/\s+/);
-  const first = parts[0]?.[0] ?? '';
-  const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
-  return (first + last).toUpperCase();
-}
-
 function Badge({ status }: { status: string }) {
   let cls = 'status-pending';
-  if (['Approved', 'Paid', 'Confirmed', 'Done', 'converted'].includes(status)) cls = 'status-done';
-  else if (['In Progress', 'Pending', 'Awaiting Confirmation'].includes(status)) cls = 'status-active';
-  else if (status === 'New' || status === 'unread') cls = 'status-new';
+  if (['Approved', 'Paid', 'Confirmed', 'Done', 'converted', 'approved'].includes(status)) cls = 'status-done';
+  else if (['In Progress', 'Pending', 'Awaiting Confirmation', 'pending'].includes(status)) cls = 'status-active';
+  else if (['New', 'unread'].includes(status)) cls = 'status-new';
+  else if (['rejected', 'Refused', 'refused'].includes(status)) cls = 'status-new'; // red, same as alert
   return <span className={`badge ${cls}`}>{status}</span>;
 }
 
@@ -182,6 +177,47 @@ export default function Admin() {
       setRegisterError('Could not reach the server. Check your connection and try again.');
     }
     setRegisterSubmitting(false);
+  }
+
+  // ---- Add / Approve / Reject Testimonial ----
+  const [addTestimonialOpen, setAddTestimonialOpen] = useState(false);
+  const [testimonialForm, setTestimonialForm] = useState({ clientName: '', destination: '', category: 'Study', serviceTag: '', quote: '', clientId: '' });
+  const [testimonialSubmitting, setTestimonialSubmitting] = useState(false);
+  const [testimonialError, setTestimonialError] = useState<string | null>(null);
+
+  function openAddTestimonialModal() {
+    setTestimonialForm({ clientName: '', destination: '', category: 'Study', serviceTag: '', quote: '', clientId: '' });
+    setTestimonialError(null);
+    setAddTestimonialOpen(true);
+  }
+
+  async function handleAddTestimonial() {
+    setTestimonialError(null);
+    if (!testimonialForm.clientName.trim() || !testimonialForm.quote.trim()) {
+      setTestimonialError('Client name and quote are required.');
+      return;
+    }
+    setTestimonialSubmitting(true);
+    const err = await addTestimonial({
+      clientName: testimonialForm.clientName,
+      destination: testimonialForm.destination,
+      category: testimonialForm.category,
+      serviceTag: testimonialForm.serviceTag,
+      quote: testimonialForm.quote,
+      clientId: testimonialForm.clientId || undefined,
+    });
+    setTestimonialSubmitting(false);
+    if (err) {
+      setTestimonialError(err);
+      return;
+    }
+    setAddTestimonialOpen(false);
+    refetchTestimonials();
+  }
+
+  async function handleTestimonialStatus(id: string, status: 'approved' | 'rejected' | 'pending') {
+    await updateTestimonialStatus(id, status);
+    refetchTestimonials();
   }
 
   // ---- Add Manual Payment (real, no serverless function needed - admins
@@ -331,6 +367,7 @@ export default function Admin() {
   const isSuperAdmin = !auth.loading && auth.role === 'super_admin';
   const { staff, loading: staffLoading, refetch: refetchStaff } = useStaffList(isSuperAdmin);
   const { payments, loading: paymentsLoading, refetch: refetchPayments } = usePayments(isAuthedAdmin);
+  const { testimonials, loading: testimonialsLoading, refetch: refetchTestimonials } = useTestimonials(isAuthedAdmin);
 
   const filteredClients = clients.filter((c) => {
     const name = c.profile?.full_name ?? '';
@@ -738,26 +775,35 @@ export default function Admin() {
 
           {activeView === 'testimonials' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Testimonials</div><div className="page-sub">Manage text and video testimonials shown on the site</div></div></div>
-              <div className="panel">
-                <div className="panel-head">
-                  <h3>All Testimonials ({ADMIN_TESTIMONIALS.length})</h3>
-                  <div className="toolbar"><button className="btn-add" onClick={() => setAddModal({ label: 'Testimonial', fields: ['Client Name (or initial)', 'Service/Destination', 'Quote', 'Video Link (optional)'] })}>+ Add Testimonial</button></div>
-                </div>
-                <table>
-                  <thead><tr><th>Client</th><th>Service</th><th>Type</th><th>Live on Site</th><th></th></tr></thead>
-                  <tbody>
-                    {ADMIN_TESTIMONIALS.map((t) => (
-                      <tr key={t.client}>
-                        <td><span className="avatar-sm">{t.initials}</span>{t.client}</td><td>{t.service}</td><td>{t.type}</td>
-                        <td><button className={isOn('test', t.client, t.live) ? 'toggle on' : 'toggle'} onClick={() => flip('test', t.client, t.live)} /></td>
-                        <td className="row-actions"><button className="icon-btn">{t.type === 'Video' ? '↑ Upload' : '✎'}</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="topbar">
+                <div><div className="page-title">Testimonials</div><div className="page-sub">Approved testimonials show live on the Success Stories page and homepage</div></div>
+                <button className="btn-add" onClick={openAddTestimonialModal}>+ Add Testimonial</button>
               </div>
-              <div className="upload-note"><strong>Upload behavior (planned)</strong>Phone-friendly upload, real file size shown before upload, progress bar during, size warnings over limit, and confirmation of optimized size after, as previously specified.</div>
+              <div className="panel">
+                <div className="panel-head"><h3>All Testimonials ({testimonials.length})</h3></div>
+                {testimonialsLoading ? (
+                  <div className="empty-state">Loading…</div>
+                ) : testimonials.length === 0 ? (
+                  <div className="empty-state">No testimonials yet.</div>
+                ) : (
+                  <table>
+                    <thead><tr><th>Client</th><th>Destination</th><th>Category</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      {testimonials.map((t) => (
+                        <tr key={t.id}>
+                          <td><span className="avatar-sm">{getInitials(t.client_name)}</span>{t.client_name}</td>
+                          <td>{t.destination ?? '—'}</td><td>{t.category ?? '—'}</td>
+                          <td><Badge status={t.status} /></td>
+                          <td className="row-actions">
+                            {t.status !== 'approved' && <button className="icon-btn" title="Approve - shows live on site" onClick={() => handleTestimonialStatus(t.id, 'approved')}>✓</button>}
+                            {t.status !== 'rejected' && <button className="icon-btn" title="Reject - hides from site" onClick={() => handleTestimonialStatus(t.id, 'rejected')}>✕</button>}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
             </div>
           )}
 
@@ -854,6 +900,57 @@ export default function Admin() {
           )}
         </main>
       </div>
+
+      {addTestimonialOpen && (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !testimonialSubmitting) setAddTestimonialOpen(false); }}>
+          <div className="modal" style={{ maxWidth: 480 }}>
+            <div className="modal-head">
+              <div><h3>Add Testimonial</h3><div className="page-sub">Saved as Pending until you approve it - won't show live until then</div></div>
+              <button className="modal-close" onClick={() => setAddTestimonialOpen(false)}>✕</button>
+            </div>
+            <div className="form-row">
+              <label>Client Name</label>
+              <input type="text" placeholder="Egwu A." value={testimonialForm.clientName} onChange={(e) => setTestimonialForm((f) => ({ ...f, clientName: e.target.value }))} />
+            </div>
+            <div className="form-two">
+              <div className="form-row">
+                <label>Destination / Institution</label>
+                <input type="text" placeholder="University of West Scotland, UK" value={testimonialForm.destination} onChange={(e) => setTestimonialForm((f) => ({ ...f, destination: e.target.value }))} />
+              </div>
+              <div className="form-row">
+                <label>Category</label>
+                <select value={testimonialForm.category} onChange={(e) => setTestimonialForm((f) => ({ ...f, category: e.target.value }))}>
+                  <option value="Study">Study</option>
+                  <option value="Tourist">Tourist</option>
+                  <option value="Business">Business</option>
+                </select>
+              </div>
+            </div>
+            <div className="form-row">
+              <label>Service Tag (shown as badge)</label>
+              <input type="text" placeholder="Study Visa" value={testimonialForm.serviceTag} onChange={(e) => setTestimonialForm((f) => ({ ...f, serviceTag: e.target.value }))} />
+            </div>
+            <div className="form-row">
+              <label>Link to Existing Client (optional)</label>
+              <select value={testimonialForm.clientId} onChange={(e) => setTestimonialForm((f) => ({ ...f, clientId: e.target.value }))}>
+                <option value="">None — manually entered</option>
+                {clients.map((c) => (
+                  <option key={c.id} value={c.id}>{c.profile?.full_name ?? 'Unknown'}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-row">
+              <label>Quote</label>
+              <textarea style={{ minHeight: 100 }} placeholder="The entire process was smooth..." value={testimonialForm.quote} onChange={(e) => setTestimonialForm((f) => ({ ...f, quote: e.target.value }))} />
+            </div>
+            {testimonialError && <div className="login-error">{testimonialError}</div>}
+            <div className="modal-actions">
+              <button className="btn-save" onClick={handleAddTestimonial} disabled={testimonialSubmitting}>{testimonialSubmitting ? 'Saving…' : 'Save as Pending'}</button>
+              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setAddTestimonialOpen(false)} disabled={testimonialSubmitting}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {addPaymentOpen && (
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !paymentSubmitting) setAddPaymentOpen(false); }}>

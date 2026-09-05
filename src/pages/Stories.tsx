@@ -2,14 +2,16 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { TESTIMONIALS } from '../data/testimonials';
+import { useTestimonials } from '../hooks/useTestimonials';
+import { getInitials } from '../utils/initials';
 import './Stories.css';
 
 const FILTERS = ['all', 'Study', 'Tourist', 'Business'] as const;
 
 export default function Stories() {
   const [activeFilter, setActiveFilter] = useState<(typeof FILTERS)[number]>('all');
-  const filtered = activeFilter === 'all' ? TESTIMONIALS : TESTIMONIALS.filter((t) => t.filterTag === activeFilter);
+  const { testimonials, loading } = useTestimonials();
+  const filtered = activeFilter === 'all' ? testimonials : testimonials.filter((t) => t.category === activeFilter);
 
   return (
     <>
@@ -32,18 +34,24 @@ export default function Stories() {
 
       <section className="stories-grid-section">
         <div className="wrap">
-          <div className="story-grid">
-            {filtered.map((t) => (
-              <div className="story-card" key={t.name}>
-                <div className="story-top">
-                  <div className="initial-badge">{t.initials}</div>
-                  <div><div className="story-name">{t.name}</div><div className="story-meta">{t.meta}</div></div>
+          {loading ? (
+            <div className="empty-state">Loading…</div>
+          ) : filtered.length === 0 ? (
+            <div className="empty-state">No stories to show yet in this category.</div>
+          ) : (
+            <div className="story-grid">
+              {filtered.map((t) => (
+                <div className="story-card" key={t.id}>
+                  <div className="story-top">
+                    <div className="initial-badge">{getInitials(t.client_name)}</div>
+                    <div><div className="story-name">{t.client_name}</div><div className="story-meta">{t.destination}</div></div>
+                  </div>
+                  <p className="story-quote">"{t.quote}"</p>
+                  {t.service_tag && <span className="service-tag">{t.service_tag}</span>}
                 </div>
-                <p className="story-quote">"{t.quote}"</p>
-                <span className="service-tag">{t.serviceTag}</span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

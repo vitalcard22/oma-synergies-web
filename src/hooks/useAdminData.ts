@@ -454,3 +454,32 @@ export async function addPayment(input: NewPaymentInput): Promise<string | null>
   return error?.message ?? null;
 }
 
+type TestimonialStatusValue = Database['public']['Tables']['testimonials']['Row']['status'];
+
+export async function updateTestimonialStatus(id: string, status: TestimonialStatusValue): Promise<string | null> {
+  const { error } = await supabase.from('testimonials').update({ status }).eq('id', id);
+  return error?.message ?? null;
+}
+
+export interface NewTestimonialInput {
+  clientName: string;
+  destination: string;
+  category: string;
+  serviceTag: string;
+  quote: string;
+  clientId?: string;
+}
+
+export async function addTestimonial(input: NewTestimonialInput): Promise<string | null> {
+  const { error } = await supabase.from('testimonials').insert({
+    client_name: input.clientName,
+    destination: input.destination || null,
+    category: input.category || null,
+    service_tag: input.serviceTag || null,
+    quote: input.quote,
+    client_id: input.clientId || null,
+    status: 'pending',
+  });
+  return error?.message ?? null;
+}
+

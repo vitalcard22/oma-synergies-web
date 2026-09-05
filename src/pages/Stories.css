@@ -49,6 +49,7 @@
      ("make each story fit on screen") rather than just a smaller number
      on one breakpoint. */
   .story-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;}
+  .empty-state{padding:48px 24px;text-align:center;color:var(--slate);font-size:13.5px;}
   .story-card{background:var(--white);border:1px solid var(--line-dark);border-radius:16px;padding:18px;transition:transform .3s ease, box-shadow .3s ease;}
   /* Was a bare :hover with a transform+shadow lift - same touch-stuck risk
      already found and fixed on Destinations/How It Works/Partners/Tours

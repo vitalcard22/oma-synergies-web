@@ -8,7 +8,8 @@ import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { useCountUp } from '../hooks/useCountUp';
 import logoIcon from '../assets/logo-icon.png';
 import { DESTINATIONS } from '../data/destinations';
-import { TESTIMONIALS } from '../data/testimonials';
+import { useTestimonials } from '../hooks/useTestimonials';
+import { getInitials } from '../utils/initials';
 import { TOURS, GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira, formatDuration } from '../data/tours';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import wwdTeamPhoto from '../assets/wwd-team.jpg';
@@ -116,6 +117,7 @@ export default function Home() {
   useStaggerReveal('.dest-grid.stagger', '.dest-card');
   const statsRef = useCountUp();
   const heroStatsRef = useCountUp();
+  const { testimonials } = useTestimonials();
 
   const [headlineIdx, setHeadlineIdx] = useState(0);
   const [leadIdx, setLeadIdx] = useState(0);
@@ -718,11 +720,11 @@ export default function Home() {
               <p style={{ color: 'var(--ink-muted)' }}>Shared with permission. Photos withheld by client request.</p>
             </div>
             <div className="test-track stagger" ref={testTrackRef}>
-              {TESTIMONIALS.map((t) => (
-                <div className="test-card" key={t.name}>
+              {testimonials.map((t) => (
+                <div className="test-card" key={t.id}>
                   <div className="test-top">
-                    <div className="initial-badge">{t.initials}</div>
-                    <div><div className="test-name">{t.name}</div><div className="test-meta">{t.serviceTag}: {t.meta}</div></div>
+                    <div className="initial-badge">{getInitials(t.client_name)}</div>
+                    <div><div className="test-name">{t.client_name}</div><div className="test-meta">{t.service_tag}: {t.destination}</div></div>
                   </div>
                   <p className="test-quote">"{t.quote}"</p>
                 </div>
