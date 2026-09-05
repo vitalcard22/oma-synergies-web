@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { TOURS, GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira, formatDuration, getDiscountedFromPrice } from '../data/tours';
+import { GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira, formatDuration, getDiscountedFromPrice } from '../data/tours';
+import { usePublicTours } from '../lib/usePublicTours';
 import './Tours.css';
 
 const CATEGORIES = ['all', 'Group Tours', 'Honeymoon', 'Solo', 'Family'] as const;
@@ -25,7 +26,8 @@ function getPricingNote(activeCat: (typeof CATEGORIES)[number]) {
 
 export default function Tours() {
   const [activeCat, setActiveCat] = useState<(typeof CATEGORIES)[number]>('all');
-  const filtered = activeCat === 'all' ? TOURS : TOURS.filter((t) => t.categories.includes(activeCat));
+  const { tours, loading } = usePublicTours();
+  const filtered = activeCat === 'all' ? tours : tours.filter((t) => t.categories.includes(activeCat));
   const pricingNote = getPricingNote(activeCat);
 
   return (
@@ -49,9 +51,12 @@ export default function Tours() {
 
       <section className="tours-content">
         <div className="wrap">
+          {loading ? (
+            <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--slate)', fontSize: '14px' }}>Loading packages…</div>
+          ) : (
           <div className="tour-grid">
             {filtered.map((t) => (
-              <div className="tour-card" key={t.slug}>
+              <div className="tour-card" key={t.id}>
                 {t.img ? (
                   <div className="tour-img">
                     <img src={t.img} alt={t.name} loading="lazy" />
@@ -86,6 +91,7 @@ export default function Tours() {
               </div>
             ))}
           </div>
+          )}
 
           <div className="custom-cta">
             <div>

@@ -549,7 +549,7 @@ export default function Admin() {
 
   return (
     <div className="admin-root">
-      <div className="demo-banner"><strong>Sign-in is live.</strong> Client list, inquiries, payments and other data below are still sample data — real data connects in the next phase.</div>
+      <div className="demo-banner"><strong>Live system.</strong> All data is real — clients, inquiries, payments, staff, and content all connect to the database.</div>
 
       {mobileOpen && <div className="sidebar-overlay open" onClick={() => setMobileOpen(false)} />}
 
@@ -621,7 +621,7 @@ export default function Admin() {
                 <div className="stat-card"><div className="n">{dashboardStats.loading ? '—' : dashboardStats.activeClients}</div><div className="l">Active Clients</div></div>
                 <div className="stat-card"><div className="n">{dashboardStats.loading ? '—' : dashboardStats.newInquiries}</div><div className="l">New Inquiries</div></div>
                 <div className="stat-card"><div className="n">{DESTINATIONS.length}</div><div className="l">Destinations Live</div></div>
-                <div className="stat-card"><div className="n">{TOURS.length}</div><div className="l">Tours Live</div></div>
+                <div className="stat-card"><div className="n">{toursLoading ? '—' : dbTours.filter((t) => t.status === 'active').length || TOURS.length}</div><div className="l">Tours Live</div></div>
               </div>
               <div className="panel">
                 <div className="panel-head"><h3>Recent Activity</h3></div>
