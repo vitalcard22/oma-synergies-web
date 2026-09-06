@@ -139,8 +139,6 @@ export default function Admin() {
     setCaseSendingReply(false);
   }
 
-  const [addModal, setAddModal] = useState<{ label: string; fields: string[] } | null>(null);
-
   // ---- Register New Client (real, calls the serverless function) ----
   const [registerOpen, setRegisterOpen] = useState(false);
   const [registerForm, setRegisterForm] = useState({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' });
@@ -1445,26 +1443,6 @@ export default function Admin() {
                 </div>
               </>
             )}
-          </div>
-        </div>
-      )}
-
-      {addModal && (
-        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget) setAddModal(null); }}>
-          <div className="modal" style={{ maxWidth: 480 }}>
-            <div className="modal-head">
-              <div><h3>Add {addModal.label}</h3><div className="page-sub">Fields shown match what this content type needs</div></div>
-              <button className="modal-close" onClick={() => setAddModal(null)}>✕</button>
-            </div>
-            <div>
-              {addModal.fields.map((f) => (
-                <div className="form-row" key={f}><label>{f}</label><input type="text" placeholder={f} /></div>
-              ))}
-            </div>
-            <div className="modal-actions">
-              <button className="btn-save">Save</button>
-              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setAddModal(null)}>Cancel</button>
-            </div>
           </div>
         </div>
       )}
