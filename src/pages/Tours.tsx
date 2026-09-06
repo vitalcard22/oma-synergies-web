@@ -51,7 +51,7 @@ export default function Tours() {
 
       <section className="tours-content">
         <div className="wrap">
-          {loading ? (
+          {loading && tours.length === 0 ? (
             <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--slate)', fontSize: '14px' }}>Loading packages…</div>
           ) : (
           <div className="tour-grid">
