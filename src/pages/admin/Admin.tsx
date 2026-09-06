@@ -94,8 +94,19 @@ export default function Admin() {
     setCaseSaveError(null);
     setCaseSaveSuccess(false);
 
+    // Get the current session token so the serverless function can verify
+    // the caller and send the stage-change email to the client.
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token ?? '';
+
     if (caseStageEdit !== caseApplication.stage) {
-      const stageErr = await updateApplicationStage(caseApplication.id, caseStageEdit as typeof caseApplication.stage, auth.userId);
+      const stageErr = await updateApplicationStage(
+        caseApplication.id,
+        caseStageEdit as typeof caseApplication.stage,
+        auth.userId,
+        token,
+        caseClientMessage
+      );
       if (stageErr) {
         setCaseSaveError(stageErr);
         setCaseSaving(false);
@@ -117,15 +128,19 @@ export default function Admin() {
 
   async function handleDocumentStatusChange(docId: string, newStatus: string) {
     setCaseDocSavingId(docId);
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
     const reason = newStatus === 'rejected' ? (caseRejectReasons[docId] ?? '') : null;
-    await updateDocumentStatus(docId, newStatus as Database['public']['Tables']['documents']['Row']['status'], reason);
+    await updateDocumentStatus(docId, newStatus as Database['public']['Tables']['documents']['Row']['status'], reason, token ?? undefined);
     await refetchCaseDocuments();
     setCaseDocSavingId(null);
   }
 
   async function handleRejectionReasonBlur(docId: string) {
     setCaseDocSavingId(docId);
-    await updateDocumentStatus(docId, 'rejected', caseRejectReasons[docId] ?? '');
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    await updateDocumentStatus(docId, 'rejected', caseRejectReasons[docId] ?? '', token ?? undefined);
     await refetchCaseDocuments();
     setCaseDocSavingId(null);
   }

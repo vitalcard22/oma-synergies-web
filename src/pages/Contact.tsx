@@ -39,6 +39,15 @@ export default function Contact() {
       setSubmitError('Something went wrong sending your message. Please try again, or reach us directly on WhatsApp.');
       return;
     }
+
+    // Notify the admin by email - fire-and-forget, never blocks the user
+    // seeing the success state even if the notification fails.
+    fetch('/api/notify-inquiry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: fullName.trim(), email: email.trim(), phone: phone.trim() || undefined, service: service || undefined, destination: destination || undefined, message: message.trim() || undefined }),
+    }).catch(() => {/* non-critical */});
+
     setSubmitted(true);
   };
 

@@ -237,26 +237,30 @@ export function useApplicationDocuments(applicationId: string | null) {
  * to write applications/stage_history/audit_log, no elevated service-role
  * access needed for this, unlike creating/deleting a login account.
  */
+/**
+ * Calls the /api/admin/update-stage serverless function instead of hitting
+ * Supabase directly, so the function can send a stage-change email to the
+ * client. The token is passed through so the API can verify the caller is
+ * a genuine admin (same auth pattern as create-client/delete-client).
+ */
 export async function updateApplicationStage(
   applicationId: string,
   newStage: ApplicationStage,
-  adminId: string
+  _adminId: string,
+  sessionToken: string,
+  clientVisibleMessage?: string
 ): Promise<string | null> {
-  const { error: appError } = await supabase
-    .from('applications')
-    .update({ stage: newStage, stage_updated_at: new Date().toISOString() })
-    .eq('id', applicationId);
-  if (appError) return appError.message;
-
-  await supabase.from('stage_history').insert({ application_id: applicationId, stage: newStage, changed_by: adminId });
-  await supabase.from('audit_log').insert({
-    admin_id: adminId,
-    action: 'stage_updated',
-    target_table: 'applications',
-    target_id: applicationId,
-    detail: `Stage changed to "${newStage.replace(/_/g, ' ')}"`,
-  });
-  return null;
+  try {
+    const res = await fetch('/api/admin/update-stage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionToken}` },
+      body: JSON.stringify({ applicationId, newStage, clientVisibleMessage }),
+    });
+    const data = await res.json();
+    return res.ok ? null : (data.error ?? 'Failed to update stage.');
+  } catch {
+    return 'Could not reach the server.';
+  }
 }
 
 export async function updateApplicationNotes(
@@ -271,11 +275,32 @@ export async function updateApplicationNotes(
   return error?.message ?? null;
 }
 
+/**
+ * Calls /api/admin/update-document so document rejection emails can fire.
+ * Non-rejection status changes (received, approved, etc.) don't send
+ * emails but still go through the API for consistency.
+ */
 export async function updateDocumentStatus(
   documentId: string,
   status: DocumentStatus,
-  rejectionReason: string | null
+  rejectionReason: string | null,
+  sessionToken?: string
 ): Promise<string | null> {
+  if (sessionToken) {
+    try {
+      const res = await fetch('/api/admin/update-document', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessionToken}` },
+        body: JSON.stringify({ documentId, status, rejectionReason }),
+      });
+      const data = await res.json();
+      return res.ok ? null : (data.error ?? 'Failed to update document.');
+    } catch {
+      return 'Could not reach the server.';
+    }
+  }
+  // Fallback: direct Supabase call if no token provided (shouldn't happen
+  // in practice but keeps the function callable without breaking things)
   const { error } = await supabase
     .from('documents')
     .update({ status, rejection_reason: status === 'rejected' ? rejectionReason : null, updated_at: new Date().toISOString() })

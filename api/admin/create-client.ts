@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../../src/lib/database.types';
+import { welcomeEmail, sendEmail } from '../email';
 
 /**
  * Minimal local types matching Vercel's documented Node.js serverless
@@ -212,6 +213,15 @@ export default async function handler(req: VercelReq, res: VercelRes) {
     target_id: newClient.id,
     detail: `Registered ${fullName} (${email}) for ${serviceType}`,
   });
+
+  // Send welcome email - non-blocking: a failed email never prevents the
+  // account from being created. The temp password is returned to the admin
+  // regardless so they can share it manually if the email doesn't arrive.
+  const firstName = fullName.split(' ')[0];
+  const emailContent = welcomeEmail({ firstName, email, tempPassword, serviceType });
+  sendEmail({ to: email, ...emailContent }).catch((err) =>
+    console.error('Welcome email failed:', err)
+  );
 
   res.status(200).json({
     success: true,
