@@ -538,7 +538,7 @@ export interface TourPackageInput {
   status: 'active' | 'hidden';
 }
 
-export async function upsertTourPackage(id: string | null, input: TourPackageInput): Promise<string | null> {
+export async function upsertTourPackage(id: string | null, input: TourPackageInput): Promise<{ error: string | null; id: string | null }> {
   const payload = {
     name: input.name,
     destination: input.destination,
@@ -549,10 +549,17 @@ export async function upsertTourPackage(id: string | null, input: TourPackageInp
     status: input.status,
     updated_at: new Date().toISOString(),
   };
-  const { error } = id
-    ? await supabase.from('tour_packages').update(payload).eq('id', id)
-    : await supabase.from('tour_packages').insert({ ...payload, display_order: 99 });
-  return error?.message ?? null;
+  if (id) {
+    const { error } = await supabase.from('tour_packages').update(payload).eq('id', id);
+    return { error: error?.message ?? null, id };
+  } else {
+    const { data, error } = await supabase
+      .from('tour_packages')
+      .insert({ ...payload, display_order: 99 })
+      .select('id')
+      .single();
+    return { error: error?.message ?? null, id: data?.id ?? null };
+  }
 }
 
 export async function updateTourStatus(id: string, status: 'active' | 'hidden'): Promise<string | null> {

@@ -204,33 +204,73 @@ export default function Admin() {
   }
 
   // ---- Tour Package edit/add ----
-  type TourFormState = { id: string | null; name: string; destination: string; nights: string; fromPrice: string; status: string };
-  const emptyTourForm: TourFormState = { id: null, name: '', destination: '', nights: '3', fromPrice: '', status: 'active' };
+  type TourFormState = { id: string | null; name: string; destination: string; nights: string; fromPrice: string; status: string; photoUrl: string };
+  const emptyTourForm: TourFormState = { id: null, name: '', destination: '', nights: '3', fromPrice: '', status: 'active', photoUrl: '' };
   const [tourModalOpen, setTourModalOpen] = useState(false);
   const [tourForm, setTourForm] = useState<TourFormState>(emptyTourForm);
   const [tourSaving, setTourSaving] = useState(false);
   const [tourError, setTourError] = useState<string | null>(null);
+  const [tourPhotoFile, setTourPhotoFile] = useState<File | null>(null);
+  const [tourPhotoPreview, setTourPhotoPreview] = useState<string | null>(null);
+  const [tourPhotoUploading, setTourPhotoUploading] = useState(false);
 
-  function openTourModal(tour?: { id: string; name: string; destination: string; nights: number; from_price: number; status: string }) {
+  function openTourModal(tour?: { id: string; name: string; destination: string; nights: number; from_price: number; status: string; photo_url?: string | null }) {
     setTourForm(tour
-      ? { id: tour.id, name: tour.name, destination: tour.destination, nights: String(tour.nights), fromPrice: String(tour.from_price), status: tour.status }
+      ? { id: tour.id, name: tour.name, destination: tour.destination, nights: String(tour.nights), fromPrice: String(tour.from_price), status: tour.status, photoUrl: tour.photo_url ?? '' }
       : emptyTourForm);
+    setTourPhotoFile(null);
+    setTourPhotoPreview(tour?.photo_url ?? null);
     setTourError(null);
     setTourModalOpen(true);
+  }
+
+  function handleTourPhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { setTourError('Photo must be under 5MB.'); return; }
+    setTourPhotoFile(file);
+    setTourPhotoPreview(URL.createObjectURL(file));
+    setTourError(null);
   }
 
   async function handleSaveTour() {
     if (!tourForm.name.trim() || !tourForm.fromPrice) { setTourError('Name and price are required.'); return; }
     setTourSaving(true);
-    const err = await upsertTourPackage(tourForm.id, {
+
+    // First save the tour data to get/confirm the ID
+    const { error: saveErr, id: savedId } = await upsertTourPackage(tourForm.id, {
       name: tourForm.name, destination: tourForm.destination || tourForm.name,
       nights: Number(tourForm.nights) || 3, fromPrice: Number(tourForm.fromPrice),
       perPersonSharing: true, categories: ['Group Tours', 'Honeymoon', 'Solo', 'Family'],
       status: tourForm.status as 'active' | 'hidden',
     });
+    if (saveErr) { setTourError(saveErr); setTourSaving(false); return; }
+    const resolvedId = tourForm.id ?? savedId;
+
+    // If a new photo was selected, upload it now
+    if (tourPhotoFile && resolvedId) {
+      setTourPhotoUploading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const base64 = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve((reader.result as string).split(',')[1]);
+          reader.readAsDataURL(tourPhotoFile);
+        });
+        const uploadRes = await fetch('/api/admin/upload-tour-photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+          body: JSON.stringify({ tourId: resolvedId, fileName: tourPhotoFile.name, fileBase64: base64, mimeType: tourPhotoFile.type }),
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) { setTourError(uploadData.error ?? 'Photo upload failed.'); setTourSaving(false); setTourPhotoUploading(false); return; }
+      }
+      setTourPhotoUploading(false);
+    }
+
     setTourSaving(false);
-    if (err) { setTourError(err); return; }
     setTourModalOpen(false);
+    setTourPhotoFile(null);
     refetchTours();
   }
 
@@ -1010,11 +1050,47 @@ export default function Admin() {
 
       {tourModalOpen && (
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !tourSaving) setTourModalOpen(false); }}>
-          <div className="modal" style={{ maxWidth: 460 }}>
+          <div className="modal" style={{ maxWidth: 480 }}>
             <div className="modal-head">
               <div><h3>{tourForm.id ? 'Edit Package' : 'Add Package'}</h3></div>
               <button className="modal-close" onClick={() => setTourModalOpen(false)}>✕</button>
             </div>
+
+            {/* Photo upload */}
+            <div className="form-row">
+              <label>Package Photo</label>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                {tourPhotoPreview ? (
+                  <img
+                    src={tourPhotoPreview}
+                    alt="Tour preview"
+                    style={{ width: 100, height: 70, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--line-dark)', flexShrink: 0 }}
+                  />
+                ) : (
+                  <div style={{ width: 100, height: 70, borderRadius: 8, border: '1px dashed var(--line-dark)', background: 'var(--paper)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: 'var(--slate-light)', flexShrink: 0 }}>
+                    No photo
+                  </div>
+                )}
+                <div style={{ flex: 1 }}>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    id="tour-photo-input"
+                    style={{ display: 'none' }}
+                    onChange={handleTourPhotoSelect}
+                  />
+                  <label
+                    htmlFor="tour-photo-input"
+                    style={{ display: 'inline-block', cursor: 'pointer', padding: '8px 14px', background: 'var(--paper)', border: '1px solid var(--line-dark)', borderRadius: 7, fontSize: 12.5, color: 'var(--navy)', fontWeight: 600 }}
+                  >
+                    {tourPhotoFile ? 'Change Photo' : 'Choose Photo'}
+                  </label>
+                  {tourPhotoFile && <div style={{ marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)' }}>{tourPhotoFile.name} ({(tourPhotoFile.size / 1024).toFixed(0)}KB)</div>}
+                  <div style={{ marginTop: 4, fontSize: 11, color: 'var(--slate-light)' }}>JPEG, PNG or WebP · max 5MB</div>
+                </div>
+              </div>
+            </div>
+
             <div className="form-row"><label>Package Name</label><input type="text" value={tourForm.name} onChange={(e) => setTourForm((f) => ({ ...f, name: e.target.value }))} /></div>
             <div className="form-row"><label>Destination (if different from name)</label><input type="text" value={tourForm.destination} onChange={(e) => setTourForm((f) => ({ ...f, destination: e.target.value }))} /></div>
             <div className="form-two">
@@ -1030,8 +1106,10 @@ export default function Admin() {
             </div>
             {tourError && <div className="login-error">{tourError}</div>}
             <div className="modal-actions">
-              <button className="btn-save" onClick={handleSaveTour} disabled={tourSaving}>{tourSaving ? 'Saving…' : 'Save'}</button>
-              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setTourModalOpen(false)} disabled={tourSaving}>Cancel</button>
+              <button className="btn-save" onClick={handleSaveTour} disabled={tourSaving || tourPhotoUploading}>
+                {tourPhotoUploading ? 'Uploading photo…' : tourSaving ? 'Saving…' : 'Save'}
+              </button>
+              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setTourModalOpen(false)} disabled={tourSaving || tourPhotoUploading}>Cancel</button>
             </div>
           </div>
         </div>

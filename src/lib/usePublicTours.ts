@@ -37,7 +37,7 @@ export function usePublicTours() {
         const { supabase } = await import('./supabase');
         const { data, error } = await supabase
           .from('tour_packages')
-          .select('id, name, nights, from_price, per_person_sharing, categories, status')
+          .select('id, name, nights, from_price, per_person_sharing, categories, status, photo_url')
           .eq('status', 'active')
           .order('display_order', { ascending: true });
 
@@ -62,7 +62,7 @@ export function usePublicTours() {
             nights: row.nights,
             fromPrice: row.from_price,
             perPersonSharing: row.per_person_sharing,
-            img: staticByName[row.name]?.img,
+            img: (row as { photo_url?: string | null }).photo_url || staticByName[row.name]?.img,
           }))
         );
       } catch {
