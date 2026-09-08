@@ -129,7 +129,7 @@ export default function Portal() {
       <div className="portal-root">
         <div id="loginScreen">
           <div className="login-card">
-            <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>CLIENT PORTAL</span></div>
+            <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>Oma Synergies</span></div>
             <h2>Wrong Portal</h2>
             <div className="sub">This account isn't a client account. Staff should sign in at the <a href="/admin">admin panel</a> instead.</div>
             <button className="login-btn" onClick={() => auth.signOut()}>Sign Out</button>
@@ -145,7 +145,7 @@ export default function Portal() {
       <div className="portal-root">
         <div id="loginScreen">
           <div className="login-card">
-            <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>CLIENT PORTAL</span></div>
+            <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>Oma Synergies</span></div>
             <h2>Welcome back</h2>
             <div className="sub">Track your application anytime, anywhere</div>
             <div className="form-row">
@@ -194,7 +194,7 @@ export default function Portal() {
       <div className="portal-root">
         <div id="loginScreen">
           <div className="login-card">
-            <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>CLIENT PORTAL</span></div>
+            <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>Oma Synergies</span></div>
             <h2>Welcome, {auth.fullName ?? 'there'}</h2>
             <div className="sub">Set your own password to finish setting up your account</div>
             <div className="form-row"><label>New Password</label><input type="password" placeholder="At least 8 characters" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} /></div>
@@ -228,7 +228,7 @@ export default function Portal() {
 
       <div className="app">
         <aside className={mobileOpen ? 'sidebar mobile-open' : 'sidebar'}>
-          <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>CLIENT PORTAL</span></div>
+          <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>Oma Synergies</span></div>
           <div className="client-chip">
             <div className="avatar">{getInitials(auth.fullName)}</div>
             <div><div className="name">{auth.fullName ?? 'Client'}</div><div className="email">{auth.email}</div></div>

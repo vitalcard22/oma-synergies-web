@@ -565,7 +565,10 @@ export default function Admin() {
       <div className="admin-root">
         <div id="loginScreen">
           <div className="login-card">
-            <div className="brand"><img src={logoIcon} alt="Oma Synergies" style={{ height: 30 }} /><span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 14 }}>ADMIN PANEL</span></div>
+            <div className="login-card-header">
+              <img src={logoIcon} alt="Oma Synergies" style={{ height: 28 }} />
+              <span>Oma Synergies</span>
+            </div>
             <h2>Access Restricted</h2>
             <div className="sub">This account doesn't have admin access. If you're a client, please use the <a href="/portal">client portal</a> instead.</div>
             <button className="login-btn" onClick={() => auth.signOut()}>Sign Out</button>
@@ -580,9 +583,12 @@ export default function Admin() {
       <div className="admin-root">
         <div id="loginScreen">
           <div className="login-card">
-            <div className="brand"><img src={logoIcon} alt="Oma Synergies" style={{ height: 30 }} /><span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 14 }}>ADMIN PANEL</span></div>
+            <div className="login-card-header">
+              <img src={logoIcon} alt="Oma Synergies" style={{ height: 28 }} />
+              <span>Oma Synergies</span>
+            </div>
             <h2>Staff Sign In</h2>
-            <div className="sub">Access restricted to Oma Synergies team members</div>
+            <div className="sub">Access restricted to team members</div>
             {auth.suspended && (
               <div className="login-error">This account has been suspended. Contact the CEO if you believe this is a mistake.</div>
             )}
@@ -648,7 +654,7 @@ export default function Admin() {
 
       <div className="app">
         <aside className={mobileOpen ? 'sidebar mobile-open' : 'sidebar'}>
-          <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>ADMIN PANEL</span></div>
+          <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>Oma Synergies</span></div>
           {NAV.filter((sec) => sec.section !== 'Team' || isSuperAdmin).map((sec) => (
             <div key={sec.section}>
               <div className="nav-section-label">{sec.section}</div>
