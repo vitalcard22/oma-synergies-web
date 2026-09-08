@@ -32,7 +32,7 @@
     .stat-item .n{font-size:16px;}
   }
   .stat-item .n{font-family:var(--mono);color:var(--gold);font-weight:600;font-size:18px;}
-  .stat-item .l{font-family:var(--mono);font-size:10.5px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;}
+  .stat-item .l{font-size:11px;color:rgba(255,255,255,0.55);margin-top:2px;font-weight:500;}
 
   @media(max-width:900px){.dest-content{padding:56px 0;}}
   @media(max-width:480px){.dest-content{padding:32px 0;}}

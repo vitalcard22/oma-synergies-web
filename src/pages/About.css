@@ -106,7 +106,7 @@
   .team-avatar{width:72px;height:72px;border-radius:50%;margin-bottom:18px;overflow:hidden;flex-shrink:0;}
   .team-avatar img{width:100%;height:100%;object-fit:cover;}
   .team-card h4{font-family:var(--font-display);font-size:17px;margin-bottom:4px;}
-  .team-role{font-family:var(--font-mono);font-size:11.5px;color:var(--slate);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px;}
+  .team-role{font-size:12px;color:var(--slate);font-weight:500;margin-bottom:16px;}
   .cred-badge{display:flex;align-items:flex-start;gap:10px;background:var(--paper);border:1px solid var(--line-dark);border-radius:10px;padding:12px 14px;margin-top:6px;}
   .cred-badge .cb-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
   .cred-badge .cb-title{font-size:12.5px;font-weight:600;color:var(--navy);}
@@ -146,7 +146,7 @@
   .creds-block{margin-bottom:44px;}
   .creds-block:last-child{margin-bottom:0;}
   @media(max-width:480px){.creds-block{margin-bottom:28px;}}
-  .creds-label{font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:20px;text-align:center;}
+  .creds-label{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:20px;text-align:center;font-weight:500;}
   @media(max-width:480px){.creds-label{margin-bottom:14px;font-size:10px;}}
   .creds-row{display:flex;justify-content:center;align-items:center;gap:32px;flex-wrap:wrap;}
   @media(max-width:900px){.creds-row{gap:14px;}}

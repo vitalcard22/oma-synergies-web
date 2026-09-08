@@ -45,7 +45,7 @@
   .dest-overlay{position:absolute;inset:0;background:linear-gradient(to top, rgba(20,21,42,0.92) 0%, rgba(20,21,42,0.15) 55%, transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:22px;color:var(--white);}
   .dest-card::after{content:"";position:absolute;inset:0;border:2px solid transparent;border-radius:16px;transition:border-color .3s ease;pointer-events:none;}
   .dest-overlay h4{font-family:var(--font-display);font-size:19px;margin-bottom:4px;}
-  .dest-overlay .region{font-family:var(--font-mono);font-size:10.5px;color:var(--gold-soft);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
+  .dest-overlay .region{font-size:11px;color:var(--gold-soft);font-weight:600;margin-bottom:6px;}
   .dest-overlay .stat{font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,0.7);}
   @media(max-width:480px){
     .dest-overlay{padding:12px;}

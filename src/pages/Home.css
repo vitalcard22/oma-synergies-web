@@ -18,7 +18,7 @@
   html{scroll-behavior:smooth;}
 
   img{max-width:100%;display:block;}
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
+  .eyebrow{font-size:12px;font-weight:600;color:var(--gold);letter-spacing:0.01em;}
 
   .btn:active{transform:scale(0.97);}
   .btn-gold{background:var(--gold);color:var(--navy-deep);}
@@ -159,7 +159,7 @@
     .svc-item{font-size:14px;letter-spacing:0.03em;}
     .svc-row{gap:7px;}
     .svc-item + .svc-item::before{margin-right:7px;}
-    .svc-anchor{font-size:10.5px;letter-spacing:0.1em;}
+    .svc-anchor{font-size:10.5px;}
     .hero-actions{flex-direction:column;gap:11px;margin-bottom:14px;}
     /* Smaller headline on mobile: reduces both the type size and the number of
        wrapped lines, which compounds since the h1 reserves height for the
@@ -224,7 +224,7 @@
   @keyframes orbitPulse{0%{transform:scale(1);opacity:1;}45%{transform:scale(1.09);opacity:.75;}100%{transform:scale(1);opacity:1;}}
   @keyframes orbitCorePulse{0%{filter:drop-shadow(0 0 40px rgba(240,177,36,0.25));}45%{filter:drop-shadow(0 0 60px rgba(240,177,36,0.65));}100%{filter:drop-shadow(0 0 40px rgba(240,177,36,0.25));}}
   .mini-stat .n{color:var(--gold);font-weight:600;font-size:20px;display:block;}
-  .mini-stat .l{color:var(--ink-muted);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;}
+  .mini-stat .l{color:var(--ink-muted);font-size:11px;font-weight:500;}
 
   /* orbit graphic */
   .orbit-stage{position:relative;height:460px;display:flex;align-items:center;justify-content:center;}
@@ -293,7 +293,7 @@
   .board-section{display:none;background:var(--navy-deep);padding:52px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
   @media(max-width:900px){.board-section{padding:26px 0 30px;}}
   .membership-strip{background:var(--navy-deep);padding:0 0 46px;}
-  .membership-label{font-family:var(--mono);color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:20px;text-align:center;}
+  .membership-label{color:rgba(255,255,255,0.35);font-size:11px;letter-spacing:0.02em;margin-bottom:20px;text-align:center;}
   /* Text pills retired everywhere, not just mobile - real accreditation
      logos below replace them at every width now, per the same "share
      mobile's design to desktop, don't invent anything new" request as the
@@ -329,7 +329,7 @@
   }
   .membership-badge:hover{border-color:var(--gold);color:var(--white);}
   .membership-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;}
-  .board-label{font-family:var(--mono);color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px;}
+  .board-label{color:rgba(255,255,255,0.4);font-size:12px;font-weight:600;margin-bottom:22px;display:flex;align-items:center;gap:10px;}
   .board-label::after{content:"";flex:1;height:1px;background:var(--line);}
   .board-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;}
   @media(max-width:900px){.board-grid{grid-template-columns:repeat(3,1fr);gap:14px 0;}}
@@ -383,7 +383,7 @@
   .wwd-photo::after{content:"";position:absolute;inset:0;border-radius:20px;border:1px solid rgba(255,255,255,0.15);pointer-events:none;}
   .wwd-photo-badge{position:absolute;bottom:18px;left:18px;z-index:3;background:rgba(20,21,42,0.72);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;animation:floatY 4s ease-in-out infinite;}
   .wwd-photo-badge .num{font-family:var(--mono);color:var(--gold);font-weight:600;font-size:20px;line-height:1;}
-  .wwd-photo-badge .lbl{font-family:var(--mono);color:rgba(255,255,255,0.7);font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;margin-top:2px;}
+  .wwd-photo-badge .lbl{color:rgba(255,255,255,0.7);font-size:11px;font-weight:600;margin-top:2px;}
   /* Badge shrinks in step with the photo card, which goes from a ~45% desktop
      column to full-width single-column on mobile - a fixed size here would
      look outsized against the now much wider card. Float animation is kept,
