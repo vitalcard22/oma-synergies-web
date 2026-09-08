@@ -60,6 +60,31 @@
     font-weight:600;
   }
   .nav-item.active .ic{opacity:1;}
+
+  /* ---- SIDEBAR FOOTER ---- */
+  .sidebar-footer{
+    margin-top:auto;
+    padding:14px 16px;
+    border-top:1px solid rgba(255,255,255,0.06);
+    display:flex;align-items:center;gap:10px;
+  }
+  .sidebar-user{display:flex;align-items:center;gap:9px;flex:1;min-width:0;}
+  .sidebar-user .avatar-sm{flex-shrink:0;}
+  .sidebar-user-info{min-width:0;}
+  .sidebar-user-name{
+    font-size:12.5px;font-weight:600;color:rgba(255,255,255,0.8);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .sidebar-user-role{font-size:10.5px;color:rgba(255,255,255,0.3);margin-top:1px;}
+  .signout-btn{
+    width:28px;height:28px;border-radius:6px;flex-shrink:0;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    color:rgba(255,255,255,0.4);font-size:13px;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s,color .15s;
+  }
+  .signout-btn:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);}
   .nav-badge{
     margin-left:auto;
     font-family:var(--mono);font-size:9.5px;
@@ -87,6 +112,7 @@
     display:flex;justify-content:space-between;align-items:center;
     padding:26px 0 22px;flex-wrap:wrap;gap:12px;
   }
+  .topbar-actions{display:flex;gap:8px;align-items:center;}
   .page-title{
     font-family:var(--display);font-size:19px;font-weight:700;
     color:var(--navy);letter-spacing:-0.02em;
@@ -111,6 +137,11 @@
     background:var(--white);border:1px solid var(--line-dark);
     border-radius:8px;padding:16px 18px;
     position:relative;overflow:hidden;
+    transition:border-color .15s,box-shadow .15s;
+  }
+  .stat-card[style*="cursor"]:hover{
+    border-color:rgba(31,32,53,0.18);
+    box-shadow:0 2px 12px rgba(31,32,53,0.06);
   }
   .stat-card::after{
     content:'';position:absolute;left:0;top:16px;bottom:16px;
@@ -216,6 +247,17 @@
     transition:background .12s,color .12s;
   }
   .icon-btn:hover{background:var(--paper);color:var(--navy);}
+
+  /* Text row-action buttons - clearer than icon-only */
+  .btn-row{
+    font-family:var(--body);font-size:12px;font-weight:500;
+    padding:5px 10px;border-radius:5px;
+    border:1px solid var(--line-dark);
+    background:transparent;color:var(--slate);
+    transition:background .12s,color .12s,border-color .12s;
+  }
+  .btn-row:hover{background:var(--navy);color:var(--white);border-color:var(--navy);}
+  .btn-row-danger:hover{background:var(--red);color:var(--white);border-color:var(--red);}
 
   /* ======== MODALS ======== */
   .modal-overlay{

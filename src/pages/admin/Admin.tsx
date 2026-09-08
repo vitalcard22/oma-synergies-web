@@ -663,9 +663,6 @@ export default function Admin() {
             <div key={sec.section}>
               <div className="nav-section-label">{sec.section}</div>
               {sec.items.map((item) => {
-                // Live counts only for nav items that have real data behind
-                // them so far - everything else stays badge-free rather
-                // than showing a stale or fake number.
                 const liveBadge =
                   item.id === 'clients' ? clients.length :
                   item.id === 'inquiries' ? dashboardStats.newInquiries :
@@ -685,22 +682,44 @@ export default function Admin() {
               })}
             </div>
           ))}
+          <div className="sidebar-footer">
+            <div className="sidebar-user">
+              <div className="avatar-sm">{getInitials(auth.fullName)}</div>
+              <div className="sidebar-user-info">
+                <div className="sidebar-user-name">{auth.fullName ?? auth.email}</div>
+                <div className="sidebar-user-role">{auth.role === 'super_admin' ? 'Super Admin' : 'Staff Admin'}</div>
+              </div>
+            </div>
+            <button className="signout-btn" onClick={() => auth.signOut()} title="Sign out">↪</button>
+          </div>
         </aside>
 
         <main className="main">
           {activeView === 'dashboard' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Dashboard</div><div className="page-sub">Overview of all activity across the agency</div></div>
-                <div className="admin-user" onClick={() => auth.signOut()} style={{ cursor: 'pointer' }} title="Click to sign out">
-                  <div className="avatar-sm">{getInitials(auth.fullName)}</div> {auth.fullName ?? auth.email}
+                <div><div className="page-title">Dashboard</div><div className="page-sub">{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+                <div className="topbar-actions">
+                  <button className="btn-add" onClick={openRegisterModal}>+ Register Client</button>
                 </div>
               </div>
               <div className="stat-cards">
-                <div className="stat-card"><div className="n">{dashboardStats.loading ? '—' : dashboardStats.activeClients}</div><div className="l">Active Clients</div></div>
-                <div className="stat-card"><div className="n">{dashboardStats.loading ? '—' : dashboardStats.newInquiries}</div><div className="l">New Inquiries</div></div>
-                <div className="stat-card"><div className="n">{DESTINATIONS.length}</div><div className="l">Destinations Live</div></div>
-                <div className="stat-card"><div className="n">{toursLoading ? '—' : dbTours.filter((t) => t.status === 'active').length || TOURS.length}</div><div className="l">Tours Live</div></div>
+                <div className="stat-card" onClick={() => setActiveView('clients')} style={{ cursor: 'pointer' }}>
+                  <div className="n">{dashboardStats.loading ? '—' : dashboardStats.activeClients}</div>
+                  <div className="l">Active Clients</div>
+                </div>
+                <div className="stat-card" onClick={() => setActiveView('inquiries')} style={{ cursor: 'pointer' }}>
+                  <div className="n">{dashboardStats.loading ? '—' : dashboardStats.newInquiries}</div>
+                  <div className="l">New Inquiries</div>
+                </div>
+                <div className="stat-card">
+                  <div className="n">{DESTINATIONS.length}</div>
+                  <div className="l">Destinations Live</div>
+                </div>
+                <div className="stat-card" onClick={() => setActiveView('tours')} style={{ cursor: 'pointer' }}>
+                  <div className="n">{toursLoading ? '—' : dbTours.filter((t) => t.status === 'active').length || TOURS.length}</div>
+                  <div className="l">Tours Live</div>
+                </div>
               </div>
               <div className="panel">
                 <div className="panel-head"><h3>Recent Activity</h3></div>
@@ -727,7 +746,10 @@ export default function Admin() {
 
           {activeView === 'clients' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Clients & Cases</div><div className="page-sub">Manage every client's admission, visa, and loan status</div></div></div>
+              <div className="topbar">
+                <div><div className="page-title">Clients & Cases</div><div className="page-sub">Manage every client's admission, visa, and loan status</div></div>
+                <button className="btn-add" onClick={openRegisterModal}>+ Add Client</button>
+              </div>
               <div className="panel">
                 <div className="panel-head">
                   <h3>All Clients ({filteredClients.length})</h3>
@@ -737,7 +759,6 @@ export default function Admin() {
                       <option value="all">All Services</option>
                       <option>Study Visa</option><option>Tourist Visa</option><option>Business Visa</option><option>Spousal Work Permit</option>
                     </select>
-                    <button className="btn-add" onClick={openRegisterModal}>+ Add Client</button>
                   </div>
                 </div>
                 {clientsLoading ? (
@@ -761,8 +782,8 @@ export default function Admin() {
                             <td>{latestApp?.destination ?? '—'}</td><td>{c.service_type}</td>
                             <td><Badge status={latestApp?.stage.replace(/_/g, ' ') ?? 'No application'} /></td>
                             <td className="row-actions">
-                              <button className="icon-btn" onClick={() => openCaseModal(c)}>⤢</button>
-                              <button className="icon-btn" title="Delete client" onClick={() => setDeleteTarget(c)}>🗑</button>
+                              <button className="btn-row" onClick={() => openCaseModal(c)}>Open Case</button>
+                              <button className="btn-row btn-row-danger" onClick={() => setDeleteTarget(c)}>Delete</button>
                             </td>
                           </tr>
                         );
