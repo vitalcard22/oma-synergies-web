@@ -624,7 +624,11 @@ export default function Admin() {
 
   return (
     <div className="admin-root">
-      <div className="demo-banner"><strong>Live system.</strong> All data is real — clients, inquiries, payments, staff, and content all connect to the database.</div>
+      <div className="demo-banner">
+        {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+        <span className="demo-banner-sep">·</span>
+        Oma Synergies Travels and Tours Ltd
+      </div>
 
       {mobileOpen && <div className="sidebar-overlay open" onClick={() => setMobileOpen(false)} />}
 
