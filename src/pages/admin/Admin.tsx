@@ -635,7 +635,7 @@ export default function Admin() {
       {mobileOpen && <div className="sidebar-overlay open" onClick={() => setMobileOpen(false)} />}
 
       <div className="mobile-topbar">
-        <div className="brand"><img src={logoIcon} alt="Oma Synergies" style={{ height: 26 }} /><span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 13 }}>ADMIN</span></div>
+        <div className="brand"><img src={logoIcon} alt="Oma Synergies" style={{ height: 24 }} /><span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 13 }}>Oma Synergies</span></div>
         <button className="hamburger" onClick={() => setMobileOpen(true)}>☰</button>
       </div>
 

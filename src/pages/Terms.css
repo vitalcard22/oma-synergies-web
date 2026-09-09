@@ -6,7 +6,7 @@
   }
 
 
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
+  .eyebrow{font-size:12px;font-weight:600;color:var(--gold);letter-spacing:0.01em;}
   .btn-gold{background:var(--gold);color:var(--navy-deep);}
   .btn-gold:hover{background:var(--gold-soft);}
   .btn-outline{border-color:rgba(255,255,255,0.35);color:var(--white);}

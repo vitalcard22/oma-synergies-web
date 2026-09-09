@@ -1,7 +1,7 @@
   html{scroll-behavior:smooth;}
 
 
-  .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);}
+  .eyebrow{font-size:12px;font-weight:600;color:var(--gold);letter-spacing:0.01em;}
   .btn-gold{background:var(--gold);color:var(--navy-deep);}
   .btn-gold:hover{background:var(--gold-soft);box-shadow:0 8px 24px rgba(240,177,36,0.35);}
   .btn-outline{border-color:rgba(255,255,255,0.35);color:var(--white);}

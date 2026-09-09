@@ -27,6 +27,6 @@
 .legal-content .clause a:hover{color:var(--gold);}
 
 .ack-box{background:var(--navy);color:var(--white);border-radius:16px;padding:32px 36px;margin-top:56px;}
-.ack-box .eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:600;color:var(--gold);margin-bottom:10px;display:inline-block;}
+.ack-box .eyebrow{font-size:12px;font-weight:600;color:var(--gold);letter-spacing:0.01em;margin-bottom:10px;display:inline-block;}
 .ack-box p{font-size:15px;color:var(--ink-muted);line-height:1.7;}
 .ack-box strong{color:var(--white);}
