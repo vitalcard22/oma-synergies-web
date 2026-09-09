@@ -59,6 +59,7 @@ export default function Admin() {
   const [inquiryStatusFilter, setInquiryStatusFilter] = useState('all');
   const [paymentsFilter, setPaymentsFilter] = useState('all');
   const [caseModalClient, setCaseModalClient] = useState<ClientWithDetails | null>(null);
+  const [caseTab, setCaseTab] = useState<'overview' | 'documents' | 'messages' | 'notes'>('overview');
   const [caseStageEdit, setCaseStageEdit] = useState('documents_requested');
   const [caseAdminNotes, setCaseAdminNotes] = useState('');
   const [caseClientMessage, setCaseClientMessage] = useState('');
@@ -80,6 +81,7 @@ export default function Admin() {
   function openCaseModal(client: ClientWithDetails) {
     const app = client.applications[0];
     setCaseModalClient(client);
+    setCaseTab('overview');
     setCaseStageEdit(app?.stage ?? 'documents_requested');
     setCaseAdminNotes(app?.admin_notes ?? '');
     setCaseClientMessage(app?.client_visible_message ?? '');
@@ -1338,132 +1340,161 @@ export default function Admin() {
 
       {caseModalClient && (
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget) setCaseModalClient(null); }}>
-          <div className="modal">
+          <div className="modal case-modal">
+            {/* Header */}
             <div className="modal-head">
-              <div><h3>{caseModalClient.profile?.full_name ?? 'Unknown'}'s Case</h3><div className="page-sub">{caseApplication?.destination ?? '—'} · {caseModalClient.service_type}</div></div>
-              <button className="modal-close" onClick={() => setCaseModalClient(null)}>✕</button>
+              <div>
+                <h3>{caseModalClient.profile?.full_name ?? 'Unknown'}</h3>
+                <div className="page-sub">{caseModalClient.service_type}{caseApplication?.destination ? ` · ${caseApplication.destination}` : ''}</div>
+              </div>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                {caseApplication && <Badge status={caseApplication.stage.replace(/_/g, ' ')} />}
+                <button className="modal-close" onClick={() => setCaseModalClient(null)}>✕</button>
+              </div>
             </div>
 
             {!caseApplication ? (
               <div className="empty-state">No application record exists for this client yet.</div>
             ) : (
               <>
-                <div className="track-group">
-                  <div className="track-label">Application Stage</div>
-                  <div className="track-row">
-                    <span className="step-name">Current stage</span>
-                    <select className="status-select" value={caseStageEdit} onChange={(e) => setCaseStageEdit(e.target.value)}>
-                      <option value="documents_requested">Documents Requested</option>
-                      <option value="documents_received">Documents Received</option>
-                      <option value="application_prepared">Application Prepared</option>
-                      <option value="submitted">Submitted</option>
-                      <option value="decision_pending">Decision Pending</option>
-                      <option value="approved">Approved</option>
-                      <option value="refused">Refused</option>
-                      <option value="withdrawn">Withdrawn</option>
-                    </select>
+                {/* Tabs */}
+                <div className="case-tabs">
+                  {(['overview', 'documents', 'messages', 'notes'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      className={caseTab === tab ? 'case-tab active' : 'case-tab'}
+                      onClick={() => setCaseTab(tab)}
+                    >
+                      {tab === 'overview' && 'Overview'}
+                      {tab === 'documents' && `Documents${caseDocuments.length > 0 ? ` (${caseDocuments.length})` : ''}`}
+                      {tab === 'messages' && `Messages${caseMessages.length > 0 ? ` (${caseMessages.length})` : ''}`}
+                      {tab === 'notes' && 'Notes'}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Tab: Overview — stage + client message */}
+                {caseTab === 'overview' && (
+                  <div className="case-tab-body">
+                    <div className="form-row">
+                      <label>Application Stage</label>
+                      <select className="status-select" style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1.5px solid var(--line-dark)', fontSize: 13.5 }} value={caseStageEdit} onChange={(e) => setCaseStageEdit(e.target.value)}>
+                        <option value="documents_requested">Documents Requested</option>
+                        <option value="documents_received">Documents Received</option>
+                        <option value="application_prepared">Application Prepared</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="decision_pending">Decision Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="refused">Refused</option>
+                        <option value="withdrawn">Withdrawn</option>
+                      </select>
+                    </div>
+                    <div className="form-row">
+                      <label>Message to Client <span style={{ fontWeight: 400, color: 'var(--slate-light)' }}>— visible in their portal</span></label>
+                      <textarea className="notes-box" rows={4} value={caseClientMessage} onChange={(e) => setCaseClientMessage(e.target.value)} placeholder="e.g. Your file has been submitted to the embassy. No action needed from you right now." />
+                    </div>
+                    {caseSaveError && <div className="login-error" style={{ marginBottom: 12 }}>{caseSaveError}</div>}
+                    {caseSaveSuccess && <div className="case-success">✓ Saved successfully</div>}
+                    <div className="modal-actions">
+                      <button className="btn-save" onClick={handleSaveCase} disabled={caseSaving}>{caseSaving ? 'Saving…' : 'Save Changes'}</button>
+                      <button className="btn-row" style={{ padding: '9px 16px' }} onClick={() => setCaseModalClient(null)}>Close</button>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <div className="track-group">
-                  <div className="track-label">Document Checklist {caseDocuments.length > 0 && `(${caseDocuments.length})`}</div>
-                  {caseDocuments.length === 0 ? (
-                    <div className="empty-state" style={{ padding: '16px 0' }}>No documents on this checklist.</div>
-                  ) : (
-                    caseDocuments.map((doc) => (
-                      <div key={doc.id}>
-                        <div className="track-row">
-                          <span className="step-name">{doc.document_name}{caseDocSavingId === doc.id && ' — saving…'}</span>
-                          <select
-                            className="status-select"
-                            value={doc.status}
-                            onChange={(e) => handleDocumentStatusChange(doc.id, e.target.value)}
-                          >
-                            <option value="required">Required</option>
-                            <option value="pending">Pending</option>
-                            <option value="received">Received</option>
-                            <option value="under_review">Under Review</option>
-                            <option value="approved">Approved</option>
-                            <option value="rejected">Rejected</option>
-                            <option value="submitted_to_embassy">Submitted to Embassy</option>
-                            <option value="returned">Returned</option>
-                          </select>
-                        </div>
-                        {doc.status === 'rejected' && (
-                          <input
-                            type="text"
-                            placeholder="Reason for rejection (shown to client)"
-                            defaultValue={doc.rejection_reason ?? ''}
-                            onChange={(e) => setCaseRejectReasons((r) => ({ ...r, [doc.id]: e.target.value }))}
-                            onBlur={() => handleRejectionReasonBlur(doc.id)}
-                            style={{ width: '100%', marginTop: '-8px', marginBottom: '10px', padding: '8px 10px', fontSize: '12.5px', borderRadius: '8px', border: '1px solid var(--line-dark)' }}
-                          />
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                <div className="track-group">
-                  <div className="track-label">Message to Client (they'll see this in their portal)</div>
-                  <textarea className="notes-box" value={caseClientMessage} onChange={(e) => setCaseClientMessage(e.target.value)} placeholder="e.g. Your file has been submitted to the embassy. No action needed from you right now." />
-                </div>
-
-                <div className="track-group">
-                  <div className="track-label">Internal Notes (not visible to client)</div>
-                  <textarea className="notes-box" value={caseAdminNotes} onChange={(e) => setCaseAdminNotes(e.target.value)} />
-                </div>
-
-                <div className="track-group">
-                  <div className="track-label">Message Thread</div>
-                  <div style={{ maxHeight: 220, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 10 }}>
-                    {caseMessages.length === 0 ? (
-                      <div style={{ color: 'var(--slate)', fontSize: 13, padding: '8px 0' }}>No messages yet.</div>
+                {/* Tab: Documents */}
+                {caseTab === 'documents' && (
+                  <div className="case-tab-body">
+                    {caseDocuments.length === 0 ? (
+                      <div className="empty-state">No documents on this checklist.</div>
                     ) : (
-                      caseMessages.map((m) => (
-                        <div key={m.id} style={{
-                          alignSelf: m.fromClient ? 'flex-start' : 'flex-end',
-                          maxWidth: '80%',
-                          background: m.fromClient ? 'var(--paper)' : 'var(--navy)',
-                          color: m.fromClient ? 'var(--navy)' : 'var(--white)',
-                          borderRadius: 10,
-                          padding: '8px 12px',
-                          fontSize: 13,
-                        }}>
-                          <div style={{ fontWeight: 600, fontSize: 11, marginBottom: 3, opacity: 0.7 }}>
-                            {m.fromClient ? m.senderName : `You (${m.senderName})`}
+                      <div className="doc-checklist">
+                        {caseDocuments.map((doc) => (
+                          <div key={doc.id} className="doc-check-row">
+                            <div className="doc-check-name">
+                              {doc.document_name}
+                              {caseDocSavingId === doc.id && <span style={{ color: 'var(--slate-light)', fontSize: 11, marginLeft: 6 }}>saving…</span>}
+                            </div>
+                            <select
+                              className="status-select doc-check-select"
+                              value={doc.status}
+                              onChange={(e) => handleDocumentStatusChange(doc.id, e.target.value)}
+                            >
+                              <option value="required">Required</option>
+                              <option value="pending">Pending</option>
+                              <option value="received">Received</option>
+                              <option value="under_review">Under Review</option>
+                              <option value="approved">Approved</option>
+                              <option value="rejected">Rejected</option>
+                              <option value="submitted_to_embassy">Submitted to Embassy</option>
+                              <option value="returned">Returned</option>
+                            </select>
+                            {doc.status === 'rejected' && (
+                              <input
+                                type="text"
+                                className="doc-reject-reason"
+                                placeholder="Reason (shown to client)"
+                                defaultValue={doc.rejection_reason ?? ''}
+                                onChange={(e) => setCaseRejectReasons((r) => ({ ...r, [doc.id]: e.target.value }))}
+                                onBlur={() => handleRejectionReasonBlur(doc.id)}
+                              />
+                            )}
                           </div>
-                          {m.body}
-                        </div>
-                      ))
+                        ))}
+                      </div>
                     )}
                   </div>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <textarea
-                      className="notes-box"
-                      style={{ marginBottom: 0, minHeight: 56 }}
-                      placeholder="Reply to client…"
-                      value={caseReplyText}
-                      onChange={(e) => setCaseReplyText(e.target.value)}
-                    />
-                    <button
-                      className="btn-save"
-                      style={{ alignSelf: 'flex-end', flexShrink: 0 }}
-                      disabled={caseSendingReply || !caseReplyText.trim()}
-                      onClick={handleSendReply}
-                    >
-                      {caseSendingReply ? '…' : 'Send'}
-                    </button>
+                )}
+
+                {/* Tab: Messages */}
+                {caseTab === 'messages' && (
+                  <div className="case-tab-body">
+                    <div className="msg-thread">
+                      {caseMessages.length === 0 ? (
+                        <div className="empty-state" style={{ padding: '24px 0' }}>No messages yet.</div>
+                      ) : (
+                        caseMessages.map((m) => (
+                          <div key={m.id} className={m.fromClient ? 'msg-bubble msg-from-client' : 'msg-bubble msg-from-admin'}>
+                            <div className="msg-sender">{m.fromClient ? m.senderName : `You (${m.senderName})`}</div>
+                            <div className="msg-body">{m.body}</div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    <div className="msg-reply">
+                      <textarea
+                        className="notes-box"
+                        style={{ marginBottom: 0, minHeight: 72, borderRadius: '8px 8px 0 0', borderBottom: 0 }}
+                        placeholder="Reply to client…"
+                        value={caseReplyText}
+                        onChange={(e) => setCaseReplyText(e.target.value)}
+                      />
+                      <button
+                        className="btn-save"
+                        style={{ width: '100%', borderRadius: '0 0 8px 8px', padding: '10px' }}
+                        disabled={caseSendingReply || !caseReplyText.trim()}
+                        onClick={handleSendReply}
+                      >
+                        {caseSendingReply ? 'Sending…' : 'Send Reply'}
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {caseSaveError && <div className="login-error">{caseSaveError}</div>}
-                {caseSaveSuccess && <div className="login-note">Saved.</div>}
-
-                <div className="modal-actions">
-                  <button className="btn-save" onClick={handleSaveCase} disabled={caseSaving}>{caseSaving ? 'Saving…' : 'Save Changes'}</button>
-                  <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setCaseModalClient(null)}>Close</button>
-                </div>
+                {/* Tab: Notes */}
+                {caseTab === 'notes' && (
+                  <div className="case-tab-body">
+                    <div className="form-row">
+                      <label>Internal Notes <span style={{ fontWeight: 400, color: 'var(--slate-light)' }}>— not visible to client</span></label>
+                      <textarea className="notes-box" rows={8} value={caseAdminNotes} onChange={(e) => setCaseAdminNotes(e.target.value)} placeholder="Add internal notes about this client's case…" />
+                    </div>
+                    {caseSaveError && <div className="login-error" style={{ marginBottom: 12 }}>{caseSaveError}</div>}
+                    {caseSaveSuccess && <div className="case-success">✓ Saved</div>}
+                    <div className="modal-actions">
+                      <button className="btn-save" onClick={handleSaveCase} disabled={caseSaving}>{caseSaving ? 'Saving…' : 'Save Notes'}</button>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>
