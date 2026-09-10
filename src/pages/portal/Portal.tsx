@@ -208,7 +208,7 @@ export default function Portal() {
                 {loginError && <div className="login-error">{loginError}</div>}
                 <button className="login-btn" onClick={handleSignIn} disabled={signingIn}>{signingIn ? 'Signing In…' : 'Log In'}</button>
                 <button className="portal-back-link" onClick={() => { setPortalForgotMode(true); setPortalForgotEmail(loginEmail); }}>Forgot password?</button>
-                <div className="login-note">Don't have an account? Your consultant creates your portal access - contact us if you haven't received your login details.</div>
+                <div className="login-note">Your access is set up by your consultant. Contact us if you haven't received your login details.</div>
               </>
             )}
           </div>
@@ -416,7 +416,7 @@ export default function Portal() {
 
           {activeView === 'messages' && (
             <div className="view active">
-              <div className="topbar"><div className="page-title">Messages</div><div className="page-sub">A direct line to your Oma Synergies team</div></div>
+              <div className="topbar"><div className="page-title">Messages</div><div className="page-sub">Send and receive messages with your consultant</div></div>
               <div className="panel">
                 <div className="panel-head"><h3>Oma Synergies Team</h3></div>
                 <div className="msg-thread">

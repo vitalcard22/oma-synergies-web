@@ -743,9 +743,9 @@ export default function Admin() {
           🔔{overdueClients.length > 0 && <span className="notif-dot" />}
         </button>
         <div className={notifOpen ? 'notif-dropdown open' : 'notif-dropdown'}>
-          <div className="notif-dropdown-head">Overdue Clients (7+ days no update)</div>
+          <div className="notif-dropdown-head">Needs Attention</div>
           {overdueClients.length === 0 ? (
-            <div className="notif-item"><div className="t">All caught up</div><div className="s">No clients are overdue right now.</div></div>
+            <div className="notif-item"><div className="t">All up to date</div><div className="s">No cases need attention right now.</div></div>
           ) : (
             overdueClients.map((c) => (
               <div className="notif-item" key={c.id} style={{ cursor: 'pointer' }} onClick={() => { openCaseModal(c); setNotifOpen(false); }}>
@@ -855,7 +855,7 @@ export default function Admin() {
                 <div className="panel-head">
                   <h3>All Clients ({filteredClients.length})</h3>
                   <div className="toolbar">
-                    <input className="search-input" placeholder="Search clients..." value={clientSearch} onChange={(e) => setClientSearch(e.target.value)} />
+                    <input className="search-input" placeholder="Search clients" value={clientSearch} onChange={(e) => setClientSearch(e.target.value)} />
                     <select className="select-filter" value={clientServiceFilter} onChange={(e) => setClientServiceFilter(e.target.value)}>
                       <option value="all">All Services</option>
                       <option>Study Visa</option><option>Tourist Visa</option><option>Business Visa</option><option>Spousal Work Permit</option>
@@ -1107,9 +1107,9 @@ export default function Admin() {
 
           {activeView === 'documents' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Document Review</div><div className="page-sub">Client documents are tracked inside each individual case</div></div></div>
+              <div className="topbar"><div><div className="page-title">Document Review</div><div className="page-sub">Documents are reviewed per client, inside each case</div></div></div>
               <div className="panel">
-                <div className="panel-head"><h3>Document Review</h3></div>
+                <div className="panel-head"><h3>How to review documents</h3></div>
                 <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
                   <p style={{ marginBottom: 8 }}>
                     Document review happens inside each client's case. Go to <strong>Clients & Cases</strong>, open a client, and use the Document Checklist section to mark documents as Received, Under Review, Approved, or Rejected (with a reason the client will see in their portal).
@@ -1539,7 +1539,7 @@ export default function Admin() {
             </div>
             <div className="form-row">
               <label>Reference (optional)</label>
-              <input type="text" placeholder="Selar order ID, bank transfer ref, etc." value={paymentForm.selarOrderId} onChange={(e) => setPaymentForm((f) => ({ ...f, selarOrderId: e.target.value }))} />
+              <input type="text" placeholder="Reference number, transfer ID, or note" value={paymentForm.selarOrderId} onChange={(e) => setPaymentForm((f) => ({ ...f, selarOrderId: e.target.value }))} />
             </div>
             {paymentError && <div className="login-error">{paymentError}</div>}
             <div className="modal-actions">
@@ -1646,7 +1646,7 @@ export default function Admin() {
                     </div>
                     <div className="form-row">
                       <label>Message to Client <span style={{ fontWeight: 400, color: 'var(--slate-light)' }}>— visible in their portal</span></label>
-                      <textarea className="notes-box" rows={4} value={caseClientMessage} onChange={(e) => setCaseClientMessage(e.target.value)} placeholder="e.g. Your file has been submitted to the embassy. No action needed from you right now." />
+                      <textarea className="notes-box" rows={4} value={caseClientMessage} onChange={(e) => setCaseClientMessage(e.target.value)} placeholder="Your file has been submitted. We'll be in touch with next steps." />
                     </div>
                     <div className="form-two">
                       <div className="form-row">
@@ -1751,7 +1751,7 @@ export default function Admin() {
                   <div className="case-tab-body">
                     <div className="form-row">
                       <label>Internal Notes <span style={{ fontWeight: 400, color: 'var(--slate-light)' }}>— not visible to client</span></label>
-                      <textarea className="notes-box" rows={8} value={caseAdminNotes} onChange={(e) => setCaseAdminNotes(e.target.value)} placeholder="Add internal notes about this client's case…" />
+                      <textarea className="notes-box" rows={8} value={caseAdminNotes} onChange={(e) => setCaseAdminNotes(e.target.value)} placeholder="Notes visible only to staff — not shown to the client." />
                     </div>
                     {caseSaveError && <div className="login-error" style={{ marginBottom: 12 }}>{caseSaveError}</div>}
                     {caseSaveSuccess && <div className="case-success">✓ Saved</div>}
