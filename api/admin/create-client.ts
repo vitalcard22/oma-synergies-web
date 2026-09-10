@@ -1,232 +1,128 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '../../src/lib/database.types';
-import { welcomeEmail, sendEmail } from '../email';
 
-/**
- * Minimal local types matching Vercel's documented Node.js serverless
- * function signature exactly (method, headers, body pre-parsed on req;
- * status/json/end on res). Deliberately not using @vercel/node's official
- * types - that package pulled in ajv/path-to-regexp/undici versions with
- * 5 known vulnerabilities (2 moderate, 3 high) just for these two type
- * names. These types are erased at compile time either way - Vercel's
- * actual runtime provides these exact fields/methods regardless of which
- * package supplied the TypeScript types, so this is just as correct
- * without the dependency.
- */
-interface VercelReq {
-  method?: string;
-  headers: Record<string, string | string[] | undefined>;
-  body: unknown;
-}
-interface VercelRes {
-  status(code: number): VercelRes;
-  json(body: unknown): void;
-  end(): void;
+const SUPABASE_URL = process.env.SUPABASE_URL ?? 'https://rxuylffiobkhmbyrmvlk.supabase.co';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
+  auth: { autoRefreshToken: false, persistSession: false }
+});
+
+function generatePassword(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let p = '';
+  for (let i = 0; i < 10; i++) p += chars[Math.floor(Math.random() * chars.length)];
+  return p + '#' + Math.floor(Math.random() * 90 + 10);
 }
 
-// Server-side only client, using the service role key - bypasses Row Level
-// Security entirely. This file runs in a private Node.js environment
-// (Vercel serverless function), never bundled into the site's JavaScript,
-// so this key never reaches a browser. SUPABASE_SERVICE_ROLE_KEY is
-// deliberately NOT prefixed with VITE_ for exactly this reason - Vite only
-// exposes VITE_-prefixed variables to client-side code.
-const supabaseAdmin = createClient<Database>(
-  process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? 'https://rxuylffiobkhmbyrmvlk.supabase.co',
-  process.env.SUPABASE_SERVICE_ROLE_KEY as string,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
+export default async function handler(req: any, res: any) {
+  if (req.method !== 'POST') { res.status(405).json({ error: 'Method not allowed' }); return; }
 
-interface CreateClientBody {
-  fullName: string;
-  email: string;
-  phone?: string;
-  serviceType: string;
-  destination?: string;
-  assignedTo?: string;
-}
+  // Verify caller token
+  const token = (req.headers.authorization ?? '').replace('Bearer ', '');
+  if (!token) { res.status(401).json({ error: 'Missing token.' }); return; }
 
-function generateTempPassword(): string {
-  const words = ['Mango', 'Trail', 'River', 'Cedar', 'Falcon', 'Amber', 'Coral', 'Delta', 'Ember', 'Marble'];
-  const word = words[Math.floor(Math.random() * words.length)];
-  const symbols = ['#', '!', '$', '%', '&'];
-  const symbol = symbols[Math.floor(Math.random() * symbols.length)];
-  const num = Math.floor(Math.random() * 90 + 10);
-  return `${word}${symbol}${num}`;
-}
+  const { data: callerData, error: callerError } = await supabase.auth.getUser(token);
+  if (callerError || !callerData?.user) { res.status(401).json({ error: 'Invalid session.' }); return; }
 
-export default async function handler(req: VercelReq, res: VercelRes) {
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
-  }
-
-  // ---- Verify the caller is a genuine, currently-active admin ----
-  // Anyone who discovers this URL could otherwise create arbitrary login
-  // accounts, since the code past this point runs with full admin
-  // privileges. The browser sends its own Supabase session token; this
-  // verifies that token against Supabase itself (not just trusting
-  // whatever the request claims) and checks the resulting user's role.
-  const authHeader = req.headers.authorization;
-  const token = typeof authHeader === 'string' ? authHeader.replace('Bearer ', '') : null;
-  if (!token) {
-    res.status(401).json({ error: 'Missing authorization token.' });
-    return;
-  }
-
-  const { data: callerAuth, error: callerAuthError } = await supabaseAdmin.auth.getUser(token);
-  if (callerAuthError || !callerAuth.user) {
-    res.status(401).json({ error: 'Invalid or expired session.' });
-    return;
-  }
-
-  const { data: callerProfile, error: callerProfileError } = await supabaseAdmin
-    .from('profiles')
-    .select('role, status')
-    .eq('id', callerAuth.user.id)
-    .single();
-
-  if (callerProfileError || !callerProfile) {
-    res.status(403).json({ error: 'No matching profile for this session.' });
-    return;
-  }
-  if (callerProfile.status === 'suspended') {
-    res.status(403).json({ error: 'This account has been suspended.' });
-    return;
-  }
+  const { data: callerProfile } = await supabase
+    .from('profiles').select('role, status').eq('id', callerData.user.id).single();
+  if (!callerProfile || callerProfile.status === 'suspended') { res.status(403).json({ error: 'Access denied.' }); return; }
   if (callerProfile.role !== 'super_admin' && callerProfile.role !== 'staff_admin') {
-    res.status(403).json({ error: 'Only staff accounts can register new clients.' });
-    return;
+    res.status(403).json({ error: 'Staff access required.' }); return;
   }
 
-  // ---- Validate input ----
-  const body = req.body as Partial<CreateClientBody>;
-  const fullName = body.fullName?.trim();
-  const email = body.email?.trim().toLowerCase();
-  const serviceType = body.serviceType?.trim();
-
+  const { fullName, email, phone, serviceType, destination } = req.body ?? {};
   if (!fullName || !email || !serviceType) {
-    res.status(400).json({ error: 'Full name, email, and service type are required.' });
-    return;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    res.status(400).json({ error: 'That email address doesn\'t look valid.' });
-    return;
+    res.status(400).json({ error: 'Full name, email, and service type are required.' }); return;
   }
 
-  // ---- Create the auth user ----
-  // email_confirm: true skips the confirmation-email loop, matching the
-  // same "Auto Confirm User" pattern used to create the CEO account -
-  // there's no transactional email set up yet to send a real confirmation.
-  const tempPassword = generateTempPassword();
-  const { data: newUser, error: createUserError } = await supabaseAdmin.auth.admin.createUser({
+  const tempPassword = generatePassword();
+
+  // Create the auth user
+  const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
     email,
     password: tempPassword,
     email_confirm: true,
+    user_metadata: { full_name: fullName }
   });
-
-  if (createUserError || !newUser.user) {
-    const isDuplicate = createUserError?.message?.toLowerCase().includes('already registered')
-      || createUserError?.message?.toLowerCase().includes('already exists');
-    res.status(isDuplicate ? 409 : 500).json({
-      error: isDuplicate
-        ? 'A client with this email already has an account.'
-        : (createUserError?.message ?? 'Failed to create the account.'),
-    });
-    return;
+  if (createError || !newUser?.user) {
+    res.status(400).json({ error: createError?.message ?? 'Could not create user account.' }); return;
   }
 
-  const newUserId = newUser.user.id;
+  const userId = newUser.user.id;
 
-  // ---- Insert profile, client, initial application ----
-  const { error: profileError } = await supabaseAdmin.from('profiles').insert({
-    id: newUserId,
-    role: 'client',
-    full_name: fullName,
-    phone: body.phone ?? null,
-    status: 'active',
-    created_by: callerAuth.user.id,
+  // Create profile
+  await supabase.from('profiles').upsert({
+    id: userId, full_name: fullName, role: 'client', status: 'active'
   });
-  if (profileError) {
-    res.status(500).json({ error: `Account created but profile setup failed: ${profileError.message}` });
-    return;
-  }
 
-  const { data: newClient, error: clientError } = await supabaseAdmin
+  // Create client record
+  const { data: clientRow, error: clientError } = await supabase
     .from('clients')
-    .insert({
-      profile_id: newUserId,
-      assigned_to: body.assignedTo ?? callerAuth.user.id,
-      service_type: serviceType,
-      created_by: callerAuth.user.id,
-    })
-    .select('id')
-    .single();
-  if (clientError || !newClient) {
-    res.status(500).json({ error: `Account created but client record failed: ${clientError?.message ?? 'unknown error'}` });
-    return;
+    .insert({ profile_id: userId, service_type: serviceType, phone: phone ?? null })
+    .select('id').single();
+  if (clientError || !clientRow) {
+    res.status(500).json({ error: 'Account created but client record failed: ' + (clientError?.message ?? '') }); return;
   }
 
-  const { data: newApplication, error: applicationError } = await supabaseAdmin
+  // Create application
+  const { data: appRow } = await supabase
     .from('applications')
     .insert({
-      client_id: newClient.id,
+      client_id: clientRow.id,
       service_type: serviceType,
-      destination: body.destination ?? null,
+      destination: destination ?? null,
       stage: 'documents_requested',
-      awaiting_client: true,
+      stage_updated_at: new Date().toISOString()
     })
-    .select('id')
-    .single();
-  if (applicationError || !newApplication) {
-    res.status(500).json({ error: `Client created but application setup failed: ${applicationError?.message ?? 'unknown error'}` });
-    return;
+    .select('id').single();
+
+  // Populate document checklist from template
+  let documentsPopulated = 0;
+  if (appRow) {
+    const { data: requirements } = await supabase
+      .from('document_requirements')
+      .select('document_name, is_mandatory')
+      .eq('service_type', serviceType);
+    if (requirements && requirements.length > 0) {
+      await supabase.from('documents').insert(
+        requirements.map((r) => ({
+          application_id: appRow.id,
+          document_name: r.document_name,
+          is_mandatory: r.is_mandatory,
+          status: 'required'
+        }))
+      );
+      documentsPopulated = requirements.length;
+    }
   }
 
-  // ---- Auto-populate the document checklist from the editable template ----
-  const { data: requirements } = await supabaseAdmin
-    .from('document_requirements')
-    .select('document_name')
-    .eq('service_type', serviceType)
-    .order('display_order', { ascending: true });
-
-  if (requirements && requirements.length > 0) {
-    await supabaseAdmin.from('documents').insert(
-      requirements.map((r) => ({
-        application_id: newApplication.id,
-        document_name: r.document_name,
-        status: 'required' as const,
-      }))
-    );
-  }
-
-  // ---- Stage history + audit log ----
-  await supabaseAdmin.from('stage_history').insert({
-    application_id: newApplication.id,
-    stage: 'documents_requested',
-    changed_by: callerAuth.user.id,
-  });
-
-  await supabaseAdmin.from('audit_log').insert({
-    admin_id: callerAuth.user.id,
+  // Audit log
+  await supabase.from('audit_log').insert({
+    admin_id: callerData.user.id,
     action: 'client_created',
     target_table: 'clients',
-    target_id: newClient.id,
-    detail: `Registered ${fullName} (${email}) for ${serviceType}`,
+    target_id: clientRow.id,
+    detail: `Registered ${fullName} (${email}) for ${serviceType}`
   });
 
-  // Send welcome email - non-blocking: a failed email never prevents the
-  // account from being created. The temp password is returned to the admin
-  // regardless so they can share it manually if the email doesn't arrive.
-  const firstName = fullName.split(' ')[0];
-  const emailContent = welcomeEmail({ firstName, email, tempPassword, serviceType });
-  sendEmail({ to: email, ...emailContent }).catch((err) =>
-    console.error('Welcome email failed:', err)
-  );
+  // Send welcome email (non-blocking)
+  const RESEND_KEY = process.env.RESEND_API_KEY;
+  if (RESEND_KEY) {
+    const firstName = fullName.split(' ')[0];
+    const portalUrl = 'https://oma-synergies-web.vercel.app/portal';
+    fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${RESEND_KEY}` },
+      body: JSON.stringify({
+        from: `Oma Synergies <${process.env.RESEND_FROM ?? 'info@omasynergiestravel.com'}>`,
+        to: [email],
+        subject: 'Welcome to Oma Synergies — Your Portal Access',
+        html: `<p>Hi ${firstName},</p><p>Your portal is ready. Log in at <a href="${portalUrl}">${portalUrl}</a></p><p>Email: ${email}<br>Password: ${tempPassword}</p><p>Please change your password after logging in.</p><p>— Oma Synergies Team</p>`,
+        text: `Hi ${firstName},\n\nYour portal is ready: ${portalUrl}\nEmail: ${email}\nPassword: ${tempPassword}\n\nPlease change your password after logging in.\n\n— Oma Synergies Team`
+      })
+    }).catch(() => {/* non-critical */});
+  }
 
-  res.status(200).json({
-    success: true,
-    clientId: newClient.id,
-    tempPassword,
-    documentsPopulated: requirements?.length ?? 0,
-  });
+  res.status(200).json({ success: true, tempPassword, documentsPopulated });
 }
