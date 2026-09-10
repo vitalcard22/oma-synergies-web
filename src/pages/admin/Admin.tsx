@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, sendAdminMessage, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, sendAdminMessage, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -57,6 +57,7 @@ export default function Admin() {
   const [clientSearch, setClientSearch] = useState('');
   const [clientServiceFilter, setClientServiceFilter] = useState('all');
   const [inquiryStatusFilter, setInquiryStatusFilter] = useState('all');
+  const [selectedInquiryId, setSelectedInquiryId] = useState<string | null>(null);
   const [paymentsFilter, setPaymentsFilter] = useState('all');
   const [caseModalClient, setCaseModalClient] = useState<ClientWithDetails | null>(null);
   const [caseTab, setCaseTab] = useState<'overview' | 'documents' | 'messages' | 'notes'>('overview');
@@ -826,15 +827,43 @@ export default function Admin() {
                     <thead><tr><th>Name</th><th>Service Interested</th><th>Destination</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                       {filteredInquiries.map((i) => (
-                        <tr key={i.id}>
-                          <td className="cell-name">{i.full_name}<div className="cell-sub">{i.email}{i.phone ? ` · ${i.phone}` : ''}</div></td>
-                          <td>{i.service_interested ?? '—'}</td><td>{i.destination ?? '—'}</td>
-                          <td><Badge status={i.status.replace(/_/g, ' ')} /></td>
-                          <td className="row-actions">
-                            <button className="icon-btn" title="Mark as read" onClick={() => handleMarkSubmission(i.id, 'read')}>✉</button>
-                            <button className="icon-btn" title="Mark as converted" onClick={() => handleMarkSubmission(i.id, 'converted')}>✓</button>
-                          </td>
-                        </tr>
+                        <React.Fragment key={i.id}>
+                          <tr
+                            style={{ cursor: 'pointer', background: selectedInquiryId === i.id ? 'rgba(31,32,53,0.03)' : undefined }}
+                            onClick={() => setSelectedInquiryId(selectedInquiryId === i.id ? null : i.id)}
+                          >
+                            <td className="cell-name">
+                              {i.full_name}
+                              <div className="cell-sub">{i.email}{i.phone ? ` · ${i.phone}` : ''}</div>
+                            </td>
+                            <td>{i.service_interested ?? '—'}</td>
+                            <td>{i.destination ?? '—'}</td>
+                            <td><Badge status={i.status.replace(/_/g, ' ')} /></td>
+                            <td className="row-actions" onClick={(e) => e.stopPropagation()}>
+                              <button className="btn-row" title="Mark as read" onClick={() => handleMarkSubmission(i.id, 'read')}>Read</button>
+                              <button className="btn-row" title="Mark as converted" onClick={() => handleMarkSubmission(i.id, 'converted')}>Converted</button>
+                            </td>
+                          </tr>
+                          {selectedInquiryId === i.id && (
+                            <tr>
+                              <td colSpan={5} style={{ padding: '0 20px 16px', background: 'rgba(31,32,53,0.02)' }}>
+                                <div style={{ borderLeft: '3px solid var(--gold)', paddingLeft: 16, paddingTop: 12 }}>
+                                  {i.message ? (
+                                    <>
+                                      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--slate-light)', marginBottom: 6 }}>Message</div>
+                                      <div style={{ fontSize: 13.5, color: 'var(--navy)', lineHeight: 1.65 }}>{i.message}</div>
+                                    </>
+                                  ) : (
+                                    <div style={{ fontSize: 13, color: 'var(--slate-light)' }}>No message body.</div>
+                                  )}
+                                  <div style={{ fontSize: 11, color: 'var(--slate-light)', marginTop: 10 }}>
+                                    Submitted {new Date(i.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>
@@ -916,6 +945,14 @@ export default function Admin() {
                           <td>{formatNaira(p.amount_paid)}</td>
                           <td>{p.selar_order_id ?? '—'}</td>
                           <td><Badge status={p.status.replace(/_/g, ' ')} /></td>
+                          <td className="row-actions">
+                            <button className="btn-row btn-row-danger" onClick={async () => {
+                              if (window.confirm(`Delete this payment record for ${p.clientName}?`)) {
+                                await deletePayment(p.id);
+                                refetchPayments();
+                              }
+                            }}>Delete</button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -947,8 +984,8 @@ export default function Admin() {
                           <td>{t.destination ?? '—'}</td><td>{t.category ?? '—'}</td>
                           <td><Badge status={t.status} /></td>
                           <td className="row-actions">
-                            {t.status !== 'approved' && <button className="icon-btn" title="Approve - shows live on site" onClick={() => handleTestimonialStatus(t.id, 'approved')}>✓</button>}
-                            {t.status !== 'rejected' && <button className="icon-btn" title="Reject - hides from site" onClick={() => handleTestimonialStatus(t.id, 'rejected')}>✕</button>}
+                            {t.status !== 'approved' && <button className="btn-row" style={{ color: 'var(--green)' }} title="Approve - shows live on site" onClick={() => handleTestimonialStatus(t.id, 'approved')}>Approve</button>}
+                            {t.status !== 'rejected' && <button className="btn-row" style={{ color: 'var(--red)' }} title="Reject - hides from site" onClick={() => handleTestimonialStatus(t.id, 'rejected')}>Reject</button>}
                           </td>
                         </tr>
                       ))}

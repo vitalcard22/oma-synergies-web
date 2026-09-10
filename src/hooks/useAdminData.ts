@@ -680,4 +680,7 @@ export async function sendAdminMessage(
   return error?.message ?? null;
 }
 
-
+export async function deletePayment(id: string): Promise<string | null> {
+  const { error } = await supabase.from('payments').delete().eq('id', id);
+  return error?.message ?? null;
+}
