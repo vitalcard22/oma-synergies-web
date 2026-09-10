@@ -58,6 +58,12 @@ export default function Portal() {
 
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [portalForgotMode, setPortalForgotMode] = useState(false);
+  const [portalForgotEmail, setPortalForgotEmail] = useState('');
+  const [portalForgotSent, setPortalForgotSent] = useState(false);
+  const [portalForgotError, setPortalForgotError] = useState<string | null>(null);
+  const [portalForgotSending, setPortalForgotSending] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [signingIn, setSigningIn] = useState(false);
 
@@ -83,6 +89,21 @@ export default function Portal() {
     setSigningIn(false);
     if (errorMessage) {
       setLoginError(errorMessage === 'Invalid login credentials' ? 'Incorrect email or password.' : errorMessage);
+    }
+  }
+
+  async function handlePortalForgotPassword() {
+    setPortalForgotError(null);
+    if (!portalForgotEmail.trim()) { setPortalForgotError('Enter your email address.'); return; }
+    setPortalForgotSending(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(portalForgotEmail.trim(), {
+      redirectTo: `${window.location.origin}/portal`,
+    });
+    setPortalForgotSending(false);
+    if (error) {
+      setPortalForgotError('Could not send reset email. Check the address and try again.');
+    } else {
+      setPortalForgotSent(true);
     }
   }
 
@@ -146,19 +167,50 @@ export default function Portal() {
         <div id="loginScreen">
           <div className="login-card">
             <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>Oma Synergies</span></div>
-            <h2>Welcome back</h2>
-            <div className="sub">Track your application anytime, anywhere</div>
-            <div className="form-row">
-              <label>Email</label>
-              <input type="email" placeholder="you@example.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSignIn()} />
-            </div>
-            <div className="form-row">
-              <label>Password</label>
-              <input type="password" placeholder="••••••••" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSignIn()} />
-            </div>
-            {loginError && <div className="login-error">{loginError}</div>}
-            <button className="login-btn" onClick={handleSignIn} disabled={signingIn}>{signingIn ? 'Signing In…' : 'Log In'}</button>
-            <div className="login-note">Don't have an account? Your consultant creates your portal access - contact us if you haven't received your login details.</div>
+
+            {portalForgotMode ? (
+              <>
+                <h2>Reset Password</h2>
+                <div className="sub">We'll send a reset link to your email.</div>
+                {portalForgotSent ? (
+                  <div className="login-success">
+                    ✓ Reset link sent — check your inbox (and spam folder).
+                  </div>
+                ) : (
+                  <>
+                    <div className="form-row">
+                      <label>Email</label>
+                      <input type="email" placeholder="you@example.com" value={portalForgotEmail} onChange={(e) => setPortalForgotEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handlePortalForgotPassword()} />
+                    </div>
+                    {portalForgotError && <div className="login-error">{portalForgotError}</div>}
+                    <button className="login-btn" onClick={handlePortalForgotPassword} disabled={portalForgotSending}>{portalForgotSending ? 'Sending…' : 'Send Reset Link'}</button>
+                  </>
+                )}
+                <button className="portal-back-link" onClick={() => { setPortalForgotMode(false); setPortalForgotSent(false); setPortalForgotError(null); }}>← Back to sign in</button>
+              </>
+            ) : (
+              <>
+                <h2>Welcome back</h2>
+                <div className="sub">Track your application anytime, anywhere</div>
+                <div className="form-row">
+                  <label>Email</label>
+                  <input type="email" placeholder="you@example.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSignIn()} />
+                </div>
+                <div className="form-row">
+                  <label>Password</label>
+                  <div className="portal-password-wrap">
+                    <input type={showLoginPassword ? 'text' : 'password'} placeholder="••••••••" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSignIn()} />
+                    <button type="button" className="portal-password-eye" onClick={() => setShowLoginPassword((v) => !v)} tabIndex={-1} aria-label={showLoginPassword ? 'Hide password' : 'Show password'}>
+                      {showLoginPassword ? '🙈' : '👁'}
+                    </button>
+                  </div>
+                </div>
+                {loginError && <div className="login-error">{loginError}</div>}
+                <button className="login-btn" onClick={handleSignIn} disabled={signingIn}>{signingIn ? 'Signing In…' : 'Log In'}</button>
+                <button className="portal-back-link" onClick={() => { setPortalForgotMode(true); setPortalForgotEmail(loginEmail); }}>Forgot password?</button>
+                <div className="login-note">Don't have an account? Your consultant creates your portal access - contact us if you haven't received your login details.</div>
+              </>
+            )}
           </div>
         </div>
       </div>

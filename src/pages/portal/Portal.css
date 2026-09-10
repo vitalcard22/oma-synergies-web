@@ -296,3 +296,30 @@
   }
   .btn-save:hover{background:var(--navy-soft);}
   .btn-save:disabled{opacity:0.5;cursor:not-allowed;}
+
+  /* Password show/hide */
+  .portal-password-wrap{position:relative;display:flex;align-items:center;}
+  .portal-password-wrap input{width:100%;padding-right:42px;}
+  .portal-password-eye{
+    position:absolute;right:10px;background:none;border:none;
+    cursor:pointer;font-size:15px;padding:4px;
+    color:var(--slate-light);line-height:1;transition:color .15s;
+  }
+  .portal-password-eye:hover{color:var(--navy);}
+
+  /* Forgot / back links */
+  .portal-back-link{
+    display:block;width:100%;text-align:center;
+    margin-top:12px;background:none;border:none;cursor:pointer;
+    font-family:var(--body);font-size:13px;
+    color:var(--slate-light);transition:color .15s;
+  }
+  .portal-back-link:hover{color:var(--navy);}
+
+  /* Reset success */
+  .login-success{
+    background:rgba(46,158,91,0.06);
+    border:1px solid rgba(46,158,91,0.2);
+    border-radius:8px;padding:14px;margin-bottom:4px;
+    font-size:13px;color:#2e7d47;line-height:1.6;
+  }

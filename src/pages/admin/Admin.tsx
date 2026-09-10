@@ -52,6 +52,12 @@ export default function Admin() {
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState<string | null>(null);
   const [signingIn, setSigningIn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotError, setForgotError] = useState<string | null>(null);
+  const [forgotSending, setForgotSending] = useState(false);
   const [activeView, setActiveView] = useState<ViewId>('dashboard');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -545,8 +551,24 @@ export default function Admin() {
         ? 'Incorrect email or password.'
         : errorMessage);
     }
-    // On success, useAuth's onAuthStateChange listener updates auth.role
-    // automatically - no need to set any local "logged in" flag here.
+  }
+
+  async function handleForgotPassword() {
+    setForgotError(null);
+    if (!forgotEmail.trim()) {
+      setForgotError('Enter your email address.');
+      return;
+    }
+    setForgotSending(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), {
+      redirectTo: `${window.location.origin}/admin`,
+    });
+    setForgotSending(false);
+    if (error) {
+      setForgotError('Could not send reset email. Check the address and try again.');
+    } else {
+      setForgotSent(true);
+    }
   }
 
   if (auth.loading) {
@@ -599,35 +621,89 @@ export default function Admin() {
                 <div className="login-form-icon">
                   <img src={logoIcon} alt="" style={{ height: 32, width: 32 }} />
                 </div>
-                <h2>Staff Sign In</h2>
-                <div className="sub">Access restricted to team members</div>
-                {auth.suspended && (
-                  <div className="login-error">This account has been suspended. Contact the CEO if you believe this is a mistake.</div>
+
+                {forgotMode ? (
+                  /* ---- Forgot password view ---- */
+                  <>
+                    <h2>Reset Password</h2>
+                    <div className="sub">We'll send a reset link to your email.</div>
+                    {forgotSent ? (
+                      <div className="login-success">
+                        ✓ Reset link sent — check your inbox (and spam folder).
+                        <button className="login-link" onClick={() => { setForgotMode(false); setForgotSent(false); setForgotEmail(''); }}>
+                          Back to sign in
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="form-row">
+                          <label>Email</label>
+                          <input
+                            type="email"
+                            placeholder="you@omasynergiestravel.com"
+                            value={forgotEmail}
+                            onChange={(e) => setForgotEmail(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleForgotPassword()}
+                          />
+                        </div>
+                        {forgotError && <div className="login-error">{forgotError}</div>}
+                        <button className="login-btn" onClick={handleForgotPassword} disabled={forgotSending}>
+                          {forgotSending ? 'Sending…' : 'Send Reset Link'}
+                        </button>
+                        <button className="login-link" onClick={() => { setForgotMode(false); setForgotError(null); }}>
+                          Back to sign in
+                        </button>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  /* ---- Sign in view ---- */
+                  <>
+                    <h2>Staff Sign In</h2>
+                    <div className="sub">Access restricted to team members</div>
+                    {auth.suspended && (
+                      <div className="login-error">This account has been suspended. Contact the CEO if you believe this is a mistake.</div>
+                    )}
+                    <div className="form-row">
+                      <label>Email</label>
+                      <input
+                        type="email"
+                        placeholder="you@omasynergiestravel.com"
+                        value={loginEmail}
+                        onChange={(e) => setLoginEmail(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <label>Password</label>
+                      <div className="password-wrap">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="••••••••"
+                          value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+                        />
+                        <button
+                          type="button"
+                          className="password-eye"
+                          onClick={() => setShowPassword((v) => !v)}
+                          tabIndex={-1}
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        >
+                          {showPassword ? '🙈' : '👁'}
+                        </button>
+                      </div>
+                    </div>
+                    {loginError && <div className="login-error">{loginError}</div>}
+                    <button className="login-btn" onClick={handleSignIn} disabled={signingIn}>
+                      {signingIn ? 'Signing In…' : 'Sign In'}
+                    </button>
+                    <button className="login-link" onClick={() => { setForgotMode(true); setForgotEmail(loginEmail); setForgotError(null); }}>
+                      Forgot password?
+                    </button>
+                  </>
                 )}
-                <div className="form-row">
-                  <label>Email</label>
-                  <input
-                    type="email"
-                    placeholder="you@omasynergiestravel.com"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
-                  />
-                </div>
-                <div className="form-row">
-                  <label>Password</label>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
-                  />
-                </div>
-                {loginError && <div className="login-error">{loginError}</div>}
-                <button className="login-btn" onClick={handleSignIn} disabled={signingIn}>
-                  {signingIn ? 'Signing In…' : 'Sign In'}
-                </button>
               </div>
             </div>
           </div>
