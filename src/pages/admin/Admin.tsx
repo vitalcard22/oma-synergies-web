@@ -827,7 +827,7 @@ export default function Admin() {
                 {activityLoading ? (
                   <div className="empty-state">Loading…</div>
                 ) : recentActivity.length === 0 ? (
-                  <div className="empty-state">No activity yet — this fills in as client applications get updated.</div>
+                  <div className="empty-state">Activity appears here as applications are updated.</div>
                 ) : (
                   <table>
                     <thead><tr><th>Client</th><th>Update</th><th>Service</th><th>When</th></tr></thead>
@@ -848,7 +848,7 @@ export default function Admin() {
           {activeView === 'clients' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Clients & Cases</div><div className="page-sub">Manage every client's admission, visa, and loan status</div></div>
+                <div><div className="page-title">Clients & Cases</div><div className="page-sub">Track every active case from first contact to approval</div></div>
                 <button className="btn-add" onClick={openRegisterModal}>+ Add Client</button>
               </div>
               <div className="panel">
@@ -867,7 +867,7 @@ export default function Admin() {
                 ) : filteredClients.length === 0 ? (
                   <div className="empty-state">
                     {clients.length === 0
-                      ? 'No clients yet. Register your first client to get started.'
+                      ? 'No clients registered yet.'
                       : 'No clients match this search or filter.'}
                   </div>
                 ) : (
@@ -898,7 +898,7 @@ export default function Admin() {
 
           {activeView === 'inquiries' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Inquiries</div><div className="page-sub">Incoming messages from the website contact form</div></div></div>
+              <div className="topbar"><div><div className="page-title">Inquiries</div><div className="page-sub">Every enquiry submitted through the website, in real time</div></div></div>
               <div className="panel">
                 <div className="panel-head">
                   <h3>Inbox ({filteredInquiries.length})</h3>
@@ -1069,7 +1069,7 @@ export default function Admin() {
               <div className="panel" style={{ marginTop: 16 }}>
                 <div className="panel-head"><h3>Upcoming dates</h3></div>
                 {calendarEntries.length === 0 ? (
-                  <div className="empty-state">No key dates set yet — open a client case → Overview tab → set a Key Date.</div>
+                  <div className="empty-state">No upcoming dates. Set a key date from any client's case → Overview tab.</div>
                 ) : (
                   <table>
                     <thead>
@@ -1107,14 +1107,14 @@ export default function Admin() {
 
           {activeView === 'documents' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Document Review</div><div className="page-sub">Documents are managed per-client inside each case</div></div></div>
+              <div className="topbar"><div><div className="page-title">Document Review</div><div className="page-sub">Client documents are tracked inside each individual case</div></div></div>
               <div className="panel">
-                <div className="panel-head"><h3>Where to Review Documents</h3></div>
+                <div className="panel-head"><h3>Document Review</h3></div>
                 <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
                   <p style={{ marginBottom: 8 }}>
                     Document review happens inside each client's case. Go to <strong>Clients & Cases</strong>, open a client, and use the Document Checklist section to mark documents as Received, Under Review, Approved, or Rejected (with a reason the client will see in their portal).
                   </p>
-                  <p>A cross-client "documents pending review" view is planned for a future update once client volume makes it necessary.</p>
+                  <p>To review a client's documents, open their case from Clients &amp; Cases and go to the Documents tab.</p>
                 </div>
               </div>
             </div>
@@ -1123,7 +1123,7 @@ export default function Admin() {
           {activeView === 'payments' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Payments</div><div className="page-sub">Manually recorded until Selar checkout syncs automatically</div></div>
+                <div><div className="page-title">Payments</div><div className="page-sub">Record payments by cash, bank transfer, or any other method</div></div>
                 <button className="btn-add" onClick={openAddPaymentModal}>+ Add Payment</button>
               </div>
               <div className="stat-cards">
@@ -1149,7 +1149,7 @@ export default function Admin() {
                 ) : filteredPayments.length === 0 ? (
                   <div className="empty-state">
                     {payments.length === 0
-                      ? 'No payments recorded yet.'
+                      ? 'No payments have been recorded yet.'
                       : 'No payments match this filter.'}
                   </div>
                 ) : (
@@ -1191,7 +1191,7 @@ export default function Admin() {
                 {testimonialsLoading ? (
                   <div className="empty-state">Loading…</div>
                 ) : testimonials.length === 0 ? (
-                  <div className="empty-state">No testimonials yet.</div>
+                  <div className="empty-state">No testimonials have been added yet.</div>
                 ) : (
                   <table>
                     <thead><tr><th>Client</th><th>Destination</th><th>Category</th><th>Status</th><th></th></tr></thead>
@@ -1216,12 +1216,12 @@ export default function Admin() {
 
           {activeView === 'destinations' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Destinations</div><div className="page-sub">The 12 flagship destinations are managed in code — contact your developer to add or remove one. Processing times are editable here once tours are seeded.</div></div></div>
+              <div className="topbar"><div><div className="page-title">Destinations</div><div className="page-sub">Featured destinations shown across the public site</div></div></div>
               <div className="panel">
                 <div className="panel-head"><h3>Flagship Destinations (12)</h3></div>
                 <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
-                  <p style={{ marginBottom: 8 }}>Destination content (names, regions, photos, detail pages) is bundled as part of the site build. This is because each destination has its own photo imported as a code asset — making them editable without a full rebuild would require setting up Supabase Storage for image hosting first.</p>
-                  <p>For now: to update a processing time or add a destination, send the details and it can be updated in one commit. Tour package prices and availability are fully editable from the Tours section below.</p>
+                  <p style={{ marginBottom: 8 }}>Destination pages — names, regions, photos, and processing time detail — are part of the site. To update a destination or add a new one, contact your developer with the details and it will be live within the day.</p>
+                  <p>Tour package prices, availability, and photos are fully editable from the <strong>Tours &amp; Packages</strong> section.</p>
                 </div>
               </div>
             </div>
@@ -1230,15 +1230,15 @@ export default function Admin() {
           {activeView === 'tours' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Tours & Packages</div><div className="page-sub">Prices and availability update live on the site immediately</div></div>
+                <div><div className="page-title">Tours & Packages</div><div className="page-sub">Changes go live on the public tours page immediately</div></div>
                 <button className="btn-add" onClick={() => openTourModal()}>+ Add Package</button>
               </div>
               <div className="panel">
                 <div className="panel-head"><h3>All Packages ({dbTours.length})</h3></div>
                 {toursLoading ? (
-                  <div className="empty-state">Loading… (run migration 0003_seed_tours.sql in Supabase if this stays empty)</div>
+                  <div className="empty-state">Loading…</div>
                 ) : dbTours.length === 0 ? (
-                  <div className="empty-state">No tour packages in the database yet. Run supabase/migrations/0003_seed_tours.sql to seed the existing 9 packages, then they'll appear here.</div>
+                  <div className="empty-state">No tour packages found. Add your first package using the button above.</div>
                 ) : (
                   <table>
                     <thead><tr><th>Package</th><th>Nights</th><th>From Price</th><th>Status</th><th></th></tr></thead>
@@ -1270,7 +1270,7 @@ export default function Admin() {
                 {masterclassesLoading ? (
                   <div className="empty-state">Loading…</div>
                 ) : masterclasses.length === 0 ? (
-                  <div className="empty-state">No masterclass sessions yet. Add the first one with the button above.</div>
+                  <div className="empty-state">No masterclass sessions have been scheduled yet.</div>
                 ) : (
                   <table>
                     <thead><tr><th>Title</th><th>Date</th><th>Price</th><th>Seats Left</th><th>Status</th><th></th></tr></thead>
@@ -1295,11 +1295,11 @@ export default function Admin() {
           {activeView === 'staff' && (
             <div className="view active">
               {!isSuperAdmin ? (
-                <div className="empty-state">Staff management is restricted to the Super Admin account.</div>
+                <div className="empty-state">Team management is only available to the Super Admin.</div>
               ) : (
                 <>
                   <div className="topbar">
-                    <div><div className="page-title">Staff & Roles</div><div className="page-sub">Manage team access to the admin panel</div></div>
+                    <div><div className="page-title">Staff & Roles</div><div className="page-sub">Control who can access and manage this panel</div></div>
                     <button className="btn-add" onClick={openRegisterStaffModal}>+ Add Staff</button>
                   </div>
                   <div className="panel">
@@ -1456,7 +1456,7 @@ export default function Admin() {
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !testimonialSubmitting) setAddTestimonialOpen(false); }}>
           <div className="modal" style={{ maxWidth: 480 }}>
             <div className="modal-head">
-              <div><h3>Add Testimonial</h3><div className="page-sub">Saved as Pending until you approve it - won't show live until then</div></div>
+              <div><h3>Add Testimonial</h3><div className="page-sub">Saved as pending — approve it to make it visible on the site</div></div>
               <button className="modal-close" onClick={() => setAddTestimonialOpen(false)}>✕</button>
             </div>
             <div className="form-row">
@@ -1507,7 +1507,7 @@ export default function Admin() {
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !paymentSubmitting) setAddPaymentOpen(false); }}>
           <div className="modal" style={{ maxWidth: 460 }}>
             <div className="modal-head">
-              <div><h3>Record a Payment</h3><div className="page-sub">For cash, bank transfer, or any payment not yet auto-synced from Selar</div></div>
+              <div><h3>Record a Payment</h3><div className="page-sub">Record a payment received outside the online checkout</div></div>
               <button className="modal-close" onClick={() => setAddPaymentOpen(false)}>✕</button>
             </div>
             <div className="form-row">
@@ -1556,7 +1556,7 @@ export default function Admin() {
             {staffResult ? (
               <>
                 <div className="modal-head">
-                  <div><h3>Staff Account Created</h3><div className="page-sub">Share these login details with them directly - they won't be shown again</div></div>
+                  <div><h3>Staff Account Created</h3><div className="page-sub">Share these credentials directly — they will not be shown again</div></div>
                   <button className="modal-close" onClick={() => setRegisterStaffOpen(false)}>✕</button>
                 </div>
                 <div className="form-row"><label>Email</label><input type="text" readOnly value={staffForm.email} /></div>
@@ -1568,7 +1568,7 @@ export default function Admin() {
             ) : (
               <>
                 <div className="modal-head">
-                  <div><h3>Add Staff Member</h3><div className="page-sub">Creates their admin login automatically</div></div>
+                  <div><h3>Add Staff Member</h3><div className="page-sub">A staff account will be created with access to this panel</div></div>
                   <button className="modal-close" onClick={() => setRegisterStaffOpen(false)}>✕</button>
                 </div>
                 <div className="form-row"><label>Full Name</label><input type="text" placeholder="Adaeze Okafor" value={staffForm.fullName} onChange={(e) => setStaffForm((f) => ({ ...f, fullName: e.target.value }))} /></div>
@@ -1609,7 +1609,7 @@ export default function Admin() {
             </div>
 
             {!caseApplication ? (
-              <div className="empty-state">No application record exists for this client yet.</div>
+              <div className="empty-state">No application has been created for this client yet.</div>
             ) : (
               <>
                 {/* Tabs */}
@@ -1671,7 +1671,7 @@ export default function Admin() {
                 {caseTab === 'documents' && (
                   <div className="case-tab-body">
                     {caseDocuments.length === 0 ? (
-                      <div className="empty-state">No documents on this checklist.</div>
+                      <div className="empty-state">No documents have been added to this checklist yet.</div>
                     ) : (
                       <div className="doc-checklist">
                         {caseDocuments.map((doc) => (
@@ -1716,7 +1716,7 @@ export default function Admin() {
                   <div className="case-tab-body">
                     <div className="msg-thread">
                       {caseMessages.length === 0 ? (
-                        <div className="empty-state" style={{ padding: '24px 0' }}>No messages yet.</div>
+                        <div className="empty-state" style={{ padding: '24px 0' }}>No messages in this case yet.</div>
                       ) : (
                         caseMessages.map((m) => (
                           <div key={m.id} className={m.fromClient ? 'msg-bubble msg-from-client' : 'msg-bubble msg-from-admin'}>
@@ -1770,7 +1770,7 @@ export default function Admin() {
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !deleteSubmitting) { setDeleteTarget(null); setDeleteConfirmText(''); } }}>
           <div className="modal" style={{ maxWidth: 460 }}>
             <div className="modal-head">
-              <div><h3>Delete {deleteTarget.profile?.full_name ?? 'this client'}?</h3><div className="page-sub">This permanently removes their login, application, documents, and message history. It cannot be undone.</div></div>
+              <div><h3>Delete {deleteTarget.profile?.full_name ?? 'this client'}?</h3><div className="page-sub">This removes their portal access, application history, documents, and all messages. This action cannot be reversed.</div></div>
               <button className="modal-close" onClick={() => { setDeleteTarget(null); setDeleteConfirmText(''); }}>✕</button>
             </div>
             <div className="form-row">
