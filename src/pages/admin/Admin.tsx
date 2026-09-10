@@ -976,28 +976,14 @@ export default function Admin() {
                 <div><div className="page-title">Consultation Calendar</div><div className="page-sub">Key dates across all active client applications</div></div>
               </div>
 
-              {/* Month navigator */}
-              <div className="cal-nav">
-                <button className="cal-nav-btn" onClick={() => {
-                  const [y, m] = calMonth.split('-').map(Number);
-                  const d = new Date(y, m - 2, 1);
-                  setCalMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
-                }}>←</button>
-                <div className="cal-nav-label">
-                  {new Date(calMonth + '-01').toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
-                </div>
-                <button className="cal-nav-btn" onClick={() => {
-                  const [y, m] = calMonth.split('-').map(Number);
-                  const d = new Date(y, m, 1);
-                  setCalMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
-                }}>→</button>
-                <button className="cal-nav-today" onClick={() => {
-                  const d = new Date();
-                  setCalMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
-                }}>Today</button>
+              {/* Legend */}
+              <div className="cal-legend">
+                <div className="cal-legend-item"><div className="cal-legend-dot" style={{ background: 'var(--amber)' }} />Embassy / Appointment</div>
+                <div className="cal-legend-item"><div className="cal-legend-dot" style={{ background: 'var(--slate)' }} />Biometrics</div>
+                <div className="cal-legend-item"><div className="cal-legend-dot" style={{ background: 'var(--red)' }} />Deadline</div>
+                <div className="cal-legend-item"><div className="cal-legend-dot" style={{ background: 'var(--green)' }} />Other</div>
               </div>
 
-              {/* Calendar grid */}
               {calendarLoading ? (
                 <div className="empty-state">Loading…</div>
               ) : (() => {
@@ -1005,8 +991,10 @@ export default function Admin() {
                 const firstDay = new Date(year, month - 1, 1).getDay();
                 const daysInMonth = new Date(year, month, 0).getDate();
                 const today = new Date().toISOString().slice(0, 10);
+                const monthLabel = new Date(calMonth + '-01').toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+                const monthEntries = calendarEntries.filter((e) => e.keyDate.startsWith(calMonth));
 
-                // Map entries by date string
+                // Map entries by date
                 const byDate: Record<string, typeof calendarEntries> = {};
                 calendarEntries.forEach((e) => {
                   if (e.keyDate.startsWith(calMonth)) {
@@ -1020,8 +1008,36 @@ export default function Admin() {
                 ];
                 while (cells.length % 7 !== 0) cells.push(null);
 
+                // Chip colour by keyword
+                function chipType(label: string): string {
+                  const l = label.toLowerCase();
+                  if (l.includes('embassy') || l.includes('appointment') || l.includes('interview')) return 'cal-chip-amber';
+                  if (l.includes('biometric') || l.includes('bio')) return 'cal-chip-slate';
+                  if (l.includes('deadline') || l.includes('submission')) return 'cal-chip-red';
+                  return 'cal-chip-green';
+                }
+
                 return (
                   <div className="cal-grid-wrap">
+                    {/* Nav inside the card */}
+                    <div className="cal-nav">
+                      <button className="cal-nav-btn" onClick={() => {
+                        const d = new Date(year, month - 2, 1);
+                        setCalMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                      }}>←</button>
+                      <div className="cal-nav-label">
+                        {monthLabel}
+                        {monthEntries.length > 0 && <span className="cal-event-count">{monthEntries.length} event{monthEntries.length !== 1 ? 's' : ''}</span>}
+                      </div>
+                      <button className="cal-nav-btn" onClick={() => {
+                        const d = new Date(year, month, 1);
+                        setCalMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                      }}>→</button>
+                      <button className="cal-nav-today" onClick={() => {
+                        const d = new Date();
+                        setCalMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                      }}>Today</button>
+                    </div>
                     <div className="cal-day-headers">
                       {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
                         <div key={d} className="cal-day-header">{d}</div>
@@ -1034,12 +1050,11 @@ export default function Admin() {
                         const isToday = dateStr === today;
                         return (
                           <div key={i} className={`cal-cell${day ? '' : ' cal-cell-empty'}${isToday ? ' cal-cell-today' : ''}`}>
-                            {day && <div className="cal-day-num">{day}</div>}
+                            {day && <div className={`cal-day-num${isToday ? ' cal-day-today' : ''}`}>{day}</div>}
                             {entries.map((e, ei) => (
-                              <div key={ei} className="cal-event" title={`${e.clientName} — ${e.keyDateLabel}`}>
-                                <span className="cal-event-dot" />
-                                <span className="cal-event-label">{e.keyDateLabel}</span>
-                                <span className="cal-event-name">{e.clientName}</span>
+                              <div key={ei} className={`cal-chip ${chipType(e.keyDateLabel)}`} title={`${e.clientName} — ${e.keyDateLabel}`}>
+                                <span className="cal-chip-label">{e.keyDateLabel}</span>
+                                <span className="cal-chip-name">{e.clientName.split(' ')[0]}</span>
                               </div>
                             ))}
                           </div>
@@ -1050,26 +1065,35 @@ export default function Admin() {
                 );
               })()}
 
-              {/* Upcoming list below the calendar */}
-              <div className="panel" style={{ marginTop: 20 }}>
-                <div className="panel-head"><h3>All Upcoming Dates</h3></div>
+              {/* Upcoming list */}
+              <div className="panel" style={{ marginTop: 16 }}>
+                <div className="panel-head"><h3>Upcoming dates</h3></div>
                 {calendarEntries.length === 0 ? (
-                  <div className="empty-state">No key dates set yet. Open any client's case → Overview tab → set a Key Date.</div>
+                  <div className="empty-state">No key dates set yet — open a client case → Overview tab → set a Key Date.</div>
                 ) : (
                   <table>
-                    <thead><tr><th>Date</th><th>Client</th><th>What</th><th>Service</th><th>Stage</th></tr></thead>
+                    <thead>
+                      <tr><th>Date</th><th>Client</th><th>Event</th><th>Service</th><th>Stage</th></tr>
+                    </thead>
                     <tbody>
                       {calendarEntries.map((e) => {
                         const isPast = e.keyDate < new Date().toISOString().slice(0, 10);
+                        const l = e.keyDateLabel.toLowerCase();
+                        const pillCls = l.includes('embassy') || l.includes('appointment') || l.includes('interview') ? 'cal-pill-amber'
+                          : l.includes('biometric') ? 'cal-pill-slate'
+                          : l.includes('deadline') || l.includes('submission') ? 'cal-pill-red'
+                          : 'cal-pill-green';
                         return (
-                          <tr key={e.applicationId} style={{ opacity: isPast ? 0.5 : 1 }}>
-                            <td style={{ fontFamily: 'var(--mono)', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                              {new Date(e.keyDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          <tr key={e.applicationId} style={{ opacity: isPast ? 0.45 : 1 }}>
+                            <td>
+                              <span style={{ fontFamily: 'var(--mono)', fontSize: 12.5, fontWeight: 600 }}>
+                                {new Date(e.keyDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              </span>
                               {isPast && <span style={{ marginLeft: 6, fontSize: 10, color: 'var(--slate-light)' }}>past</span>}
                             </td>
                             <td className="cell-name">{e.clientName}</td>
-                            <td><Badge status={e.keyDateLabel} /></td>
-                            <td>{e.serviceType}</td>
+                            <td><span className={`cal-pill ${pillCls}`}>{e.keyDateLabel}</span></td>
+                            <td style={{ color: 'var(--slate)', fontSize: 12.5 }}>{e.serviceType}</td>
                             <td><Badge status={e.stage.replace(/_/g, ' ')} /></td>
                           </tr>
                         );
