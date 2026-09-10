@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, sendAdminMessage, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, sendAdminMessage, useCalendarEntries, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -71,6 +71,8 @@ export default function Admin() {
   const [caseStageEdit, setCaseStageEdit] = useState('documents_requested');
   const [caseAdminNotes, setCaseAdminNotes] = useState('');
   const [caseClientMessage, setCaseClientMessage] = useState('');
+  const [caseKeyDate, setCaseKeyDate] = useState('');
+  const [caseKeyDateLabel, setCaseKeyDateLabel] = useState('');
   const [caseSaving, setCaseSaving] = useState(false);
   const [caseSaveError, setCaseSaveError] = useState<string | null>(null);
   const [caseSaveSuccess, setCaseSaveSuccess] = useState(false);
@@ -93,6 +95,8 @@ export default function Admin() {
     setCaseStageEdit(app?.stage ?? 'documents_requested');
     setCaseAdminNotes(app?.admin_notes ?? '');
     setCaseClientMessage(app?.client_visible_message ?? '');
+    setCaseKeyDate((app as unknown as { key_date?: string | null })?.key_date ?? '');
+    setCaseKeyDateLabel((app as unknown as { key_date_label?: string | null })?.key_date_label ?? '');
     setCaseSaveError(null);
     setCaseSaveSuccess(false);
     setCaseReplyText('');
@@ -130,6 +134,9 @@ export default function Admin() {
       setCaseSaving(false);
       return;
     }
+
+    // Save key date if set
+    await updateApplicationKeyDate(caseApplication.id, caseKeyDate || null, caseKeyDateLabel || null);
 
     setCaseSaving(false);
     setCaseSaveSuccess(true);
@@ -507,6 +514,10 @@ export default function Admin() {
   const { testimonials, loading: testimonialsLoading, refetch: refetchTestimonials } = useTestimonials(isAuthedAdmin);
   const { tours: dbTours, loading: toursLoading, refetch: refetchTours } = useTourPackages(isAuthedAdmin);
   const { masterclasses, loading: masterclassesLoading, refetch: refetchMasterclasses } = useMasterclasses(isAuthedAdmin);
+  const { entries: calendarEntries, loading: calendarLoading } = useCalendarEntries(isAuthedAdmin);
+  const [calMonth, setCalMonth] = useState(() => {
+    const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  });
 
   const filteredClients = clients.filter((c) => {
     const name = c.profile?.full_name ?? '';
@@ -961,15 +972,111 @@ export default function Admin() {
 
           {activeView === 'calendar' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Consultation Calendar</div><div className="page-sub">Key dates from active client applications</div></div></div>
-              <div className="panel">
-                <div className="panel-head"><h3>Upcoming Key Dates</h3></div>
-                <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
-                  <p style={{ marginBottom: 8 }}>
-                    Key dates (embassy appointments, biometrics, interviews, submission deadlines) are set per-client in the <strong>Clients & Cases</strong> section — open any client's case and update the relevant date fields there.
-                  </p>
-                  <p>A consolidated calendar view across all clients will be added in a future update. For now, check each client's case for their specific upcoming dates.</p>
+              <div className="topbar">
+                <div><div className="page-title">Consultation Calendar</div><div className="page-sub">Key dates across all active client applications</div></div>
+              </div>
+
+              {/* Month navigator */}
+              <div className="cal-nav">
+                <button className="cal-nav-btn" onClick={() => {
+                  const [y, m] = calMonth.split('-').map(Number);
+                  const d = new Date(y, m - 2, 1);
+                  setCalMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                }}>←</button>
+                <div className="cal-nav-label">
+                  {new Date(calMonth + '-01').toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
                 </div>
+                <button className="cal-nav-btn" onClick={() => {
+                  const [y, m] = calMonth.split('-').map(Number);
+                  const d = new Date(y, m, 1);
+                  setCalMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                }}>→</button>
+                <button className="cal-nav-today" onClick={() => {
+                  const d = new Date();
+                  setCalMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+                }}>Today</button>
+              </div>
+
+              {/* Calendar grid */}
+              {calendarLoading ? (
+                <div className="empty-state">Loading…</div>
+              ) : (() => {
+                const [year, month] = calMonth.split('-').map(Number);
+                const firstDay = new Date(year, month - 1, 1).getDay();
+                const daysInMonth = new Date(year, month, 0).getDate();
+                const today = new Date().toISOString().slice(0, 10);
+
+                // Map entries by date string
+                const byDate: Record<string, typeof calendarEntries> = {};
+                calendarEntries.forEach((e) => {
+                  if (e.keyDate.startsWith(calMonth)) {
+                    byDate[e.keyDate] = [...(byDate[e.keyDate] ?? []), e];
+                  }
+                });
+
+                const cells: (number | null)[] = [
+                  ...Array(firstDay === 0 ? 6 : firstDay - 1).fill(null),
+                  ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+                ];
+                while (cells.length % 7 !== 0) cells.push(null);
+
+                return (
+                  <div className="cal-grid-wrap">
+                    <div className="cal-day-headers">
+                      {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
+                        <div key={d} className="cal-day-header">{d}</div>
+                      ))}
+                    </div>
+                    <div className="cal-grid">
+                      {cells.map((day, i) => {
+                        const dateStr = day ? `${calMonth}-${String(day).padStart(2, '0')}` : null;
+                        const entries = dateStr ? (byDate[dateStr] ?? []) : [];
+                        const isToday = dateStr === today;
+                        return (
+                          <div key={i} className={`cal-cell${day ? '' : ' cal-cell-empty'}${isToday ? ' cal-cell-today' : ''}`}>
+                            {day && <div className="cal-day-num">{day}</div>}
+                            {entries.map((e, ei) => (
+                              <div key={ei} className="cal-event" title={`${e.clientName} — ${e.keyDateLabel}`}>
+                                <span className="cal-event-dot" />
+                                <span className="cal-event-label">{e.keyDateLabel}</span>
+                                <span className="cal-event-name">{e.clientName}</span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Upcoming list below the calendar */}
+              <div className="panel" style={{ marginTop: 20 }}>
+                <div className="panel-head"><h3>All Upcoming Dates</h3></div>
+                {calendarEntries.length === 0 ? (
+                  <div className="empty-state">No key dates set yet. Open any client's case → Overview tab → set a Key Date.</div>
+                ) : (
+                  <table>
+                    <thead><tr><th>Date</th><th>Client</th><th>What</th><th>Service</th><th>Stage</th></tr></thead>
+                    <tbody>
+                      {calendarEntries.map((e) => {
+                        const isPast = e.keyDate < new Date().toISOString().slice(0, 10);
+                        return (
+                          <tr key={e.applicationId} style={{ opacity: isPast ? 0.5 : 1 }}>
+                            <td style={{ fontFamily: 'var(--mono)', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                              {new Date(e.keyDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              {isPast && <span style={{ marginLeft: 6, fontSize: 10, color: 'var(--slate-light)' }}>past</span>}
+                            </td>
+                            <td className="cell-name">{e.clientName}</td>
+                            <td><Badge status={e.keyDateLabel} /></td>
+                            <td>{e.serviceType}</td>
+                            <td><Badge status={e.stage.replace(/_/g, ' ')} /></td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </div>
           )}
@@ -1516,6 +1623,16 @@ export default function Admin() {
                     <div className="form-row">
                       <label>Message to Client <span style={{ fontWeight: 400, color: 'var(--slate-light)' }}>— visible in their portal</span></label>
                       <textarea className="notes-box" rows={4} value={caseClientMessage} onChange={(e) => setCaseClientMessage(e.target.value)} placeholder="e.g. Your file has been submitted to the embassy. No action needed from you right now." />
+                    </div>
+                    <div className="form-two">
+                      <div className="form-row">
+                        <label>Key Date <span style={{ fontWeight: 400, color: 'var(--slate-light)' }}>— shows on calendar</span></label>
+                        <input type="date" value={caseKeyDate} onChange={(e) => setCaseKeyDate(e.target.value)} />
+                      </div>
+                      <div className="form-row">
+                        <label>What it's for</label>
+                        <input type="text" placeholder="e.g. Embassy Appointment" value={caseKeyDateLabel} onChange={(e) => setCaseKeyDateLabel(e.target.value)} />
+                      </div>
                     </div>
                     {caseSaveError && <div className="login-error" style={{ marginBottom: 12 }}>{caseSaveError}</div>}
                     {caseSaveSuccess && <div className="case-success">✓ Saved successfully</div>}

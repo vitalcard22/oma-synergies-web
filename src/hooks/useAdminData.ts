@@ -275,6 +275,69 @@ export async function updateApplicationNotes(
   return error?.message ?? null;
 }
 
+export async function updateApplicationKeyDate(
+  applicationId: string,
+  keyDate: string | null,
+  keyDateLabel: string | null
+): Promise<string | null> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase.from('applications') as any)
+    .update({ key_date: keyDate || null, key_date_label: keyDateLabel || null })
+    .eq('id', applicationId);
+  return error?.message ?? null;
+}
+
+// Hook for calendar view — all applications with a key_date set
+export interface CalendarEntry {
+  applicationId: string;
+  clientName: string;
+  serviceType: string;
+  keyDate: string;
+  keyDateLabel: string;
+  stage: string;
+  clientId: string;
+}
+
+export function useCalendarEntries(enabled = true) {
+  const [entries, setEntries] = useState<CalendarEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refetch = useCallback(async () => {
+    if (!enabled) { setLoading(false); return; }
+    setLoading(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: apps } = await (supabase.from('applications') as any)
+      .select('id, client_id, key_date, key_date_label, stage, service_type')
+      .not('key_date', 'is', null)
+      .order('key_date', { ascending: true }) as { data: Array<{ id: string; client_id: string; key_date: string; key_date_label: string | null; stage: string; service_type: string }> | null };
+
+    if (!apps || apps.length === 0) { setEntries([]); setLoading(false); return; }
+
+    const clientIds = [...new Set(apps.map((a) => a.client_id))];
+    const { data: clients } = await supabase.from('clients').select('id, profile_id').in('id', clientIds);
+    const profileIds = [...new Set((clients ?? []).map((c) => c.profile_id))];
+    const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', profileIds);
+
+    setEntries(apps.map((a) => {
+      const client = clients?.find((c) => c.id === a.client_id);
+      const profile = client ? profiles?.find((p) => p.id === client.profile_id) : undefined;
+      return {
+        applicationId: a.id,
+        clientId: a.client_id,
+        clientName: profile?.full_name ?? 'Unknown',
+        serviceType: a.service_type,
+        keyDate: a.key_date as string,
+        keyDateLabel: a.key_date_label ?? 'Key Date',
+        stage: a.stage,
+      };
+    }));
+    setLoading(false);
+  }, [enabled]);
+
+  useEffect(() => { refetch(); }, [refetch]);
+  return { entries, loading, refetch };
+}
+
 /**
  * Calls /api/admin/update-document so document rejection emails can fire.
  * Non-rejection status changes (received, approved, etc.) don't send
