@@ -881,7 +881,7 @@ export default function Admin() {
                           <tr key={c.id}>
                             <td><span className="avatar-sm">{getInitials(name)}</span>{name}</td>
                             <td>{latestApp?.destination ?? '—'}</td><td>{c.service_type}</td>
-                            <td><Badge status={latestApp?.stage.replace(/_/g, ' ') ?? 'No application'} /></td>
+                            <td><Badge status={latestApp?.stage.replace(/_/g, ' ') ?? 'No application yet'} /></td>
                             <td className="row-actions">
                               <button className="btn-row" onClick={() => openCaseModal(c)}>Open Case</button>
                               <button className="btn-row btn-row-danger" onClick={() => setDeleteTarget(c)}>Delete</button>
@@ -917,8 +917,8 @@ export default function Admin() {
                 ) : filteredInquiries.length === 0 ? (
                   <div className="empty-state">
                     {submissions.length === 0
-                      ? 'No inquiries yet - real submissions from the website contact form will appear here.'
-                      : 'No inquiries match this filter.'}
+                      ? 'No enquiries received yet.'
+                      : 'No enquiries match this filter.'}
                   </div>
                 ) : (
                   <table>
@@ -1149,7 +1149,7 @@ export default function Admin() {
                 ) : filteredPayments.length === 0 ? (
                   <div className="empty-state">
                     {payments.length === 0
-                      ? 'No payments have been recorded yet.'
+                      ? 'No payments on record.'
                       : 'No payments match this filter.'}
                   </div>
                 ) : (
@@ -1191,7 +1191,7 @@ export default function Admin() {
                 {testimonialsLoading ? (
                   <div className="empty-state">Loading…</div>
                 ) : testimonials.length === 0 ? (
-                  <div className="empty-state">No testimonials have been added yet.</div>
+                  <div className="empty-state">No testimonials on record.</div>
                 ) : (
                   <table>
                     <thead><tr><th>Client</th><th>Destination</th><th>Category</th><th>Status</th><th></th></tr></thead>
@@ -1270,7 +1270,7 @@ export default function Admin() {
                 {masterclassesLoading ? (
                   <div className="empty-state">Loading…</div>
                 ) : masterclasses.length === 0 ? (
-                  <div className="empty-state">No masterclass sessions have been scheduled yet.</div>
+                  <div className="empty-state">No sessions scheduled.</div>
                 ) : (
                   <table>
                     <thead><tr><th>Title</th><th>Date</th><th>Price</th><th>Seats Left</th><th>Status</th><th></th></tr></thead>
@@ -1609,7 +1609,7 @@ export default function Admin() {
             </div>
 
             {!caseApplication ? (
-              <div className="empty-state">No application has been created for this client yet.</div>
+              <div className="empty-state">No application record for this client.</div>
             ) : (
               <>
                 {/* Tabs */}
@@ -1671,7 +1671,7 @@ export default function Admin() {
                 {caseTab === 'documents' && (
                   <div className="case-tab-body">
                     {caseDocuments.length === 0 ? (
-                      <div className="empty-state">No documents have been added to this checklist yet.</div>
+                      <div className="empty-state">No documents on this checklist.</div>
                     ) : (
                       <div className="doc-checklist">
                         {caseDocuments.map((doc) => (
@@ -1716,7 +1716,7 @@ export default function Admin() {
                   <div className="case-tab-body">
                     <div className="msg-thread">
                       {caseMessages.length === 0 ? (
-                        <div className="empty-state" style={{ padding: '24px 0' }}>No messages in this case yet.</div>
+                        <div className="empty-state" style={{ padding: '24px 0' }}>No messages yet.</div>
                       ) : (
                         caseMessages.map((m) => (
                           <div key={m.id} className={m.fromClient ? 'msg-bubble msg-from-client' : 'msg-bubble msg-from-admin'}>
