@@ -1800,66 +1800,90 @@ export default function Admin() {
 
       {registerOpen && (
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !registerSubmitting) setRegisterOpen(false); }}>
-          <div className="modal" style={{ maxWidth: 480 }}>
+          <div className="modal" style={{ maxWidth: 460 }}>
             {registerResult ? (
+              /* ---- Success state ---- */
               <>
                 <div className="modal-head">
-                  <div><h3>Client Registered</h3><div className="page-sub">Share these login details with them directly - they won't be shown again</div></div>
+                  <div>
+                    <h3>Account Created</h3>
+                    <div className="page-sub">{registerForm.fullName.split(' ')[0]}'s portal is ready</div>
+                  </div>
                   <button className="modal-close" onClick={() => setRegisterOpen(false)}>✕</button>
                 </div>
-                <div className="form-row">
-                  <label>Email</label>
-                  <input type="text" readOnly value={registerForm.email} />
-                </div>
-                <div className="form-row">
-                  <label>Temporary Password</label>
-                  <input type="text" readOnly value={registerResult.tempPassword} />
-                </div>
-                <div className="login-note">
-                  {registerResult.documentsPopulated > 0
-                    ? `${registerResult.documentsPopulated} document checklist items were auto-added based on "${registerForm.serviceType}".`
-                    : `No document template exists yet for "${registerForm.serviceType}" - add items manually from the client's case.`}
+                <div style={{ padding: '4px 0 16px' }}>
+                  <div style={{ background: 'rgba(46,158,91,0.06)', border: '1px solid rgba(46,158,91,0.18)', borderRadius: 8, padding: '12px 16px', marginBottom: 16 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--green)', marginBottom: 8 }}>✓ Account active — share these login details with the client</div>
+                    <div style={{ fontSize: 13, color: 'var(--navy)', marginBottom: 4 }}>
+                      <span style={{ color: 'var(--slate-light)', marginRight: 8 }}>Email</span>
+                      <strong>{registerForm.email}</strong>
+                    </div>
+                    <div style={{ fontSize: 13, color: 'var(--navy)' }}>
+                      <span style={{ color: 'var(--slate-light)', marginRight: 8 }}>Password</span>
+                      <strong style={{ fontFamily: 'var(--mono)', letterSpacing: '0.04em' }}>{registerResult.tempPassword}</strong>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 12.5, color: 'var(--slate-light)', lineHeight: 1.6 }}>
+                    {registerResult.documentsPopulated > 0
+                      ? `${registerResult.documentsPopulated} document checklist items were auto-added for "${registerForm.serviceType}".`
+                      : `No document template for "${registerForm.serviceType}" — add items manually from the client's case.`}
+                  </div>
                 </div>
                 <div className="modal-actions">
-                  <button className="btn-save" onClick={() => setRegisterOpen(false)}>Done</button>
+                  <button className="btn-save" onClick={() => { setRegisterOpen(false); setRegisterResult(null); setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' }); }}>Done</button>
                 </div>
               </>
             ) : (
+              /* ---- Registration form ---- */
               <>
                 <div className="modal-head">
-                  <div><h3>Register New Client</h3><div className="page-sub">Creates their login automatically - share the password with them yourself for now</div></div>
+                  <div>
+                    <h3>Register New Client</h3>
+                    <div className="page-sub">A portal account will be created and a welcome email sent</div>
+                  </div>
                   <button className="modal-close" onClick={() => setRegisterOpen(false)}>✕</button>
                 </div>
-                <div className="form-row">
-                  <label>Full Name</label>
-                  <input type="text" placeholder="Jane Okafor" value={registerForm.fullName} onChange={(e) => setRegisterForm((f) => ({ ...f, fullName: e.target.value }))} />
+                <div className="form-two">
+                  <div className="form-row">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="Jane Okafor" value={registerForm.fullName} onChange={(e) => setRegisterForm((f) => ({ ...f, fullName: e.target.value }))} />
+                  </div>
+                  <div className="form-row">
+                    <label>Phone</label>
+                    <input type="text" placeholder="0801 234 5678" value={registerForm.phone} onChange={(e) => setRegisterForm((f) => ({ ...f, phone: e.target.value }))} />
+                  </div>
                 </div>
                 <div className="form-row">
                   <label>Email</label>
                   <input type="email" placeholder="jane@example.com" value={registerForm.email} onChange={(e) => setRegisterForm((f) => ({ ...f, email: e.target.value }))} />
                 </div>
-                <div className="form-row">
-                  <label>Phone</label>
-                  <input type="text" placeholder="0801 234 5678" value={registerForm.phone} onChange={(e) => setRegisterForm((f) => ({ ...f, phone: e.target.value }))} />
-                </div>
-                <div className="form-row">
-                  <label>Service Type</label>
-                  <select value={registerForm.serviceType} onChange={(e) => setRegisterForm((f) => ({ ...f, serviceType: e.target.value }))}>
-                    <option>UK Study Visa</option>
-                    <option>Tourist Visa</option>
-                    <option>Business Visa</option>
-                  </select>
-                </div>
-                <div className="form-row">
-                  <label>Destination (optional)</label>
-                  <input type="text" placeholder="United Kingdom" value={registerForm.destination} onChange={(e) => setRegisterForm((f) => ({ ...f, destination: e.target.value }))} />
+                <div className="form-two">
+                  <div className="form-row">
+                    <label>Service Type</label>
+                    <select value={registerForm.serviceType} onChange={(e) => setRegisterForm((f) => ({ ...f, serviceType: e.target.value }))}>
+                      <option>UK Study Visa</option>
+                      <option>Canadian Study Permit</option>
+                      <option>USA Study Visa</option>
+                      <option>Australian Study Visa</option>
+                      <option>Tourist Visa</option>
+                      <option>Business Visa</option>
+                      <option>Spousal Work Permit</option>
+                      <option>Graduate Work Permit</option>
+                      <option>Permanent Residency</option>
+                      <option>Tour Package</option>
+                    </select>
+                  </div>
+                  <div className="form-row">
+                    <label>Destination</label>
+                    <input type="text" placeholder="United Kingdom" value={registerForm.destination} onChange={(e) => setRegisterForm((f) => ({ ...f, destination: e.target.value }))} />
+                  </div>
                 </div>
                 {registerError && <div className="login-error">{registerError}</div>}
                 <div className="modal-actions">
                   <button className="btn-save" onClick={handleRegisterClient} disabled={registerSubmitting}>
-                    {registerSubmitting ? 'Creating…' : 'Create Account'}
+                    {registerSubmitting ? 'Creating account…' : 'Create Account'}
                   </button>
-                  <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setRegisterOpen(false)} disabled={registerSubmitting}>Cancel</button>
+                  <button className="btn-row" style={{ padding: '9px 16px' }} onClick={() => setRegisterOpen(false)} disabled={registerSubmitting}>Cancel</button>
                 </div>
               </>
             )}

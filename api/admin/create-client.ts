@@ -31,7 +31,7 @@ interface VercelRes {
 // deliberately NOT prefixed with VITE_ for exactly this reason - Vite only
 // exposes VITE_-prefixed variables to client-side code.
 const supabaseAdmin = createClient<Database>(
-  process.env.VITE_SUPABASE_URL as string,
+  process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? 'https://rxuylffiobkhmbyrmvlk.supabase.co',
   process.env.SUPABASE_SERVICE_ROLE_KEY as string,
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
