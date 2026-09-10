@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
+import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
 import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, sendAdminMessage, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
@@ -585,40 +586,50 @@ export default function Admin() {
     return (
       <div className="admin-root">
         <div id="loginScreen">
-          <div className="login-card">
-            <div className="login-card-header">
-              <img src={logoIcon} alt="Oma Synergies" style={{ height: 28 }} />
-              <span>Oma Synergies</span>
+          <div className="login-split">
+            {/* Left panel — brand */}
+            <div className="login-brand-panel">
+              <img src={logoFull} alt="Oma Synergies" className="login-brand-logo" />
+              <div className="login-brand-tagline">Travels and Tours Ltd</div>
+              <div className="login-brand-desc">Staff Administration Portal</div>
             </div>
-            <h2>Staff Sign In</h2>
-            <div className="sub">Access restricted to team members</div>
-            {auth.suspended && (
-              <div className="login-error">This account has been suspended. Contact the CEO if you believe this is a mistake.</div>
-            )}
-            <div className="form-row">
-              <label>Email</label>
-              <input
-                type="email"
-                placeholder="you@omasynergiestravel.com"
-                value={loginEmail}
-                onChange={(e) => setLoginEmail(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
-              />
+            {/* Right panel — form */}
+            <div className="login-form-panel">
+              <div className="login-form-inner">
+                <div className="login-form-icon">
+                  <img src={logoIcon} alt="" style={{ height: 32, width: 32 }} />
+                </div>
+                <h2>Staff Sign In</h2>
+                <div className="sub">Access restricted to team members</div>
+                {auth.suspended && (
+                  <div className="login-error">This account has been suspended. Contact the CEO if you believe this is a mistake.</div>
+                )}
+                <div className="form-row">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    placeholder="you@omasynergiestravel.com"
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+                  />
+                </div>
+                <div className="form-row">
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
+                  />
+                </div>
+                {loginError && <div className="login-error">{loginError}</div>}
+                <button className="login-btn" onClick={handleSignIn} disabled={signingIn}>
+                  {signingIn ? 'Signing In…' : 'Sign In'}
+                </button>
+              </div>
             </div>
-            <div className="form-row">
-              <label>Password</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={loginPassword}
-                onChange={(e) => setLoginPassword(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSignIn()}
-              />
-            </div>
-            {loginError && <div className="login-error">{loginError}</div>}
-            <button className="login-btn" onClick={handleSignIn} disabled={signingIn}>
-              {signingIn ? 'Signing In…' : 'Sign In'}
-            </button>
           </div>
         </div>
       </div>
