@@ -1826,8 +1826,8 @@ export default function Admin() {
                   </div>
                   <div style={{ fontSize: 12.5, color: 'var(--slate-light)', lineHeight: 1.6 }}>
                     {registerResult.documentsPopulated > 0
-                      ? `${registerResult.documentsPopulated} document checklist items were auto-added for "${registerForm.serviceType}".`
-                      : `No document template for "${registerForm.serviceType}" — add items manually from the client's case.`}
+                      ? `${registerResult.documentsPopulated} documents added to their checklist automatically.`
+                      : `Share the login details above with the client. Once they log in, you can add documents to their checklist from their case.`}
                   </div>
                 </div>
                 <div className="modal-actions">
