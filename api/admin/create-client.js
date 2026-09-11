@@ -63,7 +63,7 @@ module.exports = async function handler(req, res) {
 
     const { data: clientRow, error: clientError } = await supabase
       .from('clients')
-      .insert({ profile_id: userId, service_type: serviceType, phone: phone })
+      .insert({ profile_id: userId, service_type: serviceType, phone: phone, created_by: callerData.user.id })
       .select('id').single();
 
     if (clientError || !clientRow) {
