@@ -206,16 +206,17 @@ export default function Admin() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
         body: JSON.stringify(registerForm),
       });
-      const data = await res.json();
+      let data: any = {};
+      try { data = await res.json(); } catch { data = { error: `Server error ${res.status}: ${await res.text().catch(() => 'no body')}` }; }
       if (!res.ok) {
-        setRegisterError(data.error ?? 'Something went wrong creating this client.');
+        setRegisterError(data.error ?? `Error ${res.status}`);
         setRegisterSubmitting(false);
         return;
       }
       setRegisterResult({ tempPassword: data.tempPassword, documentsPopulated: data.documentsPopulated });
       refetchClients();
-    } catch {
-      setRegisterError('Could not reach the server. Check your connection and try again.');
+    } catch (e: any) {
+      setRegisterError('Network error: ' + (e?.message ?? String(e)));
     }
     setRegisterSubmitting(false);
   }
