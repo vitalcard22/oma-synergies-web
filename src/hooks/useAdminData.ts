@@ -72,7 +72,12 @@ export function useClients(enabled = true) {
     const merged: ClientWithDetails[] = clientRows.map((c) => ({
       ...c,
       profile: profiles?.find((p) => p.id === c.profile_id) ?? null,
-      applications: applications?.filter((a) => a.client_id === c.id) ?? [],
+      // Sort: active (non-archived) first, then by created_at descending
+      applications: (applications?.filter((a) => a.client_id === c.id) ?? [])
+        .sort((a, b) => {
+          if (a.archived !== b.archived) return a.archived ? 1 : -1;
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }),
     }));
 
     setClients(merged);
@@ -273,6 +278,52 @@ export async function updateApplicationNotes(
     .update({ admin_notes: adminNotes, client_visible_message: clientVisibleMessage })
     .eq('id', applicationId);
   return error?.message ?? null;
+}
+
+export async function startNewApplication(
+  clientId: string,
+  currentApplicationId: string,
+  newServiceType: string,
+  newDestination: string | null
+): Promise<{ error: string | null; applicationId: string | null }> {
+  // Archive the current application
+  const { error: archiveError } = await supabase
+    .from('applications')
+    .update({ archived: true })
+    .eq('id', currentApplicationId);
+  if (archiveError) return { error: archiveError.message, applicationId: null };
+
+  // Create the new application
+  const { data: newApp, error: createError } = await supabase
+    .from('applications')
+    .insert({
+      client_id: clientId,
+      service_type: newServiceType,
+      destination: newDestination,
+      stage: 'documents_requested',
+      stage_updated_at: new Date().toISOString(),
+      archived: false,
+    })
+    .select('id')
+    .single();
+  if (createError || !newApp) return { error: createError?.message ?? 'Failed to create application', applicationId: null };
+
+  // Populate document checklist from template
+  const { data: reqs } = await supabase
+    .from('document_requirements')
+    .select('document_name, required')
+    .eq('service_type', newServiceType);
+  if (reqs && reqs.length > 0) {
+    await supabase.from('documents').insert(
+      reqs.map((r) => ({
+        application_id: newApp.id,
+        document_name: r.document_name,
+        status: 'required' as const,
+      }))
+    );
+  }
+
+  return { error: null, applicationId: newApp.id };
 }
 
 export async function updateApplicationKeyDate(

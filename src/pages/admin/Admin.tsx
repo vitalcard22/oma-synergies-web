@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, sendAdminMessage, useCalendarEntries, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -68,6 +68,12 @@ export default function Admin() {
   const [paymentsFilter, setPaymentsFilter] = useState('all');
   const [caseModalClient, setCaseModalClient] = useState<ClientWithDetails | null>(null);
   const [caseTab, setCaseTab] = useState<'overview' | 'documents' | 'messages' | 'notes'>('overview');
+  const [activeAppIndex, setActiveAppIndex] = useState(0);
+  const [newAppOpen, setNewAppOpen] = useState(false);
+  const [newAppServiceType, setNewAppServiceType] = useState('UK Study Visa');
+  const [newAppDestination, setNewAppDestination] = useState('');
+  const [newAppSubmitting, setNewAppSubmitting] = useState(false);
+  const [newAppError, setNewAppError] = useState<string | null>(null);
   const [caseStageEdit, setCaseStageEdit] = useState('documents_requested');
   const [caseAdminNotes, setCaseAdminNotes] = useState('');
   const [caseClientMessage, setCaseClientMessage] = useState('');
@@ -79,7 +85,7 @@ export default function Admin() {
   const [caseDocSavingId, setCaseDocSavingId] = useState<string | null>(null);
   const [caseRejectReasons, setCaseRejectReasons] = useState<Record<string, string>>({});
 
-  const caseApplication = caseModalClient?.applications[0] ?? null;
+  const caseApplication = caseModalClient?.applications[activeAppIndex] ?? null;
   const { documents: caseDocuments, refetch: refetchCaseDocuments } = useApplicationDocuments(caseApplication?.id ?? null);
   const { messages: caseMessages, refetch: refetchCaseMessages } = useClientMessages(
     caseModalClient?.id ?? null,
@@ -92,6 +98,9 @@ export default function Admin() {
     const app = client.applications[0];
     setCaseModalClient(client);
     setCaseTab('overview');
+    setActiveAppIndex(0);
+    setNewAppOpen(false);
+    setNewAppError(null);
     setCaseStageEdit(app?.stage ?? 'documents_requested');
     setCaseAdminNotes(app?.admin_notes ?? '');
     setCaseClientMessage(app?.client_visible_message ?? '');
@@ -100,6 +109,26 @@ export default function Admin() {
     setCaseSaveError(null);
     setCaseSaveSuccess(false);
     setCaseReplyText('');
+  }
+
+  async function handleStartNewApplication() {
+    if (!caseModalClient || !caseApplication) return;
+    if (!newAppServiceType.trim()) { setNewAppError('Service type is required.'); return; }
+    setNewAppSubmitting(true);
+    setNewAppError(null);
+    const { error } = await startNewApplication(
+      caseModalClient.id, caseApplication.id,
+      newAppServiceType, newAppDestination || null
+    );
+    setNewAppSubmitting(false);
+    if (error) { setNewAppError(error); return; }
+    setNewAppOpen(false);
+    setNewAppServiceType('UK Study Visa');
+    setNewAppDestination('');
+    await refetchClients();
+    // Re-open the modal with the refreshed client — active app will be index 0 (new one)
+    const refreshedClient = clients.find((c) => c.id === caseModalClient.id);
+    if (refreshedClient) openCaseModal(refreshedClient);
   }
 
   async function handleSaveCase() {
@@ -1609,6 +1638,30 @@ export default function Admin() {
               </div>
             </div>
 
+            {/* Application selector — shown when client has multiple applications */}
+            {caseModalClient.applications.length > 1 && (
+              <div className="app-history-bar">
+                {caseModalClient.applications.map((app, idx) => (
+                  <button
+                    key={app.id}
+                    className={`app-history-tab${idx === activeAppIndex ? ' active' : ''}${app.archived ? ' archived' : ''}`}
+                    onClick={() => {
+                      setActiveAppIndex(idx);
+                      setCaseTab('overview');
+                      setCaseStageEdit(app.stage);
+                      setCaseAdminNotes(app.admin_notes ?? '');
+                      setCaseClientMessage(app.client_visible_message ?? '');
+                      setCaseKeyDate((app as any).key_date ?? '');
+                      setCaseKeyDateLabel((app as any).key_date_label ?? '');
+                    }}
+                  >
+                    {app.service_type}
+                    {app.archived && <span className="app-history-archived">closed</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {!caseApplication ? (
               <div className="empty-state">No application record for this client.</div>
             ) : (
@@ -1693,7 +1746,53 @@ export default function Admin() {
                     <div className="modal-actions">
                       <button className="btn-save" onClick={handleSaveCase} disabled={caseSaving}>{caseSaving ? 'Saving…' : 'Save Changes'}</button>
                       <button className="btn-row" style={{ padding: '9px 16px' }} onClick={() => setCaseModalClient(null)}>Close</button>
+                      {!caseApplication?.archived && (
+                        <button
+                          className="btn-row"
+                          style={{ padding: '9px 16px', marginLeft: 'auto' }}
+                          onClick={() => setNewAppOpen(true)}
+                          title="Archive this application and start a new one for a different service"
+                        >
+                          + New Application
+                        </button>
+                      )}
                     </div>
+
+                    {/* New application form */}
+                    {newAppOpen && (
+                      <div className="new-app-panel">
+                        <div className="new-app-title">Start a New Application</div>
+                        <div className="new-app-sub">The current application will be archived and remain visible in the history tab above.</div>
+                        <div className="form-two" style={{ marginTop: 14 }}>
+                          <div className="form-row">
+                            <label>New Service Type</label>
+                            <select value={newAppServiceType} onChange={(e) => setNewAppServiceType(e.target.value)}>
+                              <option>UK Study Visa</option>
+                              <option>Canadian Study Permit</option>
+                              <option>USA Study Visa</option>
+                              <option>Australian Study Visa</option>
+                              <option>Tourist Visa</option>
+                              <option>Business Visa</option>
+                              <option>Spousal Work Permit</option>
+                              <option>Graduate Work Permit</option>
+                              <option>Permanent Residency</option>
+                              <option>Tour Package</option>
+                            </select>
+                          </div>
+                          <div className="form-row">
+                            <label>Destination</label>
+                            <input type="text" placeholder="United Kingdom" value={newAppDestination} onChange={(e) => setNewAppDestination(e.target.value)} />
+                          </div>
+                        </div>
+                        {newAppError && <div className="login-error" style={{ marginBottom: 10 }}>{newAppError}</div>}
+                        <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                          <button className="btn-save" onClick={handleStartNewApplication} disabled={newAppSubmitting}>
+                            {newAppSubmitting ? 'Creating…' : 'Create Application'}
+                          </button>
+                          <button className="btn-row" style={{ padding: '9px 16px' }} onClick={() => { setNewAppOpen(false); setNewAppError(null); }}>Cancel</button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
