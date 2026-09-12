@@ -1632,35 +1632,64 @@ export default function Admin() {
                 {/* Tab: Overview — stage + client message */}
                 {caseTab === 'overview' && (
                   <div className="case-tab-body">
-                    <div className="form-row">
-                      <label>Application Stage</label>
-                      <select className="status-select" style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1.5px solid var(--line-dark)', fontSize: 13.5 }} value={caseStageEdit} onChange={(e) => setCaseStageEdit(e.target.value)}>
+
+                    {/* Stage selector with visual indicator */}
+                    <div className="overview-stage-row">
+                      <div className="overview-stage-label">Stage</div>
+                      <select className="overview-stage-select" value={caseStageEdit} onChange={(e) => setCaseStageEdit(e.target.value)}>
                         <option value="documents_requested">Documents Requested</option>
                         <option value="documents_received">Documents Received</option>
                         <option value="application_prepared">Application Prepared</option>
                         <option value="submitted">Submitted</option>
                         <option value="decision_pending">Decision Pending</option>
-                        <option value="approved">Approved</option>
+                        <option value="approved">Approved ✓</option>
                         <option value="refused">Refused</option>
                         <option value="withdrawn">Withdrawn</option>
                       </select>
                     </div>
+
+                    <div className="overview-divider" />
+
+                    {/* Message to client */}
                     <div className="form-row">
-                      <label>Message to Client <span style={{ fontWeight: 400, color: 'var(--slate-light)' }}>— visible in their portal</span></label>
-                      <textarea className="notes-box" rows={4} value={caseClientMessage} onChange={(e) => setCaseClientMessage(e.target.value)} placeholder="Your file has been submitted. We'll be in touch with next steps." />
+                      <label>
+                        Message to client
+                        <span className="form-label-meta">visible in their portal</span>
+                      </label>
+                      <textarea
+                        className="notes-box"
+                        rows={4}
+                        value={caseClientMessage}
+                        onChange={(e) => setCaseClientMessage(e.target.value)}
+                        placeholder={`Write a brief update for ${caseModalClient?.profile?.full_name?.split(' ')[0] ?? 'the client'}…`}
+                      />
                     </div>
-                    <div className="form-two">
-                      <div className="form-row">
-                        <label>Key Date <span style={{ fontWeight: 400, color: 'var(--slate-light)' }}>— shows on calendar</span></label>
-                        <input type="date" value={caseKeyDate} onChange={(e) => setCaseKeyDate(e.target.value)} />
-                      </div>
-                      <div className="form-row">
-                        <label>What it's for</label>
-                        <input type="text" placeholder="e.g. Embassy Appointment" value={caseKeyDateLabel} onChange={(e) => setCaseKeyDateLabel(e.target.value)} />
+
+                    {/* Key date */}
+                    <div className="form-row">
+                      <label>
+                        Key date
+                        <span className="form-label-meta">appears on the consultation calendar</span>
+                      </label>
+                      <div className="key-date-row">
+                        <input
+                          type="date"
+                          className="key-date-input"
+                          value={caseKeyDate}
+                          onChange={(e) => setCaseKeyDate(e.target.value)}
+                        />
+                        <input
+                          type="text"
+                          className="key-date-label-input"
+                          placeholder="Embassy Appointment, Biometrics…"
+                          value={caseKeyDateLabel}
+                          onChange={(e) => setCaseKeyDateLabel(e.target.value)}
+                        />
                       </div>
                     </div>
+
                     {caseSaveError && <div className="login-error" style={{ marginBottom: 12 }}>{caseSaveError}</div>}
-                    {caseSaveSuccess && <div className="case-success">✓ Saved successfully</div>}
+                    {caseSaveSuccess && <div className="case-success">✓ Saved</div>}
                     <div className="modal-actions">
                       <button className="btn-save" onClick={handleSaveCase} disabled={caseSaving}>{caseSaving ? 'Saving…' : 'Save Changes'}</button>
                       <button className="btn-row" style={{ padding: '9px 16px' }} onClick={() => setCaseModalClient(null)}>Close</button>
