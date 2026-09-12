@@ -83,12 +83,12 @@ module.exports = async function handler(req, res) {
     let documentsPopulated = 0;
     if (appRow) {
       const { data: reqs } = await supabase
-        .from('document_requirements').select('document_name, is_mandatory')
+        .from('document_requirements').select('document_name, required')
         .eq('service_type', serviceType);
       if (reqs && reqs.length > 0) {
         await supabase.from('documents').insert(
           reqs.map(function(r) {
-            return { application_id: appRow.id, document_name: r.document_name, is_mandatory: r.is_mandatory, status: 'required' };
+            return { application_id: appRow.id, document_name: r.document_name, is_mandatory: r.required, status: 'required' };
           })
         );
         documentsPopulated = reqs.length;

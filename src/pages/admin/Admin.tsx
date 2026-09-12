@@ -1750,12 +1750,23 @@ export default function Admin() {
                 {/* Tab: Notes */}
                 {caseTab === 'notes' && (
                   <div className="case-tab-body">
-                    <div className="form-row">
-                      <label>Internal Notes <span style={{ fontWeight: 400, color: 'var(--slate-light)' }}>— not visible to client</span></label>
-                      <textarea className="notes-box" rows={8} value={caseAdminNotes} onChange={(e) => setCaseAdminNotes(e.target.value)} placeholder="Notes visible only to staff — not shown to the client." />
+                    <div className="notes-header">
+                      <div className="notes-header-left">
+                        <div className="notes-title">Case Notes</div>
+                        <div className="notes-meta">Staff only · never shown to client</div>
+                      </div>
+                      {caseAdminNotes && (
+                        <div className="notes-char-count">{caseAdminNotes.length} chars</div>
+                      )}
                     </div>
+                    <textarea
+                      className="notes-premium"
+                      value={caseAdminNotes}
+                      onChange={(e) => setCaseAdminNotes(e.target.value)}
+                      placeholder={`Add notes about ${caseModalClient?.profile?.full_name?.split(' ')[0] ?? 'this client'}'s case…\n\nUseful things to record:\n· Documents still outstanding\n· Embassy appointment details\n· Key conversations or decisions\n· Anything that needs follow-up`}
+                    />
                     {caseSaveError && <div className="login-error" style={{ marginBottom: 12 }}>{caseSaveError}</div>}
-                    {caseSaveSuccess && <div className="case-success">✓ Saved</div>}
+                    {caseSaveSuccess && <div className="case-success">✓ Notes saved</div>}
                     <div className="modal-actions">
                       <button className="btn-save" onClick={handleSaveCase} disabled={caseSaving}>{caseSaving ? 'Saving…' : 'Save Notes'}</button>
                     </div>
