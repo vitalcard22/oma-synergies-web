@@ -1901,7 +1901,13 @@ export default function Admin() {
                 <div className="form-two">
                   <div className="form-row">
                     <label>Service Type</label>
-                    <select value={registerForm.serviceType} onChange={(e) => setRegisterForm((f) => ({ ...f, serviceType: e.target.value }))}>
+                    <select value={registerForm.serviceType.startsWith('__other__') ? '__other__' : registerForm.serviceType} onChange={(e) => {
+                      if (e.target.value === '__other__') {
+                        setRegisterForm((f) => ({ ...f, serviceType: '__other__' }));
+                      } else {
+                        setRegisterForm((f) => ({ ...f, serviceType: e.target.value }));
+                      }
+                    }}>
                       <option>UK Study Visa</option>
                       <option>Canadian Study Permit</option>
                       <option>USA Study Visa</option>
@@ -1912,7 +1918,18 @@ export default function Admin() {
                       <option>Graduate Work Permit</option>
                       <option>Permanent Residency</option>
                       <option>Tour Package</option>
+                      <option value="__other__">Other — type below</option>
                     </select>
+                    {(registerForm.serviceType === '__other__' || (!['UK Study Visa','Canadian Study Permit','USA Study Visa','Australian Study Visa','Tourist Visa','Business Visa','Spousal Work Permit','Graduate Work Permit','Permanent Residency','Tour Package'].includes(registerForm.serviceType) && registerForm.serviceType !== '')) && (
+                      <input
+                        type="text"
+                        style={{ marginTop: 8 }}
+                        placeholder="Describe the service type"
+                        value={registerForm.serviceType === '__other__' ? '' : registerForm.serviceType}
+                        onChange={(e) => setRegisterForm((f) => ({ ...f, serviceType: e.target.value }))}
+                        autoFocus
+                      />
+                    )}
                   </div>
                   <div className="form-row">
                     <label>Destination</label>
