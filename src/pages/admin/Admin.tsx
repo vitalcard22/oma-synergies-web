@@ -1807,6 +1807,9 @@ export default function Admin() {
                           <div key={doc.id} className="doc-check-row">
                             <div className="doc-check-name">
                               {doc.document_name}
+                              {(doc as any).file_url && (
+                                <a href={(doc as any).file_url} target="_blank" rel="noreferrer" className="doc-file-link">↗ View</a>
+                              )}
                               {caseDocSavingId === doc.id && <span style={{ color: 'var(--slate-light)', fontSize: 11, marginLeft: 6 }}>saving…</span>}
                             </div>
                             <select

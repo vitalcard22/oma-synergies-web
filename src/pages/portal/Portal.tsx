@@ -73,6 +73,8 @@ export default function Portal() {
   const [onboardError, setOnboardError] = useState<string | null>(null);
 
   const [msgInput, setMsgInput] = useState('');
+  const [uploadingDocId, setUploadingDocId] = useState<string | null>(null);
+  const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({});
 
   const isAuthedClient = !auth.loading && !!auth.userId && auth.role === 'client';
   const portal = usePortalData(isAuthedClient ? auth.userId : null);
@@ -133,6 +135,41 @@ export default function Portal() {
     const text = msgInput;
     setMsgInput('');
     await portalMessages.sendMessage(text, auth.userId);
+  }
+
+  async function handleDocumentUpload(docId: string, file: File) {
+    if (!auth.userId) return;
+    setUploadingDocId(docId);
+    setUploadErrors((e) => ({ ...e, [docId]: '' }));
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { setUploadErrors((e) => ({ ...e, [docId]: 'Not signed in' })); return; }
+
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve((reader.result as string).split(',')[1]);
+        reader.onerror = () => reject(new Error('Read failed'));
+        reader.readAsDataURL(file);
+      });
+
+      const res = await fetch('/api/client/upload-document', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ documentId: docId, fileName: file.name, fileBase64: base64, mimeType: file.type }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setUploadErrors((e) => ({ ...e, [docId]: data.error ?? 'Upload failed' }));
+      } else {
+        portal.refetch();
+      }
+    } catch (err: any) {
+      setUploadErrors((e) => ({ ...e, [docId]: err?.message ?? 'Upload failed' }));
+    } finally {
+      setUploadingDocId(null);
+    }
   }
 
   // ---- Loading ----
@@ -389,26 +426,66 @@ export default function Portal() {
 
           {activeView === 'documents' && (
             <div className="view active">
-              <div className="topbar"><div className="page-title">Document Center</div><div className="page-sub">Status of every document on your checklist</div></div>
+              <div className="topbar">
+                <div><div className="page-title">Document Centre</div><div className="page-sub">Upload your documents directly — no need to send via WhatsApp</div></div>
+              </div>
               {portal.documents.length === 0 ? (
-                <div className="panel"><div className="panel-body"><p style={{ fontSize: '14px', color: 'var(--slate)' }}>No documents on your checklist yet.</p></div></div>
+                <div className="panel"><div className="panel-body"><p style={{ fontSize: '14px', color: 'var(--slate)' }}>No documents on your checklist yet. Your consultant will add them shortly.</p></div></div>
               ) : (
                 <div className="doc-grid">
-                  {portal.documents.map((d) => (
-                    <div className="doc-card" key={d.id}>
-                      <div className="doc-icon">📄</div>
-                      <div className="doc-info">
-                        <h5>{d.document_name}</h5>
-                        <div className={`status ${DOC_STATUS_CLASS[d.status] ?? 'needed'}`}>
-                          {d.status === 'approved' || d.status === 'received' || d.status === 'submitted_to_embassy' ? '✓ ' : d.status === 'under_review' ? '● ' : '○ '}
-                          {DOC_STATUS_LABEL[d.status] ?? formatStage(d.status)}
+                  {portal.documents.map((d) => {
+                    const canUpload = ['required', 'pending', 'rejected'].includes(d.status);
+                    const isUploading = uploadingDocId === d.id;
+                    const uploadError = uploadErrors[d.id];
+                    return (
+                      <div className={`doc-card${d.status === 'rejected' ? ' doc-card-rejected' : d.status === 'approved' || d.status === 'submitted_to_embassy' ? ' doc-card-done' : ''}`} key={d.id}>
+                        <div className="doc-card-top">
+                          <div className="doc-icon">
+                            {d.status === 'approved' || d.status === 'submitted_to_embassy' ? '✓' : d.status === 'rejected' ? '✕' : d.file_url ? '↑' : '○'}
+                          </div>
+                          <div className="doc-info">
+                            <h5>{d.document_name}</h5>
+                            <div className={`status ${DOC_STATUS_CLASS[d.status] ?? 'needed'}`}>
+                              {DOC_STATUS_LABEL[d.status] ?? formatStage(d.status)}
+                            </div>
+                            {d.status === 'rejected' && d.rejection_reason && (
+                              <p className="doc-reject-note">{d.rejection_reason}</p>
+                            )}
+                          </div>
                         </div>
-                        {d.status === 'rejected' && d.rejection_reason && (
-                          <p style={{ fontSize: '12px', color: '#B3261E', marginTop: '6px' }}>{d.rejection_reason}</p>
+
+                        {/* File uploaded — show link */}
+                        {d.file_url && (
+                          <a href={d.file_url} target="_blank" rel="noreferrer" className="doc-view-link">
+                            View uploaded file ↗
+                          </a>
+                        )}
+
+                        {/* Upload button */}
+                        {canUpload && (
+                          <div className="doc-upload-area">
+                            <input
+                              type="file"
+                              id={`upload-${d.id}`}
+                              accept=".pdf,.jpg,.jpeg,.png,.webp"
+                              style={{ display: 'none' }}
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleDocumentUpload(d.id, file);
+                                e.target.value = '';
+                              }}
+                              disabled={isUploading}
+                            />
+                            <label htmlFor={`upload-${d.id}`} className={`doc-upload-btn${isUploading ? ' uploading' : ''}`}>
+                              {isUploading ? 'Uploading…' : d.file_url ? 'Replace file' : 'Upload file'}
+                            </label>
+                            <span className="doc-upload-hint">PDF, JPG or PNG · max 10MB</span>
+                            {uploadError && <p className="doc-upload-error">{uploadError}</p>}
+                          </div>
                         )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

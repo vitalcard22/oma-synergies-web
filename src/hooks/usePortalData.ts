@@ -15,6 +15,14 @@ export interface PortalData {
   application: ApplicationRow | null;
   documents: DocumentRow[];
   stageHistory: StageHistoryRow[];
+  refetch: () => Promise<void>;
+}
+
+interface PortalState {
+  client: ClientRow | null;
+  application: ApplicationRow | null;
+  documents: DocumentRow[];
+  stageHistory: StageHistoryRow[];
 }
 
 /**
@@ -26,7 +34,7 @@ export interface PortalData {
  * what this code asks for.
  */
 export function usePortalData(userId: string | null): PortalData {
-  const [state, setState] = useState<Omit<PortalData, 'loading' | 'error'>>({
+  const [state, setState] = useState<PortalState>({
     client: null,
     application: null,
     documents: [],
@@ -87,7 +95,18 @@ export function usePortalData(userId: string | null): PortalData {
     return () => { cancelled = true; };
   }, [userId]);
 
-  return { ...state, loading, error };
+  const refetch = useCallback(async () => {
+    if (!userId) return;
+    const { data: client } = await supabase.from('clients').select('*').eq('profile_id', userId).single();
+    if (!client) return;
+    const { data: apps } = await supabase.from('applications').select('*').eq('client_id', client.id).order('created_at', { ascending: false });
+    const app = apps?.[0] ?? null;
+    const docs = app ? (await supabase.from('documents').select('*').eq('application_id', app.id).order('created_at')).data ?? [] : [];
+    const hist = app ? (await supabase.from('stage_history').select('*').eq('application_id', app.id).order('changed_at')).data ?? [] : [];
+    setState({ client, application: app, documents: docs as any, stageHistory: hist as any });
+  }, [userId]);
+
+  return { ...state, loading, error, refetch };
 }
 
 /**
