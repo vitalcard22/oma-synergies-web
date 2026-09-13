@@ -23,7 +23,6 @@ const NAV: { section: string; items: { id: ViewId; icon: string; label: string }
       { id: 'inquiries', icon: '✉', label: 'Inquiries' },
       { id: 'calendar', icon: '▦', label: 'Consultation Calendar' },
       { id: 'documents', icon: '▤', label: 'Documents' },
-      { id: 'payments', icon: '₦', label: 'Payments' },
     ],
   },
   {
@@ -34,6 +33,7 @@ const NAV: { section: string; items: { id: ViewId; icon: string; label: string }
       { id: 'tours', icon: '✈', label: 'Tours & Packages' },
     ],
   },
+  { section: 'Finance', items: [{ id: 'payments', icon: '₦', label: 'Payments' }] },
   { section: 'Team', items: [{ id: 'staff', icon: '☺', label: 'Staff & Roles' }] },
 ];
 
@@ -790,7 +790,7 @@ export default function Admin() {
       <div className="app">
         <aside className={mobileOpen ? 'sidebar mobile-open' : 'sidebar'}>
           <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>Oma Synergies</span></div>
-          {NAV.filter((sec) => sec.section !== 'Team' || isSuperAdmin).map((sec) => (
+          {NAV.filter((sec) => (sec.section !== 'Team' && sec.section !== 'Finance') || isSuperAdmin).map((sec) => (
             <div key={sec.section}>
               <div className="nav-section-label">{sec.section}</div>
               {sec.items.map((item) => {
@@ -1152,6 +1152,16 @@ export default function Admin() {
 
           {activeView === 'payments' && (
             <div className="view active">
+              {!isSuperAdmin ? (
+                <div className="topbar">
+                  <div><div className="page-title">Payments</div></div>
+                  <div className="empty-state" style={{ marginTop: 40 }}>
+                    <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: 6 }}>Access Restricted</div>
+                    Payment records are only accessible to the Super Admin.
+                  </div>
+                </div>
+              ) : (
+              <>
               <div className="topbar">
                 <div><div className="page-title">Payments</div><div className="page-sub">Record payments by cash, bank transfer, or any other method</div></div>
                 <button className="btn-add" onClick={openAddPaymentModal}>+ Add Payment</button>
@@ -1207,6 +1217,8 @@ export default function Admin() {
                   </table>
                 )}
               </div>
+              </>
+              )}
             </div>
           )}
 
