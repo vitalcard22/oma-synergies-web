@@ -499,6 +499,7 @@ export default function Admin() {
 
   async function handleDeleteClient() {
     if (!deleteTarget) return;
+    if (!isSuperAdmin) { setDeleteError('Only the Super Admin can delete clients.'); return; }
     setDeleteError(null);
     setDeleteSubmitting(true);
 
@@ -914,7 +915,7 @@ export default function Admin() {
                             <td><Badge status={latestApp?.stage.replace(/_/g, ' ') ?? 'No application yet'} /></td>
                             <td className="row-actions">
                               <button className="btn-row" onClick={() => openCaseModal(c)}>Open Case</button>
-                              <button className="btn-row btn-row-danger" onClick={() => setDeleteTarget(c)}>Delete</button>
+                              <button className="btn-row btn-row-danger" onClick={() => setDeleteTarget(c)} style={{ display: isSuperAdmin ? undefined : 'none' }}>Delete</button>
                             </td>
                           </tr>
                         );
