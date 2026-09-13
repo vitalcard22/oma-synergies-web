@@ -101,37 +101,49 @@ module.exports = async function handler(req, res) {
       detail: 'Registered ' + fullName + ' (' + email + ') for ' + serviceType
     });
 
-    // Send welcome email via Resend (non-blocking)
+    // Send welcome email via Resend
     var RESEND_KEY = process.env.RESEND_API_KEY;
     var FROM = process.env.RESEND_FROM || 'info@omasynergiestravel.com';
+    var emailResult = { sent: false, error: null };
     if (RESEND_KEY) {
       var firstName = fullName.split(' ')[0];
       var portalUrl = 'https://www.omasynergiestravel.com/portal';
-      fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + RESEND_KEY },
-        body: JSON.stringify({
-          from: 'Oma Synergies <' + FROM + '>',
-          to: [email],
-          subject: 'Welcome to Oma Synergies — Your Portal Access',
-          html: '<div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;">'
-            + '<h2 style="color:#14152A;">Welcome, ' + firstName + '</h2>'
-            + '<p>Your Oma Synergies client portal is ready. Log in to track your application, upload documents, and message your consultant.</p>'
-            + '<div style="background:#F4F5F8;border-radius:8px;padding:16px;margin:20px 0;">'
-            + '<p style="margin:4px 0;"><strong>Portal:</strong> <a href="' + portalUrl + '">' + portalUrl + '</a></p>'
-            + '<p style="margin:4px 0;"><strong>Email:</strong> ' + email + '</p>'
-            + '<p style="margin:4px 0;"><strong>Password:</strong> <code style="background:#e8e8e8;padding:2px 6px;border-radius:4px;">' + tempPassword + '</code></p>'
-            + '</div>'
-            + '<p>Please log in and change your password immediately.</p>'
-            + '<p>Questions? WhatsApp us on <strong>0806 769 6464</strong></p>'
-            + '<p style="color:#888;font-size:12px;margin-top:24px;">Oma Synergies Travels and Tours Ltd · Block B8, 29/32 Utako Market Plaza, Abuja</p>'
-            + '</div>',
-          text: 'Welcome ' + firstName + ',\n\nYour portal is ready.\n\nPortal: ' + portalUrl + '\nEmail: ' + email + '\nPassword: ' + tempPassword + '\n\nPlease change your password after logging in.\n\nQuestions? WhatsApp: 0806 769 6464\n\nOma Synergies Travels and Tours Ltd'
-        })
-      }).catch(function() {/* non-critical */});
+      try {
+        var emailRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + RESEND_KEY },
+          body: JSON.stringify({
+            from: 'Oma Synergies <' + FROM + '>',
+            to: [email],
+            subject: 'Welcome to Oma Synergies — Your Portal Access',
+            html: '<div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px;">'
+              + '<h2 style="color:#14152A;">Welcome, ' + firstName + '</h2>'
+              + '<p>Your Oma Synergies client portal is ready.</p>'
+              + '<div style="background:#F4F5F8;border-radius:8px;padding:16px;margin:20px 0;">'
+              + '<p style="margin:4px 0;"><strong>Portal:</strong> <a href="' + portalUrl + '">' + portalUrl + '</a></p>'
+              + '<p style="margin:4px 0;"><strong>Email:</strong> ' + email + '</p>'
+              + '<p style="margin:4px 0;"><strong>Password:</strong> <code>' + tempPassword + '</code></p>'
+              + '</div>'
+              + '<p>Please log in and change your password immediately.</p>'
+              + '<p>Questions? WhatsApp: <strong>0806 769 6464</strong></p>'
+              + '</div>',
+            text: 'Welcome ' + firstName + ',\n\nPortal: ' + portalUrl + '\nEmail: ' + email + '\nPassword: ' + tempPassword + '\n\nPlease change your password after logging in.\n\nOma Synergies'
+          })
+        });
+        var emailData = await emailRes.json();
+        if (emailRes.ok) {
+          emailResult = { sent: true, id: emailData.id };
+        } else {
+          emailResult = { sent: false, error: emailData.message || JSON.stringify(emailData) };
+        }
+      } catch(emailErr) {
+        emailResult = { sent: false, error: emailErr.message };
+      }
+    } else {
+      emailResult = { sent: false, error: 'RESEND_API_KEY not set' };
     }
 
-    res.status(200).json({ success: true, tempPassword: tempPassword, documentsPopulated: documentsPopulated });
+    res.status(200).json({ success: true, tempPassword: tempPassword, documentsPopulated: documentsPopulated, emailResult: emailResult });
 
   } catch(err) {
     res.status(500).json({ error: 'Exception: ' + (err && err.message ? err.message : String(err)) });

@@ -205,7 +205,7 @@ export default function Admin() {
   const [registerForm, setRegisterForm] = useState({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' });
   const [registerSubmitting, setRegisterSubmitting] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
-  const [registerResult, setRegisterResult] = useState<{ tempPassword: string; documentsPopulated: number } | null>(null);
+  const [registerResult, setRegisterResult] = useState<{ tempPassword: string; documentsPopulated: number; emailResult?: { sent: boolean; error?: string; id?: string } } | null>(null);
 
   function openRegisterModal() {
     setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' });
@@ -242,7 +242,7 @@ export default function Admin() {
         setRegisterSubmitting(false);
         return;
       }
-      setRegisterResult({ tempPassword: data.tempPassword, documentsPopulated: data.documentsPopulated });
+      setRegisterResult({ tempPassword: data.tempPassword, documentsPopulated: data.documentsPopulated, emailResult: data.emailResult });
       refetchClients();
     } catch (e: any) {
       setRegisterError('Network error: ' + (e?.message ?? String(e)));
@@ -1984,6 +1984,13 @@ export default function Admin() {
                       ? `${registerResult.documentsPopulated} documents added to their checklist automatically.`
                       : `Share the login details above with the client. Once they log in, you can add documents to their checklist from their case.`}
                   </div>
+                  {registerResult.emailResult && (
+                    <div style={{ marginTop: 10, fontSize: 12, color: registerResult.emailResult.sent ? 'var(--green)' : 'var(--red)' }}>
+                      {registerResult.emailResult.sent
+                        ? '✓ Welcome email sent successfully'
+                        : `✕ Email not sent: ${registerResult.emailResult.error}`}
+                    </div>
+                  )}
                 </div>
                 <div className="modal-actions">
                   <button className="btn-save" onClick={() => { setRegisterOpen(false); setRegisterResult(null); setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' }); }}>Done</button>
