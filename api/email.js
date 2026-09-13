@@ -27,7 +27,7 @@ __export(email_exports, {
 module.exports = __toCommonJS(email_exports);
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM = process.env.RESEND_FROM ?? "info@omasynergiestravel.com";
-const PORTAL_URL = "https://oma-synergies-web.vercel.app/portal";
+const PORTAL_URL = "https://www.omasynergiestravel.com/portal";
 const WHATSAPP = "0806 769 6464";
 function baseHtml(body) {
   return `<!DOCTYPE html>
@@ -196,7 +196,7 @@ function newInquiryEmail(opts) {
     ${message ? `${divider()}${p(`<strong style="color:#14152A;">Message:</strong><br>${message}`)}` : ""}
     ${divider()}
     ${p(`Log in to the admin panel to view and respond to this enquiry.`)}
-    ${btn("View in Admin Panel", "https://oma-synergies-web.vercel.app/admin")}
+    ${btn("View in Admin Panel", "https://www.omasynergiestravel.com/admin")}
   `);
   const text = `New enquiry from ${name} (${email})
 ${phone ? `Phone: ${phone}
@@ -205,7 +205,7 @@ ${phone ? `Phone: ${phone}
 ` : ""}${message ? `
 Message: ${message}
 ` : ""}
-View in admin: https://oma-synergies-web.vercel.app/admin`;
+View in admin: https://www.omasynergiestravel.com/admin`;
   return { subject: `New Enquiry: ${name}${service ? ` \u2014 ${service}` : ""}`, html, text };
 }
 async function sendEmail(opts) {
