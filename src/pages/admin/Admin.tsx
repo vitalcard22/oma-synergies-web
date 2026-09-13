@@ -202,13 +202,13 @@ export default function Admin() {
 
   // ---- Register New Client (real, calls the serverless function) ----
   const [registerOpen, setRegisterOpen] = useState(false);
-  const [registerForm, setRegisterForm] = useState({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' });
+  const [registerForm, setRegisterForm] = useState({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '' });
   const [registerSubmitting, setRegisterSubmitting] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [registerResult, setRegisterResult] = useState<{ tempPassword: string; documentsPopulated: number; emailResult?: { sent: boolean; error?: string; id?: string } } | null>(null);
 
   function openRegisterModal() {
-    setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' });
+    setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '' });
     setRegisterError(null);
     setRegisterResult(null);
     setRegisterOpen(true);
@@ -243,6 +243,15 @@ export default function Admin() {
         return;
       }
       setRegisterResult({ tempPassword: data.tempPassword, documentsPopulated: data.documentsPopulated, emailResult: data.emailResult });
+      // Record initial payment if filled in
+      if (registerForm.amountPaid && parseFloat(registerForm.amountPaid) > 0 && data.clientId) {
+        await addPayment({
+          clientId: data.clientId,
+          expectedAmount: parseFloat(registerForm.expectedAmount) || parseFloat(registerForm.amountPaid),
+          amountPaid: parseFloat(registerForm.amountPaid),
+          status: 'confirmed' as any,
+        });
+      }
       refetchClients();
     } catch (e: any) {
       setRegisterError('Network error: ' + (e?.message ?? String(e)));
@@ -1993,7 +2002,7 @@ export default function Admin() {
                   )}
                 </div>
                 <div className="modal-actions">
-                  <button className="btn-save" onClick={() => { setRegisterOpen(false); setRegisterResult(null); setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '' }); }}>Done</button>
+                  <button className="btn-save" onClick={() => { setRegisterOpen(false); setRegisterResult(null); setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '' }); }}>Done</button>
                 </div>
               </>
             ) : (
@@ -2058,6 +2067,39 @@ export default function Admin() {
                     <input type="text" placeholder="United Kingdom" value={registerForm.destination} onChange={(e) => setRegisterForm((f) => ({ ...f, destination: e.target.value }))} />
                   </div>
                 </div>
+
+                {/* Payment section */}
+                <div className="reg-payment-section">
+                  <div className="reg-payment-title">Initial Payment <span style={{ fontWeight: 400, color: 'var(--slate-light)', fontSize: 12 }}>— optional, add later if not paid yet</span></div>
+                  <div className="form-two">
+                    <div className="form-row">
+                      <label>Service Fee (₦)</label>
+                      <input type="number" placeholder="0" value={registerForm.expectedAmount} onChange={(e) => setRegisterForm((f) => ({ ...f, expectedAmount: e.target.value }))} />
+                    </div>
+                    <div className="form-row">
+                      <label>Amount Paid (₦)</label>
+                      <input type="number" placeholder="0" value={registerForm.amountPaid} onChange={(e) => setRegisterForm((f) => ({ ...f, amountPaid: e.target.value }))} />
+                    </div>
+                  </div>
+                  <div className="form-two">
+                    <div className="form-row">
+                      <label>Payment Method</label>
+                      <select value={registerForm.paymentMethod} onChange={(e) => setRegisterForm((f) => ({ ...f, paymentMethod: e.target.value }))}>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="cash">Cash</option>
+                        <option value="card">Card</option>
+                        <option value="mobile_money">Mobile Money</option>
+                        <option value="selar">Selar</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div className="form-row">
+                      <label>Reference / Note</label>
+                      <input type="text" placeholder="Transfer ref, receipt no." value={registerForm.paymentRef} onChange={(e) => setRegisterForm((f) => ({ ...f, paymentRef: e.target.value }))} />
+                    </div>
+                  </div>
+                </div>
+
                 {registerError && <div className="login-error">{registerError}</div>}
                 <div className="modal-actions">
                   <button className="btn-save" onClick={handleRegisterClient} disabled={registerSubmitting}>

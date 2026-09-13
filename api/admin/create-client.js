@@ -143,7 +143,7 @@ module.exports = async function handler(req, res) {
       emailResult = { sent: false, error: 'RESEND_API_KEY not set' };
     }
 
-    res.status(200).json({ success: true, tempPassword: tempPassword, documentsPopulated: documentsPopulated, emailResult: emailResult });
+    res.status(200).json({ success: true, clientId: clientRow.id, tempPassword: tempPassword, documentsPopulated: documentsPopulated, emailResult: emailResult });
 
   } catch(err) {
     res.status(500).json({ error: 'Exception: ' + (err && err.message ? err.message : String(err)) });

@@ -940,3 +940,16 @@
     text-underline-offset:2px;
   }
   .doc-file-link:hover{color:var(--gold);}
+
+  /* ---- REGISTRATION PAYMENT SECTION ---- */
+  .reg-payment-section{
+    margin-top:18px;
+    padding:16px;
+    background:var(--paper);
+    border:1px solid var(--line-dark);
+    border-radius:8px;
+  }
+  .reg-payment-title{
+    font-size:13px;font-weight:600;color:var(--navy);
+    margin-bottom:14px;
+  }
