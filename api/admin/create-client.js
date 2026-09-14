@@ -158,7 +158,7 @@ module.exports = async function handler(req, res) {
         + '</td></tr></table>'
 
         + '<p style="margin:0 0 6px;font-size:14px;color:#5B5F76;line-height:1.7;"><strong style="color:#14152A;">Important:</strong> Please log in and change your password immediately. Your credentials are private — do not share them.</p>'
-        + '<p style="margin:0;font-size:14px;color:#5B5F76;line-height:1.7;">Your consultant will be in touch within 24 hours to begin your application process. If you have any questions in the meantime, WhatsApp us on <strong style="color:#14152A;">' + whatsapp + '</strong>.</p>'
+        + '<p style="margin:0;font-size:14px;color:#5B5F76;line-height:1.7;">Your consultant will be in touch with you shortly to begin your application process. If you have any questions in the meantime, WhatsApp us on <strong style="color:#14152A;">' + whatsapp + '</strong>.</p>'
         + '</td></tr>'
 
         // Footer
@@ -180,7 +180,7 @@ module.exports = async function handler(req, res) {
         + 'Email:     ' + email + '\n'
         + 'Password:  ' + tempPassword + '\n\n'
         + 'Please log in and change your password immediately.\n\n'
-        + 'Your consultant will be in touch within 24 hours.\n'
+        + 'Your consultant will be in touch with you shortly.\n'
         + 'Questions? WhatsApp: ' + whatsapp + '\n\n'
         + 'Oma Synergies Travels and Tours Ltd\n'
         + 'Block B8, 29/32 Utako Market Plaza, Abuja\n'
