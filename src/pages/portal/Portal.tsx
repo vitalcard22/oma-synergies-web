@@ -11,11 +11,11 @@ type ViewId = 'dashboard' | 'tracker' | 'documents' | 'messages' | 'settings';
 type ApplicationStage = Database['public']['Tables']['applications']['Row']['stage'];
 
 const NAV: { id: ViewId; icon: string; label: string }[] = [
-  { id: 'dashboard', icon: '◆', label: 'Dashboard' },
-  { id: 'tracker', icon: '◈', label: 'Application Tracker' },
+  { id: 'dashboard', icon: '◆', label: 'Overview' },
+  { id: 'tracker', icon: '◈', label: 'My Application' },
   { id: 'documents', icon: '▤', label: 'Documents' },
   { id: 'messages', icon: '✉', label: 'Messages' },
-  { id: 'settings', icon: '⚙', label: 'Account Settings' },
+  { id: 'settings', icon: '⚙', label: 'Settings' },
 ];
 
 // Ordered main flow, used for the tracker's progress bar and step list.
@@ -217,7 +217,7 @@ export default function Portal() {
                   <>
                     <div className="form-row">
                       <label>Email</label>
-                      <input type="email" placeholder="you@example.com" value={portalForgotEmail} onChange={(e) => setPortalForgotEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handlePortalForgotPassword()} />
+                      <input type="email" placeholder="Your email address" value={portalForgotEmail} onChange={(e) => setPortalForgotEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handlePortalForgotPassword()} />
                     </div>
                     {portalForgotError && <div className="login-error">{portalForgotError}</div>}
                     <button className="login-btn" onClick={handlePortalForgotPassword} disabled={portalForgotSending}>{portalForgotSending ? 'Sending…' : 'Send Reset Link'}</button>
@@ -228,10 +228,10 @@ export default function Portal() {
             ) : (
               <>
                 <h2>Welcome back</h2>
-                <div className="sub">Track your application anytime, anywhere</div>
+                <div className="sub">Your application, documents, and consultant — all in one place</div>
                 <div className="form-row">
                   <label>Email</label>
-                  <input type="email" placeholder="you@example.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSignIn()} />
+                  <input type="email" placeholder="Your email address" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSignIn()} />
                 </div>
                 <div className="form-row">
                   <label>Password</label>
@@ -286,7 +286,7 @@ export default function Portal() {
             <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>Oma Synergies</span></div>
             <h2>Welcome, {auth.fullName ?? 'there'}</h2>
             <div className="sub">Set your own password to finish setting up your account</div>
-            <div className="form-row"><label>New Password</label><input type="password" placeholder="At least 8 characters" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} /></div>
+            <div className="form-row"><label>New Password</label><input type="password" placeholder="Choose a strong password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} /></div>
             <div className="form-row"><label>Confirm New Password</label><input type="password" value={newPasswordConfirm} onChange={(e) => setNewPasswordConfirm(e.target.value)} /></div>
             {onboardError && <div className="login-error">{onboardError}</div>}
             <button className="login-btn" onClick={handleCompleteOnboarding} disabled={onboardSubmitting}>{onboardSubmitting ? 'Saving…' : 'Set Password & Continue'}</button>
@@ -341,7 +341,7 @@ export default function Portal() {
           {activeView === 'dashboard' && (
             <div className="view active">
               <div className="welcome-card">
-                <h2>Welcome back, {(auth.fullName ?? 'there').split(' ')[0]}</h2>
+                <h2>Good to see you, {(auth.fullName ?? 'there').split(' ')[0]}.</h2>
                 <p>{app ? `Here's where things stand with your ${app.service_type}${app.destination ? ` – ${app.destination}` : ''} application.` : 'Your consultant will set up your application details shortly.'}</p>
               </div>
               <div className="stat-cards">
@@ -352,15 +352,15 @@ export default function Portal() {
               </div>
               {app?.client_visible_message && (
                 <div className="panel">
-                  <div className="panel-head"><h3>Latest Update from Your Consultant</h3></div>
+                  <div className="panel-head"><h3>From your consultant</h3></div>
                   <div className="panel-body"><p style={{ fontSize: '14px', lineHeight: 1.6 }}>{app.client_visible_message}</p></div>
                 </div>
               )}
               <div className="panel">
-                <div className="panel-head"><h3>Quick Summary</h3></div>
+                <div className="panel-head"><h3>Application progress</h3></div>
                 <div className="panel-body">
                   {!app ? (
-                    <p style={{ fontSize: '14px', color: 'var(--slate)' }}>No active application yet.</p>
+                    <p style={{ fontSize: '14px', color: 'var(--slate)' }}>Your application details will appear here once your consultant has set everything up.</p>
                   ) : (
                     <div className="step-list">
                       {STAGE_FLOW.map((s, i) => {
@@ -383,7 +383,7 @@ export default function Portal() {
 
           {activeView === 'tracker' && (
             <div className="view active">
-              <div className="topbar"><div className="page-title">Application Tracker</div><div className="page-sub">Real-time status of your application</div></div>
+              <div className="topbar"><div className="page-title">Application Tracker</div><div className="page-sub">Track exactly where your application stands</div></div>
               {!app ? (
                 <div className="panel"><div className="panel-body"><p style={{ fontSize: '14px', color: 'var(--slate)' }}>No active application yet - check back once your consultant has set this up.</p></div></div>
               ) : (
@@ -427,10 +427,10 @@ export default function Portal() {
           {activeView === 'documents' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Document Centre</div><div className="page-sub">Upload your documents directly — no need to send via WhatsApp</div></div>
+                <div><div className="page-title">Document Centre</div><div className="page-sub">Upload each document directly — your consultant reviews them here</div></div>
               </div>
               {portal.documents.length === 0 ? (
-                <div className="panel"><div className="panel-body"><p style={{ fontSize: '14px', color: 'var(--slate)' }}>No documents on your checklist yet. Your consultant will add them shortly.</p></div></div>
+                <div className="panel"><div className="panel-body"><p style={{ fontSize: '14px', color: 'var(--slate)' }}>Your document checklist will appear here once your consultant has set up your application.</p></div></div>
               ) : (
                 <div className="doc-grid">
                   {portal.documents.map((d) => {
@@ -493,9 +493,9 @@ export default function Portal() {
 
           {activeView === 'messages' && (
             <div className="view active">
-              <div className="topbar"><div className="page-title">Messages</div><div className="page-sub">Send and receive messages with your consultant</div></div>
+              <div className="topbar"><div className="page-title">Messages</div><div className="page-sub">A direct line to your Oma Synergies consultant</div></div>
               <div className="panel">
-                <div className="panel-head"><h3>Oma Synergies Team</h3></div>
+                <div className="panel-head"><h3>Oma Synergies Travels and Tours Ltd</h3></div>
                 <div className="msg-thread">
                   {portalMessages.messages.length === 0 ? (
                     <p style={{ fontSize: '13px', color: 'var(--slate)', padding: '20px' }}>No messages yet. Send one below to start the conversation.</p>
@@ -509,7 +509,7 @@ export default function Portal() {
                   )}
                 </div>
                 <div className="msg-input-row">
-                  <input type="text" placeholder="Type a message..." value={msgInput} onChange={(e) => setMsgInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} />
+                  <input type="text" placeholder="Write a message to your consultant…" value={msgInput} onChange={(e) => setMsgInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} />
                   <button className="msg-send" onClick={handleSendMessage}>➤</button>
                 </div>
               </div>
@@ -582,9 +582,9 @@ function PortalSettings({ authEmail, authFullName }: { authEmail: string | null;
 
   return (
     <div className="view active">
-      <div className="topbar"><div className="page-title">Account Settings</div><div className="page-sub">Manage your profile and password</div></div>
+      <div className="topbar"><div className="page-title">Account Settings</div><div className="page-sub">Update your personal details and security settings</div></div>
       <div className="panel">
-        <div className="panel-head"><h3>Profile</h3></div>
+        <div className="panel-head"><h3>Personal information</h3></div>
         <div className="panel-body">
           <div className="settings-grid">
             <div className="form-row"><label>Full Name</label><input type="text" value={authFullName ?? ''} disabled /></div>
@@ -594,7 +594,7 @@ function PortalSettings({ authEmail, authFullName }: { authEmail: string | null;
         </div>
       </div>
       <div className="panel">
-        <div className="panel-head"><h3>Change Password</h3></div>
+        <div className="panel-head"><h3>Change password</h3></div>
         <div className="panel-body">
           <div className="settings-grid">
             <div className="form-row"><label>Current Password</label><input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} /></div>

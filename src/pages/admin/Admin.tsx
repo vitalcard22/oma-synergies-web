@@ -839,7 +839,7 @@ export default function Admin() {
           {activeView === 'dashboard' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Dashboard</div><div className="page-sub">{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+                <div><div className="page-title">Dashboard</div><div className="page-sub">{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div></div>
                 <div className="topbar-actions">
                   <button className="btn-add" onClick={openRegisterModal}>+ Register Client</button>
                 </div>
@@ -938,7 +938,7 @@ export default function Admin() {
 
           {activeView === 'inquiries' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Inquiries</div><div className="page-sub">Every enquiry submitted through the website, in real time</div></div></div>
+              <div className="topbar"><div><div className="page-title">Inquiries</div><div className="page-sub">Incoming enquiries from the website contact form</div></div></div>
               <div className="panel">
                 <div className="panel-head">
                   <h3>Inbox ({filteredInquiries.length})</h3>
@@ -1013,7 +1013,7 @@ export default function Admin() {
           {activeView === 'calendar' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Consultation Calendar</div><div className="page-sub">Key dates across all active client applications</div></div>
+                <div><div className="page-title">Consultation Calendar</div><div className="page-sub">All upcoming appointments, deadlines, and key dates across active cases</div></div>
               </div>
 
               {/* Legend */}
@@ -1147,7 +1147,7 @@ export default function Admin() {
 
           {activeView === 'documents' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Document Review</div><div className="page-sub">Documents are reviewed per client, inside each case</div></div></div>
+              <div className="topbar"><div><div className="page-title">Document Review</div><div className="page-sub">All client documents are managed inside each individual case</div></div></div>
               <div className="panel">
                 <div className="panel-head"><h3>How to review documents</h3></div>
                 <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
@@ -1173,7 +1173,7 @@ export default function Admin() {
               ) : (
               <>
               <div className="topbar">
-                <div><div className="page-title">Payments</div><div className="page-sub">Record payments by cash, bank transfer, or any other method</div></div>
+                <div><div className="page-title">Payments</div><div className="page-sub">All client payments — cash, transfer, card, or Selar</div></div>
                 <button className="btn-add" onClick={openAddPaymentModal}>+ Add Payment</button>
               </div>
               <div className="stat-cards">
@@ -1235,7 +1235,7 @@ export default function Admin() {
           {activeView === 'testimonials' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Testimonials</div><div className="page-sub">Approved testimonials show live on the Success Stories page and homepage</div></div>
+                <div><div className="page-title">Testimonials</div><div className="page-sub">Approved testimonials appear on the public website — review before approving</div></div>
                 <button className="btn-add" onClick={openAddTestimonialModal}>+ Add Testimonial</button>
               </div>
               <div className="panel">
@@ -1282,7 +1282,7 @@ export default function Admin() {
           {activeView === 'tours' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Tours & Packages</div><div className="page-sub">Changes go live on the public tours page immediately</div></div>
+                <div><div className="page-title">Tours & Packages</div><div className="page-sub">Prices, availability, and photos — changes publish immediately to the website</div></div>
                 <button className="btn-add" onClick={() => openTourModal()}>+ Add Package</button>
               </div>
               <div className="panel">
@@ -1351,7 +1351,7 @@ export default function Admin() {
               ) : (
                 <>
                   <div className="topbar">
-                    <div><div className="page-title">Staff & Roles</div><div className="page-sub">Control who can access and manage this panel</div></div>
+                    <div><div className="page-title">Staff & Roles</div><div className="page-sub">Manage team access — staff accounts can handle cases, clients, and content</div></div>
                     <button className="btn-add" onClick={openRegisterStaffModal}>+ Add Staff</button>
                   </div>
                   <div className="panel">
@@ -1466,7 +1466,7 @@ export default function Admin() {
             <div className="form-row"><label>Topic (what's covered)</label><textarea value={mclassForm.topic} onChange={(e) => setMclassForm((f) => ({ ...f, topic: e.target.value }))} /></div>
             <div className="form-two">
               <div className="form-row"><label>Date</label><input type="date" value={mclassForm.classDate} onChange={(e) => setMclassForm((f) => ({ ...f, classDate: e.target.value }))} /></div>
-              <div className="form-row"><label>Time</label><input type="text" placeholder="10:00 AM - 1:00 PM WAT" value={mclassForm.classTime} onChange={(e) => setMclassForm((f) => ({ ...f, classTime: e.target.value }))} /></div>
+              <div className="form-row"><label>Time</label><input type="text" placeholder="e.g. 10:00 AM – 1:00 PM WAT" value={mclassForm.classTime} onChange={(e) => setMclassForm((f) => ({ ...f, classTime: e.target.value }))} /></div>
             </div>
             <div className="form-two">
               <div className="form-row">
@@ -1493,7 +1493,7 @@ export default function Admin() {
                   <option value="completed">Completed</option>
                 </select>
               </div>
-              <div className="form-row"><label>Booking Link</label><input type="text" placeholder="Selar link or WhatsApp URL" value={mclassForm.bookingLink} onChange={(e) => setMclassForm((f) => ({ ...f, bookingLink: e.target.value }))} /></div>
+              <div className="form-row"><label>Booking Link</label><input type="text" placeholder="Selar product link or WhatsApp payment URL" value={mclassForm.bookingLink} onChange={(e) => setMclassForm((f) => ({ ...f, bookingLink: e.target.value }))} /></div>
             </div>
             {mclassError && <div className="login-error">{mclassError}</div>}
             <div className="modal-actions">
@@ -1531,7 +1531,7 @@ export default function Admin() {
             </div>
             <div className="form-row">
               <label>Service Tag (shown as badge)</label>
-              <input type="text" placeholder="Study Visa" value={testimonialForm.serviceTag} onChange={(e) => setTestimonialForm((f) => ({ ...f, serviceTag: e.target.value }))} />
+              <input type="text" placeholder="e.g. UK Study Visa" value={testimonialForm.serviceTag} onChange={(e) => setTestimonialForm((f) => ({ ...f, serviceTag: e.target.value }))} />
             </div>
             <div className="form-row">
               <label>Link to Existing Client (optional)</label>
@@ -1574,11 +1574,11 @@ export default function Admin() {
             <div className="form-two">
               <div className="form-row">
                 <label>Expected Amount (₦)</label>
-                <input type="number" placeholder="150000" value={paymentForm.expectedAmount} onChange={(e) => setPaymentForm((f) => ({ ...f, expectedAmount: e.target.value }))} />
+                <input type="number" placeholder="150,000" value={paymentForm.expectedAmount} onChange={(e) => setPaymentForm((f) => ({ ...f, expectedAmount: e.target.value }))} />
               </div>
               <div className="form-row">
                 <label>Amount Paid (₦)</label>
-                <input type="number" placeholder="150000" value={paymentForm.amountPaid} onChange={(e) => setPaymentForm((f) => ({ ...f, amountPaid: e.target.value }))} />
+                <input type="number" placeholder="150,000" value={paymentForm.amountPaid} onChange={(e) => setPaymentForm((f) => ({ ...f, amountPaid: e.target.value }))} />
               </div>
             </div>
             <div className="form-row">
@@ -1852,7 +1852,7 @@ export default function Admin() {
                               <input
                                 type="text"
                                 className="doc-reject-reason"
-                                placeholder="Reason (shown to client)"
+                                placeholder="Explain what needs to be corrected or resubmitted"
                                 defaultValue={doc.rejection_reason ?? ''}
                                 onChange={(e) => setCaseRejectReasons((r) => ({ ...r, [doc.id]: e.target.value }))}
                                 onBlur={() => handleRejectionReasonBlur(doc.id)}
@@ -1870,7 +1870,7 @@ export default function Admin() {
                   <div className="case-tab-body">
                     <div className="msg-thread">
                       {caseMessages.length === 0 ? (
-                        <div className="empty-state" style={{ padding: '24px 0' }}>No messages yet.</div>
+                        <div className="empty-state" style={{ padding: '24px 0' }}>No messages in this case yet. Send the first message below.</div>
                       ) : (
                         caseMessages.map((m) => (
                           <div key={m.id} className={m.fromClient ? 'msg-bubble msg-from-client' : 'msg-bubble msg-from-admin'}>
@@ -1884,7 +1884,7 @@ export default function Admin() {
                       <textarea
                         className="notes-box"
                         style={{ marginBottom: 0, minHeight: 72, borderRadius: '8px 8px 0 0', borderBottom: 0 }}
-                        placeholder="Reply to client…"
+                        placeholder="Write a reply to the client…"
                         value={caseReplyText}
                         onChange={(e) => setCaseReplyText(e.target.value)}
                       />
@@ -2082,7 +2082,7 @@ export default function Admin() {
                     </div>
                     <div className="form-row">
                       <label>Amount paid (₦)</label>
-                      <input type="number" placeholder="0" value={registerForm.amountPaid} onChange={(e) => setRegisterForm((f) => ({ ...f, amountPaid: e.target.value }))} />
+                      <input type="number" placeholder="e.g. 150,000" value={registerForm.amountPaid} onChange={(e) => setRegisterForm((f) => ({ ...f, amountPaid: e.target.value }))} />
                     </div>
                   </div>
                   <div className="form-two">
