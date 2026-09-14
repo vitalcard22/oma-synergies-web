@@ -2010,28 +2010,34 @@ export default function Admin() {
               <>
                 <div className="modal-head">
                   <div>
-                    <h3>Register New Client</h3>
-                    <div className="page-sub">A portal account will be created and a welcome email sent</div>
+                    <h3>New Client</h3>
+                    <div className="page-sub">Creates a portal account and sends a welcome email</div>
                   </div>
                   <button className="modal-close" onClick={() => setRegisterOpen(false)}>✕</button>
                 </div>
+
+                {/* Client details */}
+                <div className="reg-section-label">Client details</div>
                 <div className="form-two">
                   <div className="form-row">
-                    <label>Full Name</label>
-                    <input type="text" placeholder="Jane Okafor" value={registerForm.fullName} onChange={(e) => setRegisterForm((f) => ({ ...f, fullName: e.target.value }))} />
+                    <label>Full name</label>
+                    <input type="text" placeholder="Adaeze Okafor" value={registerForm.fullName} onChange={(e) => setRegisterForm((f) => ({ ...f, fullName: e.target.value }))} />
                   </div>
                   <div className="form-row">
-                    <label>Phone</label>
+                    <label>Phone number</label>
                     <input type="text" placeholder="0801 234 5678" value={registerForm.phone} onChange={(e) => setRegisterForm((f) => ({ ...f, phone: e.target.value }))} />
                   </div>
                 </div>
                 <div className="form-row">
-                  <label>Email</label>
-                  <input type="email" placeholder="jane@example.com" value={registerForm.email} onChange={(e) => setRegisterForm((f) => ({ ...f, email: e.target.value }))} />
+                  <label>Email address</label>
+                  <input type="email" placeholder="adaeze@gmail.com" value={registerForm.email} onChange={(e) => setRegisterForm((f) => ({ ...f, email: e.target.value }))} />
                 </div>
+
+                {/* Application details */}
+                <div className="reg-section-label" style={{ marginTop: 18 }}>Application</div>
                 <div className="form-two">
                   <div className="form-row">
-                    <label>Service Type</label>
+                    <label>Service</label>
                     <select value={registerForm.serviceType.startsWith('__other__') ? '__other__' : registerForm.serviceType} onChange={(e) => {
                       if (e.target.value === '__other__') {
                         setRegisterForm((f) => ({ ...f, serviceType: '__other__' }));
@@ -2049,41 +2055,39 @@ export default function Admin() {
                       <option>Graduate Work Permit</option>
                       <option>Permanent Residency</option>
                       <option>Tour Package</option>
-                      <option value="__other__">Other — type below</option>
+                      <option value="__other__">Other — specify below</option>
                     </select>
                     {(registerForm.serviceType === '__other__' || (!['UK Study Visa','Canadian Study Permit','USA Study Visa','Australian Study Visa','Tourist Visa','Business Visa','Spousal Work Permit','Graduate Work Permit','Permanent Residency','Tour Package'].includes(registerForm.serviceType) && registerForm.serviceType !== '')) && (
-                      <input
-                        type="text"
-                        style={{ marginTop: 8 }}
-                        placeholder="Describe the service type"
+                      <input type="text" style={{ marginTop: 8 }} placeholder="Enter service type"
                         value={registerForm.serviceType === '__other__' ? '' : registerForm.serviceType}
-                        onChange={(e) => setRegisterForm((f) => ({ ...f, serviceType: e.target.value }))}
-                        autoFocus
-                      />
+                        onChange={(e) => setRegisterForm((f) => ({ ...f, serviceType: e.target.value }))} autoFocus />
                     )}
                   </div>
                   <div className="form-row">
-                    <label>Destination</label>
+                    <label>Destination country</label>
                     <input type="text" placeholder="United Kingdom" value={registerForm.destination} onChange={(e) => setRegisterForm((f) => ({ ...f, destination: e.target.value }))} />
                   </div>
                 </div>
 
-                {/* Payment section */}
+                {/* Payment */}
+                <div className="reg-section-label" style={{ marginTop: 18 }}>
+                  Payment
+                  <span className="reg-section-optional">optional — leave blank to add later</span>
+                </div>
                 <div className="reg-payment-section">
-                  <div className="reg-payment-title">Initial Payment <span style={{ fontWeight: 400, color: 'var(--slate-light)', fontSize: 12 }}>— optional, add later if not paid yet</span></div>
                   <div className="form-two">
                     <div className="form-row">
-                      <label>Service Fee (₦)</label>
-                      <input type="number" placeholder="0" value={registerForm.expectedAmount} onChange={(e) => setRegisterForm((f) => ({ ...f, expectedAmount: e.target.value }))} />
+                      <label>Total service fee (₦)</label>
+                      <input type="number" placeholder="150,000" value={registerForm.expectedAmount} onChange={(e) => setRegisterForm((f) => ({ ...f, expectedAmount: e.target.value }))} />
                     </div>
                     <div className="form-row">
-                      <label>Amount Paid (₦)</label>
+                      <label>Amount paid (₦)</label>
                       <input type="number" placeholder="0" value={registerForm.amountPaid} onChange={(e) => setRegisterForm((f) => ({ ...f, amountPaid: e.target.value }))} />
                     </div>
                   </div>
                   <div className="form-two">
                     <div className="form-row">
-                      <label>Payment Method</label>
+                      <label>Payment method</label>
                       <select value={registerForm.paymentMethod} onChange={(e) => setRegisterForm((f) => ({ ...f, paymentMethod: e.target.value }))}>
                         <option value="bank_transfer">Bank Transfer</option>
                         <option value="cash">Cash</option>
@@ -2094,7 +2098,7 @@ export default function Admin() {
                       </select>
                     </div>
                     <div className="form-row">
-                      <label>Reference / Note</label>
+                      <label>Reference or note</label>
                       <input type="text" placeholder="Transfer ref, receipt no." value={registerForm.paymentRef} onChange={(e) => setRegisterForm((f) => ({ ...f, paymentRef: e.target.value }))} />
                     </div>
                   </div>
