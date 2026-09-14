@@ -311,7 +311,7 @@ export default function Portal() {
       {mobileOpen && <div className="sidebar-overlay open" onClick={() => setMobileOpen(false)} />}
 
       <div className="mobile-topbar">
-        <div className="brand"><img src={logoIcon} alt="Oma Synergies" style={{ height: 26 }} /><span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 13 }}>PORTAL</span></div>
+        <div className="brand"><img src={logoIcon} alt="Oma Synergies" style={{ height: 26 }} /><span style={{ fontFamily: 'var(--display)', fontWeight: 700, fontSize: 13 }}>Oma Synergies</span></div>
         <button className="hamburger" onClick={() => setMobileOpen(true)}>☰</button>
       </div>
 
@@ -341,14 +341,27 @@ export default function Portal() {
           {activeView === 'dashboard' && (
             <div className="view active">
               <div className="welcome-card">
+                <div className="welcome-eyebrow">Client Portal</div>
                 <h2>Good to see you, {(auth.fullName ?? 'there').split(' ')[0]}.</h2>
-                <p>{app ? `Here's where things stand with your ${app.service_type}${app.destination ? ` – ${app.destination}` : ''} application.` : 'Your consultant will set up your application details shortly.'}</p>
+                <p>{app ? `Here's where things stand with your ${app.service_type}${app.destination ? ` — ${app.destination}` : ''} application.` : 'Your consultant will set up your application details shortly.'}</p>
               </div>
               <div className="stat-cards">
-                <div className="stat-card"><div className="n">{app ? (isTerminal ? TERMINAL_LABELS[app.stage] : `${progressPercent}%`) : '—'}</div><div className="l">Application Progress</div></div>
-                <div className="stat-card"><div className="n">{docsApproved}</div><div className="l">Documents Approved</div></div>
-                <div className="stat-card"><div className="n">{docsNeeded}</div><div className="l">Documents Needed</div></div>
-                <div className="stat-card"><div className="n">{unreadFromTeam}</div><div className="l">New Messages</div></div>
+                <div className="stat-card stat-card-progress">
+                  <div className="n">{app ? (isTerminal ? '✓' : `${progressPercent}%`) : '—'}</div>
+                  <div className="l">Progress</div>
+                </div>
+                <div className="stat-card">
+                  <div className="n">{docsApproved}</div>
+                  <div className="l">Docs approved</div>
+                </div>
+                <div className="stat-card stat-card-action">
+                  <div className="n">{docsNeeded}</div>
+                  <div className="l">Action needed</div>
+                </div>
+                <div className="stat-card">
+                  <div className="n">{unreadFromTeam}</div>
+                  <div className="l">New messages</div>
+                </div>
               </div>
               {app?.client_visible_message && (
                 <div className="panel">
