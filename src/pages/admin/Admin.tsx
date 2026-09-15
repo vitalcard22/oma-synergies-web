@@ -1308,12 +1308,28 @@ export default function Admin() {
 
           {activeView === 'destinations' && (
             <div className="view active">
-              <div className="topbar"><div><div className="page-title">Destinations</div><div className="page-sub">Featured destinations shown across the public site</div></div></div>
+              <div className="topbar">
+                <div>
+                  <div className="page-title">Destinations</div>
+                  <div className="page-sub">12 featured destinations shown across the public site</div>
+                </div>
+              </div>
               <div className="panel">
-                <div className="panel-head"><h3>Flagship Destinations (12)</h3></div>
-                <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
-                  <p style={{ marginBottom: 8 }}>Destination pages — names, regions, photos, and processing time detail — are part of the site. To update a destination or add a new one, contact your developer with the details and it will be live within the day.</p>
-                  <p>Tour package prices, availability, and photos are fully editable from the <strong>Tours &amp; Packages</strong> section.</p>
+                <div className="panel-head"><h3>All Destinations</h3></div>
+                <div className="dest-grid">
+                  {DESTINATIONS.map((d) => (
+                    <div key={d.slug} className="dest-card">
+                      <div className="dest-card-img" style={{ backgroundImage: `url(${d.img})` }} />
+                      <div className="dest-card-body">
+                        <div className="dest-card-name">{d.name}</div>
+                        <div className="dest-card-region">{d.region}</div>
+                        <div className="dest-card-processing">⏱ {d.processing}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ padding: '16px 20px', borderTop: '1px solid var(--line-dark)', fontSize: 13, color: 'var(--slate-light)', lineHeight: 1.6 }}>
+                  Destination photos, names, and processing times are part of the site build. To update any destination detail or add a new one, contact your developer — changes go live within the day. Tour prices and availability are managed from <strong style={{ color: 'var(--navy)' }}>Tours &amp; Packages</strong>.
                 </div>
               </div>
             </div>
