@@ -1217,3 +1217,34 @@
     }
     .dest-card-img{height:75px;}
   }
+
+  /* ---- TOURS CARD LIST ---- */
+  .tour-card-list{ display:flex;flex-direction:column; }
+  .tour-card{
+    border-bottom:1px solid var(--line-dark);
+    overflow:hidden;
+  }
+  .tour-card:last-child{ border-bottom:none; }
+  .tour-card-photo{
+    width:100%;height:140px;
+    background-size:cover;background-position:center;
+    background-color:var(--paper);
+  }
+  .tour-card-body{ padding:14px 16px; }
+  .tour-card-top{
+    display:flex;align-items:flex-start;
+    justify-content:space-between;gap:10px;
+    margin-bottom:12px;
+  }
+  .tour-card-name{
+    font-size:14px;font-weight:600;color:var(--navy);margin-bottom:3px;
+  }
+  .tour-card-meta{
+    font-size:12px;color:var(--slate-light);
+  }
+  .tour-card-actions{
+    display:flex;gap:8px;
+  }
+  .tour-card-actions .btn-row{
+    flex:1;text-align:center;padding:8px 10px;font-size:12.5px;
+  }

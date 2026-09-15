@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -1348,25 +1348,42 @@ export default function Admin() {
                 ) : dbTours.length === 0 ? (
                   <div className="empty-state">No tour packages found. Add your first package using the button above.</div>
                 ) : (
-                  <table className="tours-table">
-                    <thead><tr><th>Package</th><th>Nights</th><th>From Price</th><th>Status</th><th></th></tr></thead>
-                    <tbody>
-                      {dbTours.map((t) => (
-                        <tr key={t.id}>
-                          <td className="cell-name">{t.name}</td>
-                          <td>{t.nights} nights</td>
-                          <td>{formatNaira(t.from_price)}</td>
-                          <td><Badge status={t.status} /></td>
-                          <td className="row-actions">
-                            <button className="icon-btn" title="Edit" onClick={() => openTourModal(t)}>✎</button>
-                            <button className="icon-btn" title={t.status === 'hidden' ? 'Show on site' : 'Hide from site'} onClick={() => updateTourStatus(t.id, t.status === 'hidden' ? 'active' : 'hidden').then(() => refetchTours())}>
-                              {t.status === 'hidden' ? '👁' : '🚫'}
+                  <div className="tour-card-list">
+                    {dbTours.map((t) => (
+                      <div key={t.id} className="tour-card">
+                        {(t as any).photo_url && (
+                          <div className="tour-card-photo" style={{ backgroundImage: `url(${(t as any).photo_url})` }} />
+                        )}
+                        <div className="tour-card-body">
+                          <div className="tour-card-top">
+                            <div>
+                              <div className="tour-card-name">{t.name}</div>
+                              <div className="tour-card-meta">{t.nights} nights · {formatNaira(t.from_price)}</div>
+                            </div>
+                            <Badge status={t.status} />
+                          </div>
+                          <div className="tour-card-actions">
+                            <button className="btn-row" onClick={() => openTourModal(t)}>Edit</button>
+                            <button
+                              className="btn-row"
+                              onClick={() => updateTourStatus(t.id, t.status === 'hidden' ? 'active' : 'hidden').then(() => refetchTours())}
+                            >
+                              {t.status === 'hidden' ? 'Publish' : 'Hide'}
                             </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                            <button
+                              className="btn-row btn-row-danger"
+                              onClick={async () => {
+                                if (window.confirm(`Delete "${t.name}"? This cannot be undone.`)) {
+                                  await deleteTour(t.id);
+                                  refetchTours();
+                                }
+                              }}
+                            >Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
 

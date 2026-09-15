@@ -681,6 +681,11 @@ export async function updateTourStatus(id: string, status: 'active' | 'hidden'):
   return error?.message ?? null;
 }
 
+export async function deleteTour(id: string): Promise<string | null> {
+  const { error } = await supabase.from('tour_packages').delete().eq('id', id);
+  return error?.message ?? null;
+}
+
 // ---- Masterclasses ----
 
 type MasterclassRow = Database['public']['Tables']['masterclasses']['Row'];
