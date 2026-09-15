@@ -342,7 +342,16 @@ export default function Admin() {
           body: JSON.stringify({ tourId: resolvedId, fileName: tourPhotoFile.name, fileBase64: base64, mimeType: tourPhotoFile.type }),
         });
         const uploadData = await uploadRes.json();
-        if (!uploadRes.ok) { setTourError(uploadData.error ?? 'Photo upload failed.'); setTourSaving(false); setTourPhotoUploading(false); return; }
+        if (!uploadRes.ok) {
+          setTourError(uploadData.error ?? 'Photo upload failed.');
+          setTourSaving(false);
+          setTourPhotoUploading(false);
+          return;
+        }
+        // Update local preview with the actual stored URL
+        if (uploadData.photoUrl) {
+          setTourPhotoPreview(uploadData.photoUrl);
+        }
       }
       setTourPhotoUploading(false);
     }
