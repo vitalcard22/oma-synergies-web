@@ -1013,52 +1013,106 @@
   }
 
   /* ======== MOBILE CLIENTS — card layout ======== */
-  @media(max-width:600px) {
+  @media(max-width:640px) {
 
-    /* Hide table headers on mobile */
-    .panel table thead { display: none; }
+    /* ---- TOPBAR ---- */
+    .topbar{ flex-direction:column; align-items:flex-start; gap:8px; }
+    .topbar .btn-add{ width:100%; text-align:center; }
 
-    /* Each row becomes a card */
-    .panel table tbody tr {
-      display: flex;
-      flex-direction: column;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line-dark);
-      gap: 8px;
+    /* ---- ALL TABLES — horizontal scroll by default ---- */
+    .panel{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    .panel table{ min-width:520px; }
+
+    /* ---- CLIENTS TABLE — card layout ---- */
+    .clients-table thead { display:none; }
+    .clients-table tbody tr {
+      display:flex; flex-direction:column;
+      padding:14px 16px; gap:8px;
+      border-bottom:1px solid var(--line-dark);
     }
-    .panel table tbody tr:last-child { border-bottom: none; }
-
-    /* Hide destination and service columns on mobile — show in badge */
-    .panel table tbody td:nth-child(2),
-    .panel table tbody td:nth-child(3) { display: none; }
-
-    /* Client name cell — bigger */
-    .panel table tbody td:nth-child(1) {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--navy);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .clients-table tbody tr:last-child{ border-bottom:none; }
+    .clients-table tbody td{ padding:0; border:none; }
+    .clients-table .col-name{
+      font-size:14px; font-weight:600; color:var(--navy);
+      display:flex; align-items:center; gap:10px;
     }
-
-    /* Status cell */
-    .panel table tbody td:nth-child(4) { padding: 0; }
-
-    /* Action buttons row */
-    .panel table tbody td.row-actions {
-      display: flex;
-      gap: 8px;
-      padding: 0;
+    .clients-table .col-dest,
+    .clients-table .col-service{ display:none; }
+    .clients-table .col-status{ padding:0; }
+    .clients-table .col-actions{
+      display:flex; gap:8px; padding:0;
     }
-    .panel table tbody td.row-actions .btn-row {
-      flex: 1;
-      text-align: center;
-      padding: 8px 12px;
+    .clients-table .col-actions .btn-row{
+      flex:1; text-align:center; padding:8px 12px;
     }
 
-    /* Notification bell — use text not emoji */
-    .notif-btn { font-size: 16px; }
+    /* ---- INQUIRIES TABLE — card layout ---- */
+    .inquiries-table thead{ display:none; }
+    .inquiries-table tbody tr{
+      display:flex; flex-direction:column;
+      padding:14px 16px; gap:6px;
+      border-bottom:1px solid var(--line-dark);
+    }
+    .inquiries-table tbody tr:last-child{ border-bottom:none; }
+    .inquiries-table tbody td{ padding:0; border:none; }
+    .inquiries-table .col-date,
+    .inquiries-table .col-dest{ display:none; }
+
+    /* ---- PAYMENTS TABLE — card layout ---- */
+    .payments-table thead{ display:none; }
+    .payments-table tbody tr{
+      display:flex; flex-direction:column;
+      padding:14px 16px; gap:6px;
+      border-bottom:1px solid var(--line-dark);
+    }
+    .payments-table tbody tr:last-child{ border-bottom:none; }
+    .payments-table tbody td{ padding:0; border:none; }
+
+    /* ---- TESTIMONIALS TABLE ---- */
+    .testimonials-table thead{ display:none; }
+    .testimonials-table tbody tr{
+      display:flex; flex-direction:column;
+      padding:14px 16px; gap:6px;
+      border-bottom:1px solid var(--line-dark);
+    }
+    .testimonials-table tbody tr:last-child{ border-bottom:none; }
+    .testimonials-table tbody td{ padding:0; border:none; }
+    .testimonials-table .col-dest,
+    .testimonials-table .col-cat{ display:none; }
+    .testimonials-table .col-actions{
+      display:flex; gap:8px;
+    }
+    .testimonials-table .col-actions .btn-row{ flex:1; text-align:center; }
+
+    /* ---- TOURS TABLE ---- */
+    .tours-table thead{ display:none; }
+    .tours-table tbody tr{
+      display:flex; flex-direction:column;
+      padding:14px 16px; gap:6px;
+      border-bottom:1px solid var(--line-dark);
+    }
+    .tours-table tbody tr:last-child{ border-bottom:none; }
+    .tours-table tbody td{ padding:0; border:none; }
+    .tours-table .col-dest{ display:none; }
+    .tours-table .col-actions{
+      display:flex; gap:8px;
+    }
+    .tours-table .col-actions .btn-row{ flex:1; text-align:center; }
+
+    /* ---- PANEL HEAD ---- */
+    .panel-head{ flex-direction:column; align-items:flex-start; gap:10px; }
+    .panel-head .panel-head-actions{ width:100%; display:flex; gap:8px; }
+    .panel-head .panel-head-actions .btn-add{ flex:1; }
+
+    /* ---- STAT CARDS — 2 col ---- */
+    .stat-cards{ grid-template-columns:1fr 1fr; }
+
+    /* ---- NOTIF BELL ---- */
+    .notif-btn{ font-size:16px; }
+  }
+
+  @media(max-width:400px){
+    .stat-cards{ grid-template-columns:1fr; }
   }
 
   /* ---- DOCUMENT ADD ROW ---- */

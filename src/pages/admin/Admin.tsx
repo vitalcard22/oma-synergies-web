@@ -935,8 +935,8 @@ export default function Admin() {
                       : 'No clients match this search or filter.'}
                   </div>
                 ) : (
-                  <table>
-                    <thead><tr><th>Client</th><th>Destination</th><th>Service</th><th>Status</th><th></th></tr></thead>
+                  <table className="clients-table">
+                    <thead><tr><th>Client</th><th className="col-dest">Destination</th><th className="col-service">Service</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                       {filteredClients.map((c) => {
                         const latestApp = c.applications[0];
@@ -985,8 +985,8 @@ export default function Admin() {
                       : 'No enquiries match this filter.'}
                   </div>
                 ) : (
-                  <table>
-                    <thead><tr><th>Name</th><th>Service Interested</th><th>Destination</th><th>Status</th><th></th></tr></thead>
+                  <table className="inquiries-table">
+                    <thead><tr><th>Name</th><th>Service Interested</th><th className="col-dest">Destination</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                       {filteredInquiries.map((i) => (
                         <React.Fragment key={i.id}>
@@ -1135,7 +1135,7 @@ export default function Admin() {
                 {calendarEntries.length === 0 ? (
                   <div className="empty-state">No upcoming dates. Set a key date from any client's case → Overview tab.</div>
                 ) : (
-                  <table>
+                  <table className="calendar-table">
                     <thead>
                       <tr><th>Date</th><th>Client</th><th>Event</th><th>Service</th><th>Stage</th></tr>
                     </thead>
@@ -1227,8 +1227,8 @@ export default function Admin() {
                       : 'No payments match this filter.'}
                   </div>
                 ) : (
-                  <table>
-                    <thead><tr><th>Client</th><th>Expected</th><th>Paid</th><th>Selar Ref</th><th>Status</th></tr></thead>
+                  <table className="payments-table">
+                    <thead><tr><th>Client</th><th>Expected</th><th>Paid</th><th>Reference</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                       {filteredPayments.map((p) => (
                         <tr key={p.id}>
@@ -1269,7 +1269,7 @@ export default function Admin() {
                 ) : testimonials.length === 0 ? (
                   <div className="empty-state">No testimonials on record.</div>
                 ) : (
-                  <table>
+                  <table className="testimonials-table">
                     <thead><tr><th>Client</th><th>Destination</th><th>Category</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                       {testimonials.map((t) => (
@@ -1316,7 +1316,7 @@ export default function Admin() {
                 ) : dbTours.length === 0 ? (
                   <div className="empty-state">No tour packages found. Add your first package using the button above.</div>
                 ) : (
-                  <table>
+                  <table className="tours-table">
                     <thead><tr><th>Package</th><th>Nights</th><th>From Price</th><th>Status</th><th></th></tr></thead>
                     <tbody>
                       {dbTours.map((t) => (
