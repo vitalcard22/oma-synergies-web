@@ -847,11 +847,11 @@ export default function Admin() {
               </div>
               <div className="stat-cards">
                 <div className="stat-card" onClick={() => setActiveView('clients')} style={{ cursor: 'pointer' }}>
-                  <div className="n">{dashboardStats.loading ? '—' : dashboardStats.activeClients}</div>
+                  <div className="n">{dashboardStats.loading ? '·' : dashboardStats.activeClients}</div>
                   <div className="l">Active Clients</div>
                 </div>
                 <div className="stat-card" onClick={() => setActiveView('inquiries')} style={{ cursor: 'pointer' }}>
-                  <div className="n">{dashboardStats.loading ? '—' : dashboardStats.newInquiries}</div>
+                  <div className="n">{dashboardStats.loading ? '·' : dashboardStats.newInquiries}</div>
                   <div className="l">New Inquiries</div>
                 </div>
                 <div className="stat-card">
@@ -859,7 +859,7 @@ export default function Admin() {
                   <div className="l">Destinations Live</div>
                 </div>
                 <div className="stat-card" onClick={() => setActiveView('tours')} style={{ cursor: 'pointer' }}>
-                  <div className="n">{toursLoading ? '—' : dbTours.filter((t) => t.status === 'active').length || TOURS.length}</div>
+                  <div className="n">{toursLoading ? '·' : dbTours.filter((t) => t.status === 'active').length || TOURS.length}</div>
                   <div className="l">Tours Live</div>
                 </div>
               </div>
@@ -921,7 +921,7 @@ export default function Admin() {
                         return (
                           <tr key={c.id}>
                             <td><span className="avatar-sm">{getInitials(name)}</span>{name}</td>
-                            <td>{latestApp?.destination ?? '—'}</td><td>{c.service_type}</td>
+                            <td style={{color:'var(--slate-light)',fontStyle:'italic'}}>{latestApp?.destination ?? 'Not set'}</td><td>{c.service_type}</td>
                             <td><Badge status={latestApp?.stage.replace(/_/g, ' ') ?? 'No application yet'} /></td>
                             <td className="row-actions">
                               <button className="btn-row" onClick={() => openCaseModal(c)}>Open Case</button>
@@ -975,8 +975,8 @@ export default function Admin() {
                               {i.full_name}
                               <div className="cell-sub">{i.email}{i.phone ? ` · ${i.phone}` : ''}</div>
                             </td>
-                            <td>{i.service_interested ?? '—'}</td>
-                            <td>{i.destination ?? '—'}</td>
+                            <td>{i.service_interested ?? 'Not specified'}</td>
+                            <td>{i.destination ?? 'Not specified'}</td>
                             <td><Badge status={i.status.replace(/_/g, ' ')} /></td>
                             <td className="row-actions" onClick={(e) => e.stopPropagation()}>
                               <button className="btn-row" title="Mark as read" onClick={() => handleMarkSubmission(i.id, 'read')}>Read</button>
@@ -1212,7 +1212,7 @@ export default function Admin() {
                           <td className="cell-name">{p.clientName}</td>
                           <td>{formatNaira(p.expected_amount)}</td>
                           <td>{formatNaira(p.amount_paid)}</td>
-                          <td>{p.selar_order_id ?? '—'}</td>
+                          <td>{p.selar_order_id ?? 'No reference'}</td>
                           <td><Badge status={p.status.replace(/_/g, ' ')} /></td>
                           <td className="row-actions">
                             <button className="btn-row btn-row-danger" onClick={async () => {
@@ -1252,7 +1252,7 @@ export default function Admin() {
                       {testimonials.map((t) => (
                         <tr key={t.id}>
                           <td><span className="avatar-sm">{getInitials(t.client_name)}</span>{t.client_name}</td>
-                          <td>{t.destination ?? '—'}</td><td>{t.category ?? '—'}</td>
+                          <td>{t.destination ?? ''}</td><td>{t.category ?? ''}</td>
                           <td><Badge status={t.status} /></td>
                           <td className="row-actions">
                             {t.status !== 'approved' && <button className="btn-row" style={{ color: 'var(--green)' }} title="Approve - shows live on site" onClick={() => handleTestimonialStatus(t.id, 'approved')}>Approve</button>}
@@ -1441,8 +1441,8 @@ export default function Admin() {
             <div className="form-row">
               <label>Status</label>
               <select value={tourForm.status} onChange={(e) => setTourForm((f) => ({ ...f, status: e.target.value }))}>
-                <option value="active">Active — visible on site</option>
-                <option value="hidden">Hidden — not shown</option>
+                <option value="active">Active — live on website</option>
+                <option value="hidden">Hidden — not published</option>
               </select>
             </div>
             {tourError && <div className="login-error">{tourError}</div>}
@@ -1730,7 +1730,7 @@ export default function Admin() {
                     <div className="form-row">
                       <label>
                         Message to client
-                        <span className="form-label-meta">visible in their portal</span>
+                        <span className="form-label-meta">shown to the client in their portal</span>
                       </label>
                       <textarea
                         className="notes-box"
@@ -1745,7 +1745,7 @@ export default function Admin() {
                     <div className="form-row">
                       <label>
                         Key date
-                        <span className="form-label-meta">appears on the consultation calendar</span>
+                        <span className="form-label-meta">shows on the consultation calendar</span>
                       </label>
                       <div className="key-date-row">
                         <input
@@ -2073,7 +2073,7 @@ export default function Admin() {
                 {/* Payment */}
                 <div className="reg-section-label" style={{ marginTop: 18 }}>
                   Payment
-                  <span className="reg-section-optional">optional — leave blank to add later</span>
+                  <span className="reg-section-optional">optional</span>
                 </div>
                 <div className="reg-payment-section">
                   <div className="form-two">

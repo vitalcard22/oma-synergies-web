@@ -22,11 +22,11 @@ const NAV: { id: ViewId; icon: string; label: string }[] = [
 // approved/refused/withdrawn are terminal outcomes, shown separately
 // rather than as a 6th step in the middle of an in-progress bar.
 const STAGE_FLOW: { stage: ApplicationStage; label: string; blurb: string }[] = [
-  { stage: 'documents_requested', label: 'Documents Requested', blurb: 'We\'ve let you know what\'s needed - check the Documents tab for your checklist.' },
-  { stage: 'documents_received', label: 'Documents Received', blurb: 'Your documents are with us and queued for review.' },
-  { stage: 'application_prepared', label: 'Application Prepared', blurb: 'Your file has been compiled and checked for accuracy.' },
-  { stage: 'submitted', label: 'Submitted', blurb: 'Your application has been formally submitted. Processing times vary by destination.' },
-  { stage: 'decision_pending', label: 'Decision Pending', blurb: 'Awaiting a decision. We\'ll update this the moment we hear back.' },
+  { stage: 'documents_requested', label: 'Documents Requested', blurb: 'Head to the Documents tab to see your checklist and upload each item.' },
+  { stage: 'documents_received', label: 'Documents Received', blurb: 'We have everything and are reviewing your file.' },
+  { stage: 'application_prepared', label: 'Application Prepared', blurb: 'Your application is ready and awaiting submission.' },
+  { stage: 'submitted', label: 'Submitted', blurb: 'Your application has been submitted. We will update you as soon as there is news.' },
+  { stage: 'decision_pending', label: 'Decision Pending', blurb: 'A decision is expected. We are monitoring closely and will notify you immediately.' },
 ];
 
 const TERMINAL_LABELS: Record<string, string> = { approved: 'Approved', refused: 'Refused', withdrawn: 'Withdrawn' };
@@ -42,8 +42,8 @@ function formatStage(stage: string): string {
 }
 
 const DOC_STATUS_LABEL: Record<string, string> = {
-  required: 'Needed', pending: 'Pending', received: 'Received', under_review: 'Under Review',
-  approved: 'Approved', rejected: 'Action Needed', submitted_to_embassy: 'Submitted', returned: 'Returned',
+  required: 'Upload required', pending: 'Under review', received: 'Received', under_review: 'Being reviewed',
+  approved: 'Approved', rejected: 'Needs attention', submitted_to_embassy: 'Submitted', returned: 'Returned',
 };
 const DOC_STATUS_CLASS: Record<string, string> = {
   approved: 'approved', received: 'approved', submitted_to_embassy: 'approved',
@@ -236,7 +236,7 @@ export default function Portal() {
             ) : (
               <>
                 <h2>Welcome back</h2>
-                <div className="sub">Your application, documents, and consultant — all in one place</div>
+                <div className="sub">Your application tracked from start to approval</div>
                 {passwordJustChanged && (
                   <div className="login-success" style={{ marginBottom: 16 }}>
                     ✓ Password set successfully. Log in with your new password to continue.
@@ -610,7 +610,7 @@ function PortalSettings({ authEmail, authFullName }: { authEmail: string | null;
     <div className="view active">
       <div className="topbar"><div className="page-title">Account Settings</div><div className="page-sub">Update your personal details and security settings</div></div>
       <div className="panel">
-        <div className="panel-head"><h3>Personal information</h3></div>
+        <div className="panel-head"><h3>Your details</h3></div>
         <div className="panel-body">
           <div className="settings-grid">
             <div className="form-row"><label>Full Name</label><input type="text" value={authFullName ?? ''} disabled /></div>
