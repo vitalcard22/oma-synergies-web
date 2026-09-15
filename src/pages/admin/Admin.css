@@ -117,7 +117,7 @@
     font-family:var(--display);font-size:19px;font-weight:700;
     color:var(--navy);letter-spacing:-0.02em;
   }
-  .page-sub{color:var(--slate-light);font-size:12px;margin-top:3px;font-weight:400;}
+  .page-sub{color:var(--slate-light);font-size:12px;margin-top:3px;font-weight:400;line-height:1.5;}
 
   .admin-user{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--slate);}
   .admin-avatar{
@@ -1016,8 +1016,9 @@
   @media(max-width:640px) {
 
     /* ---- TOPBAR ---- */
-    .topbar{ flex-direction:column; align-items:flex-start; gap:8px; }
+    .topbar{ flex-direction:column; align-items:flex-start; gap:10px; }
     .topbar .btn-add{ width:100%; text-align:center; }
+    .page-sub{ white-space:normal; max-width:100%; }
 
     /* ---- ALL TABLES — horizontal scroll by default ---- */
     .panel{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
@@ -1032,72 +1033,79 @@
     }
     .clients-table tbody tr:last-child{ border-bottom:none; }
     .clients-table tbody td{ padding:0; border:none; }
-    .clients-table .col-name{
+    .clients-table td:first-child{
       font-size:14px; font-weight:600; color:var(--navy);
       display:flex; align-items:center; gap:10px;
     }
-    .clients-table .col-dest,
-    .clients-table .col-service{ display:none; }
-    .clients-table .col-status{ padding:0; }
-    .clients-table .col-actions{
+    .clients-table td:nth-child(2),
+    .clients-table td:nth-child(3){ display:none; }
+    .clients-table .row-actions{
       display:flex; gap:8px; padding:0;
     }
-    .clients-table .col-actions .btn-row{
-      flex:1; text-align:center; padding:8px 12px;
+    .clients-table .row-actions .btn-row{
+      flex:1; text-align:center; padding:9px 12px;
     }
 
     /* ---- INQUIRIES TABLE — card layout ---- */
     .inquiries-table thead{ display:none; }
     .inquiries-table tbody tr{
       display:flex; flex-direction:column;
-      padding:14px 16px; gap:6px;
+      padding:14px 16px; gap:8px;
       border-bottom:1px solid var(--line-dark);
     }
     .inquiries-table tbody tr:last-child{ border-bottom:none; }
     .inquiries-table tbody td{ padding:0; border:none; }
-    .inquiries-table .col-date,
-    .inquiries-table .col-dest{ display:none; }
+    .inquiries-table td:first-child{ font-size:14px; font-weight:600; color:var(--navy); }
+    .inquiries-table .row-actions{
+      display:flex; gap:8px;
+    }
+    .inquiries-table .row-actions .btn-row{ flex:1; text-align:center; padding:9px 12px; }
 
     /* ---- PAYMENTS TABLE — card layout ---- */
     .payments-table thead{ display:none; }
     .payments-table tbody tr{
       display:flex; flex-direction:column;
-      padding:14px 16px; gap:6px;
+      padding:14px 16px; gap:8px;
       border-bottom:1px solid var(--line-dark);
     }
     .payments-table tbody tr:last-child{ border-bottom:none; }
     .payments-table tbody td{ padding:0; border:none; }
+    .payments-table .row-actions{
+      display:flex; gap:8px;
+    }
+    .payments-table .row-actions .btn-row{ flex:1; text-align:center; padding:9px 12px; }
 
     /* ---- TESTIMONIALS TABLE ---- */
     .testimonials-table thead{ display:none; }
     .testimonials-table tbody tr{
       display:flex; flex-direction:column;
-      padding:14px 16px; gap:6px;
+      padding:14px 16px; gap:8px;
       border-bottom:1px solid var(--line-dark);
     }
     .testimonials-table tbody tr:last-child{ border-bottom:none; }
     .testimonials-table tbody td{ padding:0; border:none; }
     .testimonials-table .col-dest,
     .testimonials-table .col-cat{ display:none; }
-    .testimonials-table .col-actions{
+    .testimonials-table .row-actions{
       display:flex; gap:8px;
     }
-    .testimonials-table .col-actions .btn-row{ flex:1; text-align:center; }
+    .testimonials-table .row-actions .btn-row{
+      flex:1; text-align:center; padding:9px 12px;
+    }
 
     /* ---- TOURS TABLE ---- */
     .tours-table thead{ display:none; }
     .tours-table tbody tr{
       display:flex; flex-direction:column;
-      padding:14px 16px; gap:6px;
+      padding:14px 16px; gap:8px;
       border-bottom:1px solid var(--line-dark);
     }
     .tours-table tbody tr:last-child{ border-bottom:none; }
     .tours-table tbody td{ padding:0; border:none; }
-    .tours-table .col-dest{ display:none; }
-    .tours-table .col-actions{
+    .tours-table .row-actions{
       display:flex; gap:8px;
     }
-    .tours-table .col-actions .btn-row{ flex:1; text-align:center; }
+    .tours-table .row-actions .btn-row{ flex:1; text-align:center; padding:9px 12px; }
 
     /* ---- PANEL HEAD ---- */
     .panel-head{ flex-direction:column; align-items:flex-start; gap:10px; }
