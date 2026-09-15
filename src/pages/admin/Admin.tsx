@@ -1259,7 +1259,7 @@ export default function Admin() {
           {activeView === 'testimonials' && (
             <div className="view active">
               <div className="topbar">
-                <div><div className="page-title">Testimonials</div><div className="page-sub">Approved testimonials appear on the public website — review before approving</div></div>
+                <div><div className="page-title">Testimonials</div><div className="page-sub">Approved testimonials appear on the public website</div></div>
                 <button className="btn-add" onClick={openAddTestimonialModal}>+ Add Testimonial</button>
               </div>
               <div className="panel">
@@ -1269,22 +1269,38 @@ export default function Admin() {
                 ) : testimonials.length === 0 ? (
                   <div className="empty-state">No testimonials on record.</div>
                 ) : (
-                  <table className="testimonials-table">
-                    <thead><tr><th>Client</th><th>Destination</th><th>Category</th><th>Status</th><th></th></tr></thead>
-                    <tbody>
-                      {testimonials.map((t) => (
-                        <tr key={t.id}>
-                          <td><span className="avatar-sm">{getInitials(t.client_name)}</span>{t.client_name}</td>
-                          <td>{t.destination ?? ''}</td><td>{t.category ?? ''}</td>
-                          <td><Badge status={t.status} /></td>
-                          <td className="row-actions">
-                            {t.status !== 'approved' && <button className="btn-row" style={{ color: 'var(--green)' }} title="Approve - shows live on site" onClick={() => handleTestimonialStatus(t.id, 'approved')}>Approve</button>}
-                            {t.status !== 'rejected' && <button className="btn-row" style={{ color: 'var(--red)' }} title="Reject - hides from site" onClick={() => handleTestimonialStatus(t.id, 'rejected')}>Reject</button>}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <div className="t-card-list">
+                    {testimonials.map((t) => (
+                      <div key={t.id} className="t-card">
+                        <div className="t-card-top">
+                          <span className="avatar-sm">{getInitials(t.client_name)}</span>
+                          <div className="t-card-info">
+                            <div className="t-card-name">{t.client_name}</div>
+                            {t.destination && <div className="t-card-dest">{t.destination}</div>}
+                          </div>
+                          <Badge status={t.status} />
+                        </div>
+                        {t.service_tag && <div className="t-card-tag">{t.service_tag}</div>}
+                        <div className="t-card-actions">
+                          {t.status !== 'approved' && (
+                            <button className="btn-row t-btn-approve" onClick={() => handleTestimonialStatus(t.id, 'approved')}>
+                              Approve
+                            </button>
+                          )}
+                          {t.status !== 'rejected' && (
+                            <button className="btn-row t-btn-reject" onClick={() => handleTestimonialStatus(t.id, 'rejected')}>
+                              Reject
+                            </button>
+                          )}
+                          {t.status !== 'pending' && (
+                            <button className="btn-row" onClick={() => handleTestimonialStatus(t.id, 'pending')}>
+                              Reset
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
