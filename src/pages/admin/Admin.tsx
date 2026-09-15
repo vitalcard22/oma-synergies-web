@@ -1481,8 +1481,8 @@ export default function Admin() {
                   >
                     {tourPhotoFile ? 'Change Photo' : 'Choose Photo'}
                   </label>
-                  {tourPhotoFile && <div style={{ marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)' }}>{tourPhotoFile.name} ({(tourPhotoFile.size / 1024).toFixed(0)}KB)</div>}
-                  <div style={{ marginTop: 4, fontSize: 11, color: 'var(--slate-light)' }}>JPEG, PNG or WebP · max 5MB</div>
+                  {tourPhotoFile && <div style={{ marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)' }}>Photo selected · {(tourPhotoFile.size / 1024).toFixed(0)}KB</div>}
+                  <div style={{ marginTop: 4, fontSize: 11, color: 'var(--slate-light)' }}>JPEG, PNG or WebP — max 5MB</div>
                 </div>
               </div>
             </div>
