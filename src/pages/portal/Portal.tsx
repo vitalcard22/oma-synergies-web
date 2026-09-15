@@ -57,6 +57,7 @@ export default function Portal() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const [loginEmail, setLoginEmail] = useState('');
+  const [passwordJustChanged, setPasswordJustChanged] = useState(false);
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [portalForgotMode, setPortalForgotMode] = useState(false);
@@ -127,7 +128,14 @@ export default function Portal() {
       setOnboardError(err);
       return;
     }
-    window.location.reload(); // simplest way to re-fetch everything fresh post-onboarding
+    // Supabase invalidates the session after password change.
+    // Sign out cleanly then redirect to login with a success message.
+    await supabase.auth.signOut();
+    setLoginEmail(auth.email ?? '');
+    setLoginPassword('');
+    setLoginError(null);
+    setPasswordJustChanged(true);
+    setTimeout(() => window.location.reload(), 300);
   }
 
   async function handleSendMessage() {
@@ -229,6 +237,11 @@ export default function Portal() {
               <>
                 <h2>Welcome back</h2>
                 <div className="sub">Your application, documents, and consultant — all in one place</div>
+                {passwordJustChanged && (
+                  <div className="login-success" style={{ marginBottom: 16 }}>
+                    ✓ Password set successfully. Log in with your new password to continue.
+                  </div>
+                )}
                 <div className="form-row">
                   <label>Email</label>
                   <input type="email" placeholder="Your email address" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSignIn()} />
