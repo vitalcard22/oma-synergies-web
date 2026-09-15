@@ -796,9 +796,43 @@
   .cal-pill-green{background:rgba(46,158,91,0.09);color:var(--green);}
 
   @media(max-width:900px){
-    .cal-cell{min-height:60px;padding:5px 6px;}
+    /* Calendar nav */
+    .cal-grid-wrap .cal-nav{padding:12px 14px;gap:6px;}
+    .cal-nav-label{font-size:13px;}
+    .cal-nav-btn{width:28px;height:28px;font-size:12px;}
+    .cal-nav-today{font-size:11px;padding:5px 8px;}
+    .cal-event-count{font-size:10px;padding:2px 7px;}
+
+    /* Day headers */
+    .cal-day-header{font-size:10px;padding:7px 0;}
+
+    /* Cells — tighter on mobile */
+    .cal-cell{min-height:52px;padding:4px 3px;}
+    .cal-day-num{font-size:11px;width:20px;height:20px;margin-bottom:3px;}
+    .cal-day-today{font-size:11px;}
+
+    /* Chips — dot only on mobile */
+    .cal-chip{padding:2px 3px;margin-bottom:2px;border-left-width:2px;}
+    .cal-chip-label{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40px;}
     .cal-chip-name{display:none;}
-    .cal-legend{gap:10px;}
+
+    /* Legend */
+    .cal-legend{gap:8px;flex-wrap:wrap;}
+    .cal-legend-item{font-size:11px;}
+
+    /* Upcoming table — horizontal scroll */
+    .panel{overflow-x:auto;}
+    .panel table{min-width:480px;}
+  }
+
+  @media(max-width:480px){
+    /* Very small screens — show dot only in chips */
+    .cal-chip-label{display:none;}
+    .cal-chip{width:8px;height:8px;border-radius:50%;padding:0;border:none;margin:1px;}
+    .cal-chip-amber{background:var(--amber);}
+    .cal-chip-slate{background:var(--slate);}
+    .cal-chip-red{background:var(--red);}
+    .cal-chip-green{background:var(--green);}
   }
 
   /* ---- PREMIUM NOTES TAB ---- */
@@ -1046,3 +1080,10 @@
     padding:10px 0;border-bottom:1px solid var(--line-dark);
   }
   .doc-check-row:last-child{border-bottom:none;}
+
+  /* Calendar view mobile overflow fix */
+  @media(max-width:900px){
+    .cal-grid-wrap{overflow-x:hidden;}
+    .cal-grid{overflow:hidden;}
+    .view.active .cal-legend{margin-bottom:10px;}
+  }
