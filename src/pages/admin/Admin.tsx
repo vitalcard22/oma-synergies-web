@@ -83,6 +83,8 @@ export default function Admin() {
   const [caseSaveError, setCaseSaveError] = useState<string | null>(null);
   const [caseSaveSuccess, setCaseSaveSuccess] = useState(false);
   const [caseDocSavingId, setCaseDocSavingId] = useState<string | null>(null);
+  const [newDocName, setNewDocName] = useState('');
+  const [newDocAdding, setNewDocAdding] = useState(false);
   const [caseRejectReasons, setCaseRejectReasons] = useState<Record<string, string>>({});
 
   const caseApplication = caseModalClient?.applications[activeAppIndex] ?? null;
@@ -187,6 +189,27 @@ export default function Admin() {
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
     await updateDocumentStatus(docId, 'rejected', caseRejectReasons[docId] ?? '', token ?? undefined);
+    await refetchCaseDocuments();
+    setCaseDocSavingId(null);
+  }
+
+  async function handleAddDocument() {
+    if (!newDocName.trim() || !caseApplication) return;
+    setNewDocAdding(true);
+    await supabase.from('documents').insert({
+      application_id: caseApplication.id,
+      document_name: newDocName.trim(),
+      status: 'required',
+    });
+    setNewDocName('');
+    await refetchCaseDocuments();
+    setNewDocAdding(false);
+  }
+
+  async function handleRemoveDocument(docId: string) {
+    if (!window.confirm('Remove this document from the checklist?')) return;
+    setCaseDocSavingId(docId);
+    await supabase.from('documents').delete().eq('id', docId);
     await refetchCaseDocuments();
     setCaseDocSavingId(null);
   }
@@ -1822,8 +1845,9 @@ export default function Admin() {
                 {/* Tab: Documents */}
                 {caseTab === 'documents' && (
                   <div className="case-tab-body">
+                    {/* Document checklist */}
                     {caseDocuments.length === 0 ? (
-                      <div className="empty-state">No documents on this checklist.</div>
+                      <div className="empty-state">No documents on this checklist yet.</div>
                     ) : (
                       <div className="doc-checklist">
                         {caseDocuments.map((doc) => (
@@ -1835,20 +1859,28 @@ export default function Admin() {
                               )}
                               {caseDocSavingId === doc.id && <span style={{ color: 'var(--slate-light)', fontSize: 11, marginLeft: 6 }}>saving…</span>}
                             </div>
-                            <select
-                              className="status-select doc-check-select"
-                              value={doc.status}
-                              onChange={(e) => handleDocumentStatusChange(doc.id, e.target.value)}
-                            >
-                              <option value="required">Required</option>
-                              <option value="pending">Pending</option>
-                              <option value="received">Received</option>
-                              <option value="under_review">Under Review</option>
-                              <option value="approved">Approved</option>
-                              <option value="rejected">Rejected</option>
-                              <option value="submitted_to_embassy">Submitted to Embassy</option>
-                              <option value="returned">Returned</option>
-                            </select>
+                            <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
+                              <select
+                                className="status-select doc-check-select"
+                                value={doc.status}
+                                onChange={(e) => handleDocumentStatusChange(doc.id, e.target.value)}
+                              >
+                                <option value="required">Required</option>
+                                <option value="pending">Pending</option>
+                                <option value="received">Received</option>
+                                <option value="under_review">Under Review</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="submitted_to_embassy">Submitted to Embassy</option>
+                                <option value="returned">Returned</option>
+                              </select>
+                              <button
+                                className="btn-row btn-row-danger"
+                                style={{ padding: '5px 8px', fontSize: 11 }}
+                                onClick={() => handleRemoveDocument(doc.id)}
+                                title="Remove from checklist"
+                              >✕</button>
+                            </div>
                             {doc.status === 'rejected' && (
                               <input
                                 type="text"
@@ -1863,6 +1895,27 @@ export default function Admin() {
                         ))}
                       </div>
                     )}
+
+                    {/* Add document */}
+                    <div className="doc-add-row">
+                      <input
+                        type="text"
+                        className="doc-add-input"
+                        placeholder="Add a document — e.g. Bank Statement, Passport, CAS Letter"
+                        value={newDocName}
+                        onChange={(e) => setNewDocName(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleAddDocument()}
+                        disabled={newDocAdding}
+                      />
+                      <button
+                        className="btn-save"
+                        style={{ padding: '9px 14px', whiteSpace: 'nowrap' }}
+                        onClick={handleAddDocument}
+                        disabled={newDocAdding || !newDocName.trim()}
+                      >
+                        {newDocAdding ? 'Adding…' : '+ Add'}
+                      </button>
+                    </div>
                   </div>
                 )}
 
