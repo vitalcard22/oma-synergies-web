@@ -1532,16 +1532,19 @@ export default function Admin() {
         <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !testimonialSubmitting) setAddTestimonialOpen(false); }}>
           <div className="modal" style={{ maxWidth: 480 }}>
             <div className="modal-head">
-              <div><h3>Add Testimonial</h3><div className="page-sub">Saved as pending — approve it to make it visible on the site</div></div>
+              <div>
+                <h3>New Testimonial</h3>
+                <div className="page-sub">Saved as pending until you approve it — won't appear on the site until then</div>
+              </div>
               <button className="modal-close" onClick={() => setAddTestimonialOpen(false)}>✕</button>
             </div>
             <div className="form-row">
-              <label>Client Name</label>
-              <input type="text" placeholder="Egwu A." value={testimonialForm.clientName} onChange={(e) => setTestimonialForm((f) => ({ ...f, clientName: e.target.value }))} />
+              <label>Client name</label>
+              <input type="text" placeholder="Adaeze Okafor" value={testimonialForm.clientName} onChange={(e) => setTestimonialForm((f) => ({ ...f, clientName: e.target.value }))} />
             </div>
             <div className="form-two">
               <div className="form-row">
-                <label>Destination / Institution</label>
+                <label>University or destination</label>
                 <input type="text" placeholder="University of West Scotland, UK" value={testimonialForm.destination} onChange={(e) => setTestimonialForm((f) => ({ ...f, destination: e.target.value }))} />
               </div>
               <div className="form-row">
@@ -1554,26 +1557,26 @@ export default function Admin() {
               </div>
             </div>
             <div className="form-row">
-              <label>Service Tag (shown as badge)</label>
-              <input type="text" placeholder="e.g. UK Study Visa" value={testimonialForm.serviceTag} onChange={(e) => setTestimonialForm((f) => ({ ...f, serviceTag: e.target.value }))} />
+              <label>Service badge <span className="form-label-meta">shown on the testimonial card</span></label>
+              <input type="text" placeholder="UK Study Visa" value={testimonialForm.serviceTag} onChange={(e) => setTestimonialForm((f) => ({ ...f, serviceTag: e.target.value }))} />
             </div>
             <div className="form-row">
-              <label>Link to Existing Client (optional)</label>
+              <label>Link to client <span className="form-label-meta">optional</span></label>
               <select value={testimonialForm.clientId} onChange={(e) => setTestimonialForm((f) => ({ ...f, clientId: e.target.value }))}>
-                <option value="">None — manually entered</option>
+                <option value="">Not linked to a client account</option>
                 {clients.map((c) => (
                   <option key={c.id} value={c.id}>{c.profile?.full_name ?? 'Unknown'}</option>
                 ))}
               </select>
             </div>
             <div className="form-row">
-              <label>Quote</label>
-              <textarea style={{ minHeight: 100 }} placeholder="The entire process was smooth..." value={testimonialForm.quote} onChange={(e) => setTestimonialForm((f) => ({ ...f, quote: e.target.value }))} />
+              <label>Their words</label>
+              <textarea className="notes-box" rows={4} placeholder="What did they say about working with Oma Synergies?" value={testimonialForm.quote} onChange={(e) => setTestimonialForm((f) => ({ ...f, quote: e.target.value }))} />
             </div>
             {testimonialError && <div className="login-error">{testimonialError}</div>}
             <div className="modal-actions">
               <button className="btn-save" onClick={handleAddTestimonial} disabled={testimonialSubmitting}>{testimonialSubmitting ? 'Saving…' : 'Save as Pending'}</button>
-              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setAddTestimonialOpen(false)} disabled={testimonialSubmitting}>Cancel</button>
+              <button className="btn-row" style={{ padding: '9px 16px' }} onClick={() => setAddTestimonialOpen(false)} disabled={testimonialSubmitting}>Cancel</button>
             </div>
           </div>
         </div>
