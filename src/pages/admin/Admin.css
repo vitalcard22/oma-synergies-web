@@ -977,3 +977,52 @@
     font-size:13px;font-weight:600;color:var(--navy);
     margin-bottom:14px;
   }
+
+  /* ======== MOBILE CLIENTS — card layout ======== */
+  @media(max-width:600px) {
+
+    /* Hide table headers on mobile */
+    .panel table thead { display: none; }
+
+    /* Each row becomes a card */
+    .panel table tbody tr {
+      display: flex;
+      flex-direction: column;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line-dark);
+      gap: 8px;
+    }
+    .panel table tbody tr:last-child { border-bottom: none; }
+
+    /* Hide destination and service columns on mobile — show in badge */
+    .panel table tbody td:nth-child(2),
+    .panel table tbody td:nth-child(3) { display: none; }
+
+    /* Client name cell — bigger */
+    .panel table tbody td:nth-child(1) {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Status cell */
+    .panel table tbody td:nth-child(4) { padding: 0; }
+
+    /* Action buttons row */
+    .panel table tbody td.row-actions {
+      display: flex;
+      gap: 8px;
+      padding: 0;
+    }
+    .panel table tbody td.row-actions .btn-row {
+      flex: 1;
+      text-align: center;
+      padding: 8px 12px;
+    }
+
+    /* Notification bell — use text not emoji */
+    .notif-btn { font-size: 16px; }
+  }
