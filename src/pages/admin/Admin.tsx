@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, deleteSubmission, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateClientAssignment, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, deleteSubmission, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -133,6 +133,17 @@ export default function Admin() {
     if (refreshedClient) openCaseModal(refreshedClient);
   }
 
+  const [reassigning, setReassigning] = useState(false);
+  async function handleReassignClient(staffId: string) {
+    if (!caseModalClient || !staffId) return;
+    setReassigning(true);
+    await updateClientAssignment(caseModalClient.id, staffId);
+    await refetchClients();
+    const refreshedClient = clients.find((c) => c.id === caseModalClient.id);
+    if (refreshedClient) openCaseModal(refreshedClient);
+    setReassigning(false);
+  }
+
   async function handleSaveCase() {
     if (!caseApplication || !auth.userId) return;
     setCaseSaving(true);
@@ -225,7 +236,7 @@ export default function Admin() {
 
   // ---- Register New Client (real, calls the serverless function) ----
   const [registerOpen, setRegisterOpen] = useState(false);
-  const [registerForm, setRegisterForm] = useState({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '' });
+  const [registerForm, setRegisterForm] = useState({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '', assignedTo: '' });
   const [registerSubmitting, setRegisterSubmitting] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [registerResult, setRegisterResult] = useState<{ tempPassword: string; documentsPopulated: number; emailResult?: { sent: boolean; error?: string; id?: string } } | null>(null);
@@ -234,7 +245,7 @@ export default function Admin() {
   const [registerSourceSubmissionId, setRegisterSourceSubmissionId] = useState<string | null>(null);
 
   function openRegisterModal() {
-    setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '' });
+    setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '', assignedTo: '' });
     setRegisterError(null);
     setRegisterResult(null);
     setRegisterSourceSubmissionId(null);
@@ -251,7 +262,7 @@ export default function Admin() {
       phone: submission.phone ?? '',
       serviceType: submission.service_interested || 'UK Study Visa',
       destination: submission.destination ?? '',
-      expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '',
+      expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '', assignedTo: '',
     });
     setRegisterError(null);
     setRegisterResult(null);
@@ -263,6 +274,10 @@ export default function Admin() {
     setRegisterError(null);
     if (!registerForm.fullName.trim() || !registerForm.email.trim() || !registerForm.serviceType) {
       setRegisterError('Full name, email, and service type are required.');
+      return;
+    }
+    if (isSuperAdmin && !registerForm.assignedTo) {
+      setRegisterError('Please choose which staff member this client is assigned to.');
       return;
     }
     setRegisterSubmitting(true);
@@ -610,7 +625,7 @@ export default function Admin() {
   const { activity: recentActivity, loading: activityLoading } = useRecentActivity(8, isAuthedAdmin);
   const { submissions, loading: submissionsLoading, refetch: refetchSubmissions } = useContactSubmissions(isAuthedAdmin);
   const isSuperAdmin = !auth.loading && auth.role === 'super_admin';
-  const { staff, loading: staffLoading, refetch: refetchStaff } = useStaffList(isSuperAdmin);
+  const { staff, loading: staffLoading, refetch: refetchStaff } = useStaffList(isAuthedAdmin);
   const { payments, loading: paymentsLoading, refetch: refetchPayments } = usePayments(isAuthedAdmin);
   const { testimonials, loading: testimonialsLoading, refetch: refetchTestimonials } = useTestimonials(isAuthedAdmin);
   const { tours: dbTours, loading: toursLoading, refetch: refetchTours } = useTourPackages(isAuthedAdmin);
@@ -870,7 +885,7 @@ export default function Admin() {
       <div className="app">
         <aside className={mobileOpen ? 'sidebar mobile-open' : 'sidebar'}>
           <div className="brand"><img src={logoIcon} alt="Oma Synergies" /><span>Oma Synergies</span></div>
-          {NAV.filter((sec) => (sec.section !== 'Team' && sec.section !== 'Finance') || isSuperAdmin).map((sec) => (
+          {NAV.filter((sec) => sec.section !== 'Team' || isSuperAdmin).map((sec) => (
             <div key={sec.section}>
               <div className="nav-section-label">{sec.section}</div>
               {sec.items.map((item) => {
@@ -1235,16 +1250,6 @@ export default function Admin() {
 
           {activeView === 'payments' && (
             <div className="view active">
-              {!isSuperAdmin ? (
-                <div className="topbar">
-                  <div><div className="page-title">Payments</div></div>
-                  <div className="empty-state" style={{ marginTop: 40 }}>
-                    <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: 6 }}>Access Restricted</div>
-                    Payment records are only accessible to the Super Admin.
-                  </div>
-                </div>
-              ) : (
-              <>
               <div className="topbar">
                 <div><div className="page-title">Payments</div><div className="page-sub">{isSuperAdmin ? 'All client payments — cash, transfer, card, or Selar' : 'Payments for your assigned clients — cash, transfer, card, or Selar'}</div></div>
                 <button className="btn-add" onClick={openAddPaymentModal}>+ Add Payment</button>
@@ -1300,8 +1305,6 @@ export default function Admin() {
                   </table>
                 )}
               </div>
-              </>
-              )}
             </div>
           )}
 
@@ -1691,10 +1694,13 @@ export default function Admin() {
               <label>Client</label>
               <select value={paymentForm.clientId} onChange={(e) => setPaymentForm((f) => ({ ...f, clientId: e.target.value }))}>
                 <option value="">Select a client</option>
-                {clients.map((c) => (
+                {clients.filter((c) => isSuperAdmin || c.assigned_to === auth.userId).map((c) => (
                   <option key={c.id} value={c.id}>{c.profile?.full_name ?? 'Unknown'} — {c.service_type}</option>
                 ))}
               </select>
+              {!isSuperAdmin && (
+                <span className="form-label-meta">Only showing clients assigned to you</span>
+              )}
             </div>
             <div className="form-two">
               <div className="form-row">
@@ -1846,6 +1852,27 @@ export default function Admin() {
                         <option value="refused">Refused</option>
                         <option value="withdrawn">Withdrawn</option>
                       </select>
+                    </div>
+
+                    <div className="overview-stage-row">
+                      <div className="overview-stage-label">Assigned to</div>
+                      {isSuperAdmin ? (
+                        <select
+                          className="overview-stage-select"
+                          value={caseModalClient.assigned_to ?? ''}
+                          disabled={reassigning}
+                          onChange={(e) => handleReassignClient(e.target.value)}
+                        >
+                          <option value="" disabled>Unassigned — select staff…</option>
+                          {staff.filter((s) => s.status === 'active').map((s) => (
+                            <option key={s.id} value={s.id}>{s.full_name}{s.role === 'super_admin' ? ' (You)' : ''}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <div style={{ fontSize: 13.5, color: 'var(--navy)', fontWeight: 600 }}>
+                          {staff.find((s) => s.id === caseModalClient.assigned_to)?.full_name ?? 'Unassigned'}
+                        </div>
+                      )}
                     </div>
 
                     <div className="overview-divider" />
@@ -2157,7 +2184,7 @@ export default function Admin() {
                   )}
                 </div>
                 <div className="modal-actions">
-                  <button className="btn-save" onClick={() => { setRegisterOpen(false); setRegisterResult(null); setRegisterSourceSubmissionId(null); setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '' }); }}>Done</button>
+                  <button className="btn-save" onClick={() => { setRegisterOpen(false); setRegisterResult(null); setRegisterSourceSubmissionId(null); setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '', assignedTo: '' }); }}>Done</button>
                 </div>
               </>
             ) : (
@@ -2223,6 +2250,18 @@ export default function Admin() {
                     <input type="text" placeholder="United Kingdom" value={registerForm.destination} onChange={(e) => setRegisterForm((f) => ({ ...f, destination: e.target.value }))} />
                   </div>
                 </div>
+
+                {isSuperAdmin && (
+                  <div className="form-row" style={{ marginTop: 14 }}>
+                    <label>Assign to</label>
+                    <select value={registerForm.assignedTo} onChange={(e) => setRegisterForm((f) => ({ ...f, assignedTo: e.target.value }))}>
+                      <option value="">Select staff member…</option>
+                      {staff.filter((s) => s.status === 'active').map((s) => (
+                        <option key={s.id} value={s.id}>{s.full_name}{s.role === 'super_admin' ? ' (You)' : ''}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 {/* Payment */}
                 <div className="reg-section-label" style={{ marginTop: 18 }}>

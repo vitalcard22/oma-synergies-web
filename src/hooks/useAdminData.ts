@@ -338,6 +338,17 @@ export async function updateApplicationKeyDate(
   return error?.message ?? null;
 }
 
+// CEO-only reassignment. Note this is enforced in the UI (only rendered
+// when isSuperAdmin is true in Admin.tsx), not at the database layer -
+// the "Admins manage clients" RLS policy still allows any admin to write
+// to clients, same as it always has for phone/service_type/etc. Unlike
+// the payments split, this doesn't have a dedicated column-level DB
+// restriction behind it.
+export async function updateClientAssignment(clientId: string, staffId: string): Promise<string | null> {
+  const { error } = await supabase.from('clients').update({ assigned_to: staffId }).eq('id', clientId);
+  return error?.message ?? null;
+}
+
 // Hook for calendar view — all applications with a key_date set
 export interface CalendarEntry {
   applicationId: string;

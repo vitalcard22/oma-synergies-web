@@ -45,6 +45,19 @@ module.exports = async function handler(req, res) {
       res.status(400).json({ error: 'fullName, email and serviceType required' }); return;
     }
 
+    // Ownership: staff admins always own what they create. The CEO
+    // (super_admin) must explicitly pick who owns it, since it's not
+    // implied by who happens to be doing the registering.
+    var assignedTo;
+    if (callerProfile.role === 'staff_admin') {
+      assignedTo = callerData.user.id;
+    } else {
+      if (!body.assignedTo) {
+        res.status(400).json({ error: 'assignedTo is required when registering as super admin' }); return;
+      }
+      assignedTo = body.assignedTo;
+    }
+
     const tempPassword = generatePassword();
 
     const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
@@ -63,7 +76,7 @@ module.exports = async function handler(req, res) {
 
     const { data: clientRow, error: clientError } = await supabase
       .from('clients')
-      .insert({ profile_id: userId, service_type: serviceType, phone: phone, created_by: callerData.user.id })
+      .insert({ profile_id: userId, service_type: serviceType, phone: phone, created_by: callerData.user.id, assigned_to: assignedTo })
       .select('id').single();
 
     if (clientError || !clientRow) {
