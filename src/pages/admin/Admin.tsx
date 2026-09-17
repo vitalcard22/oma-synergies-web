@@ -1360,8 +1360,8 @@ export default function Admin() {
                   <div className="tour-card-list">
                     {dbTours.map((t) => (
                       <div key={t.id} className="tour-card">
-                        {(t as any).photo_url && (
-                          <div className="tour-card-photo" style={{ backgroundImage: `url(${(t as any).photo_url})` }} />
+                        {t.photo_url && (
+                          <div className="tour-card-photo" style={{ backgroundImage: `url(${t.photo_url})` }} />
                         )}
                         <div className="tour-card-body">
                           <div className="tour-card-top">

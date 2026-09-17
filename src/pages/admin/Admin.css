@@ -1024,6 +1024,18 @@
     .panel{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
     .panel table{ min-width:520px; }
 
+    /* Card-layout tables (below) are stacked flex rows, not scrolling
+       tables — they must not inherit the 520px min-width above, or their
+       content gets cut off on narrow screens. .panel X beats .panel table
+       on specificity regardless of source order. */
+    .panel .clients-table,
+    .panel .inquiries-table,
+    .panel .payments-table,
+    .panel .testimonials-table,
+    .panel .tours-table{
+      min-width:100%;
+    }
+
     /* ---- CLIENTS TABLE — card layout ---- */
     .clients-table thead { display:none; }
     .clients-table tbody tr {
