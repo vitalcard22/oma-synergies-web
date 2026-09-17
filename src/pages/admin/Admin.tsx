@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -229,11 +229,33 @@ export default function Admin() {
   const [registerSubmitting, setRegisterSubmitting] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [registerResult, setRegisterResult] = useState<{ tempPassword: string; documentsPopulated: number; emailResult?: { sent: boolean; error?: string; id?: string } } | null>(null);
+  // Set when the register modal was opened from an inquiry's "Convert to
+  // Client" button, so a successful creation can link back to that inquiry.
+  const [registerSourceSubmissionId, setRegisterSourceSubmissionId] = useState<string | null>(null);
 
   function openRegisterModal() {
     setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '' });
     setRegisterError(null);
     setRegisterResult(null);
+    setRegisterSourceSubmissionId(null);
+    setRegisterOpen(true);
+  }
+
+  function openConvertModal(submission: { id: string; full_name: string; email: string; phone: string | null; service_interested: string | null; destination: string | null; converted_client_id?: string | null }) {
+    if (submission.converted_client_id && !window.confirm('This inquiry is already marked converted. Create another client from it anyway?')) {
+      return;
+    }
+    setRegisterForm({
+      fullName: submission.full_name,
+      email: submission.email,
+      phone: submission.phone ?? '',
+      serviceType: submission.service_interested || 'UK Study Visa',
+      destination: submission.destination ?? '',
+      expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '',
+    });
+    setRegisterError(null);
+    setRegisterResult(null);
+    setRegisterSourceSubmissionId(submission.id);
     setRegisterOpen(true);
   }
 
@@ -274,6 +296,13 @@ export default function Admin() {
           amountPaid: parseFloat(registerForm.amountPaid),
           status: 'confirmed' as any,
         });
+      }
+      // If this registration was launched from an inquiry's "Convert to
+      // Client" button, mark that inquiry converted and link it to the
+      // client it produced.
+      if (registerSourceSubmissionId && data.clientId) {
+        await convertSubmissionToClient(registerSourceSubmissionId, data.clientId);
+        refetchSubmissions();
       }
       refetchClients();
     } catch (e: any) {
@@ -1012,7 +1041,9 @@ export default function Admin() {
                             <td><Badge status={i.status.replace(/_/g, ' ')} /></td>
                             <td className="row-actions" onClick={(e) => e.stopPropagation()}>
                               <button className="btn-row" title="Mark as read" onClick={() => handleMarkSubmission(i.id, 'read')}>Read</button>
-                              <button className="btn-row" title="Mark as converted" onClick={() => handleMarkSubmission(i.id, 'converted')}>Converted</button>
+                              <button className="btn-row" title="Create a client account from this inquiry" onClick={() => openConvertModal(i)}>
+                                {i.status === 'converted' ? 'Converted ✓' : 'Convert to Client'}
+                              </button>
                             </td>
                           </tr>
                           {selectedInquiryId === i.id && (
@@ -2117,7 +2148,7 @@ export default function Admin() {
                   )}
                 </div>
                 <div className="modal-actions">
-                  <button className="btn-save" onClick={() => { setRegisterOpen(false); setRegisterResult(null); setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '' }); }}>Done</button>
+                  <button className="btn-save" onClick={() => { setRegisterOpen(false); setRegisterResult(null); setRegisterSourceSubmissionId(null); setRegisterForm({ fullName: '', email: '', phone: '', serviceType: 'UK Study Visa', destination: '', expectedAmount: '', amountPaid: '', paymentMethod: 'bank_transfer', paymentRef: '' }); }}>Done</button>
                 </div>
               </>
             ) : (
@@ -2125,7 +2156,7 @@ export default function Admin() {
               <>
                 <div className="modal-head">
                   <div>
-                    <h3>New Client</h3>
+                    <h3>{registerSourceSubmissionId ? 'Convert to Client' : 'New Client'}</h3>
                     <div className="page-sub">Creates a portal account and sends a welcome email</div>
                   </div>
                   <button className="modal-close" onClick={() => setRegisterOpen(false)}>✕</button>

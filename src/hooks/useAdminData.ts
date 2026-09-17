@@ -457,6 +457,17 @@ export async function updateSubmissionStatus(id: string, status: EnquiryStatus):
   return error?.message ?? null;
 }
 
+// Called after a client account is successfully created from an inquiry via
+// the "Convert to Client" flow - marks the inquiry converted and links it to
+// the client record it produced, so the connection is traceable later.
+export async function convertSubmissionToClient(submissionId: string, clientId: string): Promise<string | null> {
+  const { error } = await supabase
+    .from('contact_submissions')
+    .update({ status: 'converted', converted_client_id: clientId })
+    .eq('id', submissionId);
+  return error?.message ?? null;
+}
+
 /**
  * Staff (and the Super Admin's own row) - both are just profiles with
  * role in (super_admin, staff_admin). Fetched with a real client count
