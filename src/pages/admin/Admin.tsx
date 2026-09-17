@@ -1246,11 +1246,11 @@ export default function Admin() {
               ) : (
               <>
               <div className="topbar">
-                <div><div className="page-title">Payments</div><div className="page-sub">All client payments — cash, transfer, card, or Selar</div></div>
+                <div><div className="page-title">Payments</div><div className="page-sub">{isSuperAdmin ? 'All client payments — cash, transfer, card, or Selar' : 'Payments for your assigned clients — cash, transfer, card, or Selar'}</div></div>
                 <button className="btn-add" onClick={openAddPaymentModal}>+ Add Payment</button>
               </div>
               <div className="stat-cards">
-                <div className="stat-card"><div className="n">{formatNaira(totalReceived)}</div><div className="l">Total Received</div></div>
+                <div className="stat-card"><div className="n">{formatNaira(totalReceived)}</div><div className="l">{isSuperAdmin ? 'Total Received' : 'Received (Your Clients)'}</div></div>
                 <div className="stat-card"><div className="n">{completedCount}</div><div className="l">Completed Payments</div></div>
                 <div className="stat-card"><div className="n">{pendingCount}</div><div className="l">Pending</div></div>
               </div>
