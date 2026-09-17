@@ -10,7 +10,8 @@ import logoIcon from '../assets/logo-icon.png';
 import { DESTINATIONS } from '../data/destinations';
 import { useTestimonials } from '../hooks/useTestimonials';
 import { getInitials } from '../utils/initials';
-import { TOURS, GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira, formatDuration } from '../data/tours';
+import { GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira, formatDuration } from '../data/tours';
+import { usePublicTours } from '../lib/usePublicTours';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import wwdTeamPhoto from '../assets/wwd-team.jpg';
 import wwdStaffDesk from '../assets/wwd-staff-desk.jpg';
@@ -118,6 +119,7 @@ export default function Home() {
   const statsRef = useCountUp();
   const heroStatsRef = useCountUp();
   const { testimonials } = useTestimonials();
+  const { tours } = usePublicTours();
 
   const [headlineIdx, setHeadlineIdx] = useState(0);
   const [leadIdx, setLeadIdx] = useState(0);
@@ -683,8 +685,8 @@ export default function Home() {
             <h2 style={{ fontSize: 26 }}>Curated trips, when you're ready to explore</h2>
           </div>
           <div className="tours-strip reveal">
-            {TOURS.map((t) => (
-              <div className="tour-card" key={t.slug}>
+            {tours.map((t) => (
+              <div className="tour-card" key={t.id}>
                 {t.img ? (
                   <div className="tour-img">
                     <img src={t.img} alt={t.name} loading="lazy" />
