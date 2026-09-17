@@ -468,6 +468,13 @@ export async function convertSubmissionToClient(submissionId: string, clientId: 
   return error?.message ?? null;
 }
 
+// Permanent - intended for spam/junk submissions, not for real inquiries
+// (use status 'no_action' to archive a real one without losing the record).
+export async function deleteSubmission(id: string): Promise<string | null> {
+  const { error } = await supabase.from('contact_submissions').delete().eq('id', id);
+  return error?.message ?? null;
+}
+
 /**
  * Staff (and the Super Admin's own row) - both are just profiles with
  * role in (super_admin, staff_admin). Fetched with a real client count

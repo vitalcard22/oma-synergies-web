@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, deleteSubmission, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -644,6 +644,14 @@ export default function Admin() {
     await updateSubmissionStatus(id, status);
     refetchSubmissions();
   }
+  async function handleDeleteSubmission(submission: { id: string; full_name: string; converted_client_id?: string | null }) {
+    const warning = submission.converted_client_id
+      ? `"${submission.full_name}" is linked to a client account. Deleting it only removes the inquiry record - the client account stays. Delete the inquiry anyway?`
+      : `Delete the inquiry from "${submission.full_name}"? This cannot be undone.`;
+    if (!window.confirm(warning)) return;
+    await deleteSubmission(submission.id);
+    refetchSubmissions();
+  }
   const filteredPayments = payments.filter((p) => paymentsFilter === 'all' || p.status === paymentsFilter);
   const totalReceived = payments.reduce((sum, p) => sum + p.amount_paid, 0);
   const completedCount = payments.filter((p) => p.status === 'confirmed').length;
@@ -1044,6 +1052,7 @@ export default function Admin() {
                               <button className="btn-row" title="Create a client account from this inquiry" onClick={() => openConvertModal(i)}>
                                 {i.status === 'converted' ? 'Converted ✓' : 'Convert to Client'}
                               </button>
+                              <button className="btn-row btn-row-danger" title="Delete this inquiry (for spam/junk submissions)" onClick={() => handleDeleteSubmission(i)}>Delete</button>
                             </td>
                           </tr>
                           {selectedInquiryId === i.id && (

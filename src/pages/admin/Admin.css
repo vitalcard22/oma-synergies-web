@@ -1069,9 +1069,9 @@
     .inquiries-table tbody td{ padding:0; border:none; }
     .inquiries-table td:first-child{ font-size:14px; font-weight:600; color:var(--navy); }
     .inquiries-table .row-actions{
-      display:flex; gap:8px;
+      display:flex; gap:8px; flex-wrap:wrap;
     }
-    .inquiries-table .row-actions .btn-row{ flex:1; text-align:center; padding:9px 12px; }
+    .inquiries-table .row-actions .btn-row{ flex:1 1 100px; text-align:center; padding:9px 12px; }
 
     /* ---- PAYMENTS TABLE — card layout ---- */
     .payments-table thead{ display:none; }
