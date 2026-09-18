@@ -336,6 +336,7 @@ export default function Admin() {
   const [tourPhotoFile, setTourPhotoFile] = useState<File | null>(null);
   const [tourPhotoPreview, setTourPhotoPreview] = useState<string | null>(null);
   const [tourPhotoUploading, setTourPhotoUploading] = useState(false);
+  const [tourPhotoCompressing, setTourPhotoCompressing] = useState(false);
 
   function openTourModal(tour?: { id: string; name: string; destination: string; nights: number; from_price: number; status: string; photo_url?: string | null }) {
     setTourForm(tour
@@ -347,13 +348,61 @@ export default function Admin() {
     setTourModalOpen(true);
   }
 
-  function handleTourPhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  // Resizes to fit within maxDimension (never upscales) and re-encodes as
+  // JPEG, so a multi-MB phone-camera photo becomes a few hundred KB before
+  // it ever reaches the upload endpoint. 1200px comfortably covers the
+  // tour card's largest real render size (public site + admin cards are
+  // both well under that even at 2x pixel density) with room to spare.
+  function compressImage(file: File, maxDimension = 1200, quality = 0.8): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        let { width, height } = img;
+        if (width > maxDimension || height > maxDimension) {
+          if (width >= height) {
+            height = Math.round((height / width) * maxDimension);
+            width = maxDimension;
+          } else {
+            width = Math.round((width / height) * maxDimension);
+            height = maxDimension;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) { reject(new Error('Canvas not supported')); return; }
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          if (!blob) { reject(new Error('Compression failed')); return; }
+          const newName = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+          resolve(new File([blob], newName, { type: 'image/jpeg' }));
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Could not read image')); };
+      img.src = objectUrl;
+    });
+  }
+
+  async function handleTourPhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) { setTourError('Photo must be under 5MB.'); return; }
-    setTourPhotoFile(file);
-    setTourPhotoPreview(URL.createObjectURL(file));
     setTourError(null);
+    setTourPhotoCompressing(true);
+    try {
+      const compressed = await compressImage(file);
+      setTourPhotoFile(compressed);
+      setTourPhotoPreview(URL.createObjectURL(compressed));
+    } catch {
+      // Compression failed (unsupported format, corrupt file, etc.) -
+      // fall back to the original file rather than blocking the upload.
+      setTourPhotoFile(file);
+      setTourPhotoPreview(URL.createObjectURL(file));
+    }
+    setTourPhotoCompressing(false);
   }
 
   async function handleSaveTour() {
@@ -1546,12 +1595,12 @@ export default function Admin() {
                   />
                   <label
                     htmlFor="tour-photo-input"
-                    style={{ display: 'inline-block', cursor: 'pointer', padding: '8px 14px', background: 'var(--paper)', border: '1px solid var(--line-dark)', borderRadius: 7, fontSize: 12.5, color: 'var(--navy)', fontWeight: 600 }}
+                    style={{ display: 'inline-block', cursor: 'pointer', padding: '8px 14px', background: 'var(--paper)', border: '1px solid var(--line-dark)', borderRadius: 7, fontSize: 12.5, color: 'var(--navy)', fontWeight: 600, opacity: tourPhotoCompressing ? 0.6 : 1, pointerEvents: tourPhotoCompressing ? 'none' : 'auto' }}
                   >
-                    {tourPhotoFile ? 'Change Photo' : 'Choose Photo'}
+                    {tourPhotoCompressing ? 'Compressing…' : tourPhotoFile ? 'Change Photo' : 'Choose Photo'}
                   </label>
-                  {tourPhotoFile && <div style={{ marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)' }}>Photo selected · {(tourPhotoFile.size / 1024).toFixed(0)}KB</div>}
-                  <div style={{ marginTop: 4, fontSize: 11, color: 'var(--slate-light)' }}>JPEG, PNG or WebP — max 5MB</div>
+                  {tourPhotoFile && !tourPhotoCompressing && <div style={{ marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)' }}>Photo selected · {(tourPhotoFile.size / 1024).toFixed(0)}KB (compressed)</div>}
+                  <div style={{ marginTop: 4, fontSize: 11, color: 'var(--slate-light)' }}>JPEG, PNG or WebP — max 5MB, auto-compressed on upload</div>
                 </div>
               </div>
             </div>
@@ -1571,7 +1620,7 @@ export default function Admin() {
             </div>
             {tourError && <div className="login-error">{tourError}</div>}
             <div className="modal-actions">
-              <button className="btn-save" onClick={handleSaveTour} disabled={tourSaving || tourPhotoUploading}>
+              <button className="btn-save" onClick={handleSaveTour} disabled={tourSaving || tourPhotoUploading || tourPhotoCompressing}>
                 {tourPhotoUploading ? 'Uploading photo…' : tourSaving ? 'Saving…' : 'Save'}
               </button>
               <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setTourModalOpen(false)} disabled={tourSaving || tourPhotoUploading}>Cancel</button>
