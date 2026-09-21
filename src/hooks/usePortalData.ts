@@ -101,7 +101,7 @@ export function usePortalData(userId: string | null): PortalData {
     if (!client) return;
     const { data: apps } = await supabase.from('applications').select('*').eq('client_id', client.id).order('created_at', { ascending: false });
     const app = apps?.[0] ?? null;
-    const docs = app ? (await supabase.from('documents').select('*').eq('application_id', app.id).order('created_at')).data ?? [] : [];
+    const docs = app ? (await supabase.from('documents').select('*').eq('application_id', app.id).order('document_name')).data ?? [] : [];
     const hist = app ? (await supabase.from('stage_history').select('*').eq('application_id', app.id).order('changed_at')).data ?? [] : [];
     setState({ client, application: app, documents: docs as any, stageHistory: hist as any });
   }, [userId]);
