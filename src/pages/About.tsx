@@ -7,6 +7,7 @@ import adaezePhoto from '../assets/team/adaeze.jpg';
 import increasePhoto from '../assets/team/increase.jpg';
 import nnennaPhoto from '../assets/team/nnenna.jpg';
 import joshuaPhoto from '../assets/team/joshua.jpg';
+import ochogePhoto from '../assets/team/ochoge.jpg';
 import whoWeAreTeam from '../assets/who-we-are-team.jpg';
 import adaezeCertificate from '../assets/credentials/adaeze-british-council.jpg';
 import applyBoardLogo from '../assets/partners/applyboard.png';
@@ -27,6 +28,7 @@ const TEAM = [
   { photo: increasePhoto, name: 'Increase Uchechukwu', role: 'Writer, SOP & CV Specialist' },
   { photo: nnennaPhoto, name: 'Ugwuoke Nnenna Juliet', role: 'Strategy and Operations Lead' },
   { photo: joshuaPhoto, name: 'Awoniyi Joshua Ayodeji', role: 'Research Assistant' },
+  { photo: ochogePhoto, name: 'Ochoge Martins Ochonu', role: 'Graphic Designer' },
 ];
 
 const STORY = [
