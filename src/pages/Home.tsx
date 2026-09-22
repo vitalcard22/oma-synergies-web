@@ -233,7 +233,7 @@ export default function Home() {
     );
     cards.forEach((c) => io.observe(c));
     return () => io.disconnect();
-  }, []);
+  }, [testimonials]);
 
   useEffect(() => {
     const t = setTimeout(() => setHeroLoaded(true), 80);
