@@ -26,7 +26,7 @@ const PARTNERS = [
 const TEAM = [
   { photo: adaezePhoto, name: 'Adaeze Ohazuruike', role: 'Founder & CEO', credential: { title: 'Certified UK Knowledge Agent & Counsellor', sub: 'British Council, via ApplyBoard, valid until 05/2028', proof: adaezeCertificate } },
   { photo: increasePhoto, name: 'Increase Uchechukwu', role: 'Writer, SOP & CV Specialist' },
-  { photo: nnennaPhoto, name: 'Ugwuoke Nnenna Juliet', role: 'Strategy and Operations Lead' },
+  { photo: nnennaPhoto, name: 'Ugwoke Juliet Nnenna', role: 'Strategy and Operations Lead' },
   { photo: joshuaPhoto, name: 'Awoniyi Joshua Ayodeji', role: 'Research Assistant' },
   { photo: ochogePhoto, name: 'Ochoge Martins Ochonu', role: 'Graphic Designer' },
 ];
