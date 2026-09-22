@@ -665,7 +665,7 @@ export default function Home() {
                 onTouchEnd={(e) => e.currentTarget.classList.remove('touch-active')}
                 onTouchCancel={(e) => e.currentTarget.classList.remove('touch-active')}
               >
-                <img src={d.img} alt={d.name} loading="lazy" />
+                <img src={d.img} alt={d.name} loading="eager" />
                 <div className="dest-overlay">
                   <h4>{d.name}</h4>
                   <div className="stat">Avg. processing: {d.processing}</div>
