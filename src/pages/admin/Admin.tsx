@@ -198,6 +198,7 @@ export default function Admin() {
     setCaseSaving(false);
     setCaseSaveSuccess(true);
     refetchClients();
+    refetchCalendar();
   }
 
   async function handleDocumentStatusChange(docId: string, newStatus: string) {
@@ -694,7 +695,7 @@ export default function Admin() {
   const { testimonials, loading: testimonialsLoading, refetch: refetchTestimonials } = useTestimonials(isAuthedAdmin);
   const { tours: dbTours, loading: toursLoading, refetch: refetchTours } = useTourPackages(isAuthedAdmin);
   const { masterclasses, loading: masterclassesLoading, refetch: refetchMasterclasses } = useMasterclasses(isAuthedAdmin);
-  const { entries: calendarEntries, loading: calendarLoading } = useCalendarEntries(isAuthedAdmin);
+  const { entries: calendarEntries, loading: calendarLoading, refetch: refetchCalendar } = useCalendarEntries(isAuthedAdmin);
   const [calMonth, setCalMonth] = useState(() => {
     const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
