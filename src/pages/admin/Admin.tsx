@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import logoIcon from '../../assets/logo-icon.png';
 import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
+import { useIdleTimeout } from '../../hooks/useIdleTimeout';
 import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateClientAssignment, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, deleteSubmission, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
@@ -13,6 +14,13 @@ import { DESTINATIONS } from '../../data/destinations';
 import './Admin.css';
 
 type ViewId = 'dashboard' | 'clients' | 'inquiries' | 'calendar' | 'documents' | 'payments' | 'testimonials' | 'destinations' | 'tours' | 'staff';
+
+// Auto sign-out after this long with no mouse/keyboard/scroll activity,
+// with a countdown warning shown for the last ADMIN_IDLE_WARNING_MS of it.
+// The admin panel handles client payment/document data, so a session left
+// open unattended (e.g. a laptop at a cafe) shouldn't just stay logged in.
+const ADMIN_IDLE_TIMEOUT_MS = 15 * 60 * 1000;
+const ADMIN_IDLE_WARNING_MS = 60 * 1000;
 
 const NAV: { section: string; items: { id: ViewId; icon: string; label: string }[] }[] = [
   { section: 'Overview', items: [{ id: 'dashboard', icon: '◆', label: 'Dashboard' }] },
@@ -48,6 +56,13 @@ function Badge({ status }: { status: string }) {
 
 export default function Admin() {
   const auth = useAuth();
+  const isSignedInAdmin = !auth.loading && !!auth.userId && !!auth.role && auth.role !== 'client' && !auth.suspended;
+  const idle = useIdleTimeout({
+    enabled: isSignedInAdmin,
+    idleMs: ADMIN_IDLE_TIMEOUT_MS,
+    warningMs: ADMIN_IDLE_WARNING_MS,
+    onTimeout: () => { auth.signOut(); },
+  });
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -898,6 +913,23 @@ export default function Admin() {
 
   return (
     <div className="admin-root">
+      {idle.warning && (
+        <div className="modal-overlay open">
+          <div className="modal" style={{ maxWidth: 400 }}>
+            <div className="modal-head">
+              <div><h3>Still there?</h3></div>
+            </div>
+            <p style={{ margin: '0 0 20px', color: 'var(--slate)' }}>
+              You've been inactive for a while. For security, you'll be signed out in <strong>{idle.secondsLeft}s</strong>.
+            </p>
+            <div className="modal-actions">
+              <button className="btn-save" onClick={idle.stayActive}>Stay Signed In</button>
+              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => auth.signOut()}>Sign Out Now</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="demo-banner">
         {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
         <span className="demo-banner-sep">·</span>
