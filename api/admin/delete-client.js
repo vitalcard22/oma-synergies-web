@@ -34,9 +34,44 @@ module.exports = async function handler(req, res) {
     if (clientError || !clientRow) {
       res.status(404).json({ error: 'Client not found' }); return;
     }
+    const profileId = clientRow.profile_id;
 
-    // Delete the auth user — cascades through profiles, clients, applications, documents, messages
-    const { error: deleteError } = await supabase.auth.admin.deleteUser(clientRow.profile_id);
+    // A handful of tables reference clients/profiles WITHOUT "on delete cascade"
+    // (refunds -> payments, disputes/testimonials/contact_submissions -> clients,
+    // consent_log -> profiles). Deleting the auth user directly trips those
+    // foreign keys, and Supabase only ever surfaces it as a generic
+    // "Database error deleting user". Clear those first, in dependency order,
+    // then let the normal cascades handle everything else.
+
+    const { data: pays, error: paysError } = await supabase.from('payments').select('id').eq('client_id', clientId);
+    if (paysError) { res.status(500).json({ error: 'Delete failed: ' + paysError.message }); return; }
+    const paymentIds = (pays || []).map((p) => p.id);
+    if (paymentIds.length) {
+      const { error: refundsError } = await supabase.from('refunds').delete().in('payment_id', paymentIds);
+      if (refundsError) { res.status(500).json({ error: 'Delete failed: ' + refundsError.message }); return; }
+    }
+
+    const { error: disputesError } = await supabase.from('disputes').delete().eq('client_id', clientId);
+    if (disputesError) { res.status(500).json({ error: 'Delete failed: ' + disputesError.message }); return; }
+
+    // Keep testimonials and converted contact submissions as historical records —
+    // just unlink them from the client being removed instead of deleting them.
+    const { error: testimonialsError } = await supabase.from('testimonials').update({ client_id: null }).eq('client_id', clientId);
+    if (testimonialsError) { res.status(500).json({ error: 'Delete failed: ' + testimonialsError.message }); return; }
+
+    const { error: contactError } = await supabase.from('contact_submissions').update({ converted_client_id: null }).eq('converted_client_id', clientId);
+    if (contactError) { res.status(500).json({ error: 'Delete failed: ' + contactError.message }); return; }
+
+    const { error: consentError } = await supabase.from('consent_log').delete().eq('profile_id', profileId);
+    if (consentError) { res.status(500).json({ error: 'Delete failed: ' + consentError.message }); return; }
+
+    // Now safe to remove the client record itself — cascades through
+    // applications, stage_history, documents, messages, consultant_reminders, payments.
+    const { error: clientDeleteError } = await supabase.from('clients').delete().eq('id', clientId);
+    if (clientDeleteError) { res.status(500).json({ error: 'Delete failed: ' + clientDeleteError.message }); return; }
+
+    // Finally delete the auth user — cascades to the now-unblocked profiles row.
+    const { error: deleteError } = await supabase.auth.admin.deleteUser(profileId);
     if (deleteError) {
       res.status(500).json({ error: 'Delete failed: ' + deleteError.message }); return;
     }
