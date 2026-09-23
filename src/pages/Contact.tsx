@@ -170,9 +170,9 @@ export default function Contact() {
                     <img src={logoIcon} alt="Oma Synergies – go to home" />
                   </Link>
                 </div>
-                <a className="reach-orbit-point p-email" href="mailto:Omasynergiestravels@gmail.com">
+                <a className="reach-orbit-point p-email" href="mailto:info@omasynergiestravel.com">
                   <span className="reach-badge email"><MailIcon size={16} /></span>
-                  <div><div className="reach-label">Email</div><div className="reach-value">Omasynergiestravels@gmail.com</div></div>
+                  <div><div className="reach-label">Email</div><div className="reach-value">info@omasynergiestravel.com</div></div>
                 </a>
                 <a className="reach-orbit-point p-office" href="https://www.google.com/maps?q=Block+B8,+29/32+Utako+Market+Plaza,+Abuja" target="_blank" rel="noopener noreferrer">
                   <span className="reach-badge location"><MapPinIcon size={16} /></span>

@@ -74,7 +74,7 @@ export default function Privacy() {
                 </div>
                 <div className="clause">
                   <strong>How to Reach Us</strong>
-                  <p>For any privacy-related enquiry, contact us at <a href="mailto:Omasynergiestravels@gmail.com">Omasynergiestravels@gmail.com</a> or call 0806 769 6464.</p>
+                  <p>For any privacy-related enquiry, contact us at <a href="mailto:info@omasynergiestravel.com">info@omasynergiestravel.com</a> or call 0806 769 6464.</p>
                 </div>
               </section>
 
@@ -170,7 +170,7 @@ export default function Privacy() {
                 </div>
                 <div className="clause">
                   <strong>How to Exercise Your Rights</strong>
-                  <p>Email us at <a href="mailto:Omasynergiestravels@gmail.com">Omasynergiestravels@gmail.com</a> with the subject line "Privacy Request". We will respond within 14 business days.</p>
+                  <p>Email us at <a href="mailto:info@omasynergiestravel.com">info@omasynergiestravel.com</a> with the subject line "Privacy Request". We will respond within 14 business days.</p>
                 </div>
               </section>
 
@@ -194,7 +194,7 @@ export default function Privacy() {
                 </div>
                 <div className="clause">
                   <strong>Oma Synergies Travels and Tours Ltd</strong>
-                  <p>Block B8, 29/32 Utako Market Plaza, Abuja, Nigeria<br />Email: <a href="mailto:Omasynergiestravels@gmail.com">Omasynergiestravels@gmail.com</a><br />Phone: 0806 769 6464 · 0707 808 4746</p>
+                  <p>Block B8, 29/32 Utako Market Plaza, Abuja, Nigeria<br />Email: <a href="mailto:info@omasynergiestravel.com">info@omasynergiestravel.com</a><br />Phone: 0806 769 6464 · 0707 808 4746</p>
                 </div>
                 <div className="clause">
                   <strong>Updates to This Policy</strong>
