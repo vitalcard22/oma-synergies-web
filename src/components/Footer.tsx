@@ -24,7 +24,7 @@ export default function Footer() {
           <div className="footer-col">
             <h5>Contact</h5>
             <ul>
-              <li><a href="mailto:Omasynergiestravels@gmail.com">Omasynergiestravels@gmail.com</a></li>
+              <li><a href="mailto:info@omasynergiestravel.com">info@omasynergiestravel.com</a></li>
               <li><a href="tel:+2348067696464">0806 769 6464</a></li>
               <li><a href="tel:+2347078084746">0707 808 4746</a></li>
               <li>Block B8, 29/32 Utako Market Plaza, Abuja</li>
