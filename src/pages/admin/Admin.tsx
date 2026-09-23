@@ -13,7 +13,7 @@ import { DESTINATIONS } from '../../data/destinations';
 
 import './Admin.css';
 
-type ViewId = 'dashboard' | 'clients' | 'inquiries' | 'calendar' | 'documents' | 'payments' | 'testimonials' | 'destinations' | 'tours' | 'staff';
+type ViewId = 'dashboard' | 'clients' | 'inquiries' | 'calendar' | 'payments' | 'testimonials' | 'destinations' | 'tours' | 'staff';
 
 // Auto sign-out after this long with no mouse/keyboard/scroll activity,
 // with a countdown warning shown for the last ADMIN_IDLE_WARNING_MS of it.
@@ -30,7 +30,6 @@ const NAV: { section: string; items: { id: ViewId; icon: string; label: string }
       { id: 'clients', icon: '◈', label: 'Clients & Cases' },
       { id: 'inquiries', icon: '✉', label: 'Inquiries' },
       { id: 'calendar', icon: '▦', label: 'Consultation Calendar' },
-      { id: 'documents', icon: '▤', label: 'Documents' },
     ],
   },
   {
@@ -1311,21 +1310,6 @@ export default function Admin() {
                     </tbody>
                   </table>
                 )}
-              </div>
-            </div>
-          )}
-
-          {activeView === 'documents' && (
-            <div className="view active">
-              <div className="topbar"><div><div className="page-title">Document Review</div><div className="page-sub">All client documents are managed inside each individual case</div></div></div>
-              <div className="panel">
-                <div className="panel-head"><h3>How to review documents</h3></div>
-                <div className="empty-state" style={{ textAlign: 'left', padding: '24px' }}>
-                  <p style={{ marginBottom: 8 }}>
-                    Document review happens inside each client's case. Go to <strong>Clients & Cases</strong>, open a client, and use the Document Checklist section to mark documents as Received, Under Review, Approved, or Rejected (with a reason the client will see in their portal).
-                  </p>
-                  <p>To review a client's documents, open their case from Clients &amp; Cases and go to the Documents tab.</p>
-                </div>
               </div>
             </div>
           )}
