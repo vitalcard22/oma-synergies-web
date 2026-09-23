@@ -476,6 +476,11 @@
   .sidebar.mobile-open{
     display:flex;position:fixed;top:0;left:0;bottom:0;
     width:240px;z-index:150;
+    /* 100vh (inherited from .sidebar) can run taller than what's actually
+       visible once Safari's address bar / bottom toolbar are showing,
+       pushing the sign-out button in .sidebar-footer below the fold with
+       no way to scroll to it. 100dvh tracks the real visible viewport. */
+    height:100dvh;
     box-shadow:0 0 48px rgba(0,0,0,0.5);
   }
   .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:140;}
