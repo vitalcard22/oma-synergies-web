@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { to: '/tours', label: 'Tours' },
   { to: '/success-stories', label: 'Success Stories' },
   { to: '/about', label: 'About' },
+  { to: '/contact', label: 'Contact' },
 ];
 
 export default function Header() {
