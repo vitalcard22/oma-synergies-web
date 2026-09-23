@@ -47,6 +47,7 @@ export interface Database {
           created_by: string | null;
           last_login: string | null;
           created_at: string;
+          mood_emoji: string | null;
         };
         Insert: Partial<Database['public']['Tables']['profiles']['Row']> & {
           id: string;
