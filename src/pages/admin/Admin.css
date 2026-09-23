@@ -85,6 +85,33 @@
     transition:background .15s,color .15s;
   }
   .signout-btn:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);}
+
+  /* ---- MOOD PICKER (sidebar footer) ---- */
+  .mood-btn{
+    width:28px;height:28px;border-radius:6px;flex-shrink:0;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    font-size:15px;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s;
+  }
+  .mood-btn:hover{background:rgba(255,255,255,0.1);}
+  .mood-picker-overlay{position:fixed;inset:0;z-index:159;}
+  .mood-picker{
+    position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+    display:flex;gap:4px;padding:6px;z-index:160;
+    background:var(--navy-deep);border:1px solid rgba(255,255,255,0.1);
+    border-radius:9px;box-shadow:0 12px 32px rgba(0,0,0,0.4);
+    white-space:nowrap;
+  }
+  .mood-picker-option{
+    width:28px;height:28px;border-radius:6px;font-size:15px;line-height:1;
+    background:transparent;border:none;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .12s;
+  }
+  .mood-picker-option:hover{background:rgba(255,255,255,0.1);}
+  .mood-picker-clear{color:rgba(255,255,255,0.4);font-size:12px;}
   .nav-badge{
     margin-left:auto;
     font-family:var(--mono);font-size:9.5px;
@@ -93,7 +120,13 @@
   }
 
   /* ======== MAIN LAYOUT ======== */
-  .main{min-height:100vh;display:flex;flex-direction:column;}
+  /* min-width:0 overrides the flex/grid default (min-width:auto), which
+     otherwise lets a wide child (e.g. a table with its own min-width for
+     internal horizontal scroll) force this whole column to grow past the
+     viewport instead of staying put and letting that child scroll on its
+     own. Without it, mobile pages with a wide table push everything —
+     even the topbar above the table — off the right edge of the screen. */
+  .main{min-height:100vh;display:flex;flex-direction:column;min-width:0;}
 
   .demo-banner{
     background:var(--navy-deep);
@@ -104,7 +137,7 @@
   .demo-banner-sep{margin:0 8px;opacity:0.4;}
 
   .view{display:none;}
-  .view.active{display:block;padding:0 32px 52px;}
+  .view.active{display:block;padding:0 32px 52px;min-width:0;}
   @media(max-width:900px){.view.active{padding:0 16px 40px;}}
 
   /* ======== TOPBAR ======== */

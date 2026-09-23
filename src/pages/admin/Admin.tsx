@@ -15,6 +15,9 @@ import './Admin.css';
 
 type ViewId = 'dashboard' | 'clients' | 'inquiries' | 'calendar' | 'payments' | 'testimonials' | 'destinations' | 'tours' | 'staff';
 
+// Kept in sync with ALLOWED_EMOJI in api/admin/update-mood.js.
+const MOOD_OPTIONS = ['😊', '😐', '😫', '☕', '😴', '🎯'];
+
 // Auto sign-out after this long with no mouse/keyboard/scroll activity,
 // with a countdown warning shown for the last ADMIN_IDLE_WARNING_MS of it.
 // The admin panel handles client payment/document data, so a session left
@@ -62,6 +65,7 @@ export default function Admin() {
     warningMs: ADMIN_IDLE_WARNING_MS,
     onTimeout: () => { auth.signOut(); },
   });
+  const [moodPickerOpen, setMoodPickerOpen] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -997,6 +1001,34 @@ export default function Admin() {
                 <div className="sidebar-user-role">{auth.role === 'super_admin' ? 'Super Admin' : 'Staff Admin'}</div>
               </div>
             </div>
+            <div style={{ position: 'relative' }}>
+              <button className="mood-btn" onClick={() => setMoodPickerOpen((v) => !v)} title="Set your mood">
+                {auth.moodEmoji || '🙂'}
+              </button>
+              {moodPickerOpen && (
+                <>
+                  <div className="mood-picker-overlay" onClick={() => setMoodPickerOpen(false)} />
+                  <div className="mood-picker">
+                    {MOOD_OPTIONS.map((e) => (
+                      <button
+                        key={e}
+                        className="mood-picker-option"
+                        onClick={async () => { await auth.updateMood(e); setMoodPickerOpen(false); }}
+                      >
+                        {e}
+                      </button>
+                    ))}
+                    <button
+                      className="mood-picker-option mood-picker-clear"
+                      title="Clear mood"
+                      onClick={async () => { await auth.updateMood(null); setMoodPickerOpen(false); }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
             <button className="signout-btn" onClick={() => auth.signOut()} title="Sign out">↪</button>
           </div>
         </aside>
@@ -1551,11 +1583,12 @@ export default function Admin() {
                       <div className="empty-state">Loading…</div>
                     ) : (
                       <table>
-                        <thead><tr><th>Name</th><th>Role</th><th>Active Clients</th><th>Status</th><th></th></tr></thead>
+                        <thead><tr><th>Name</th><th>Mood</th><th>Role</th><th>Active Clients</th><th>Status</th><th></th></tr></thead>
                         <tbody>
                           {staff.map((s) => (
                             <tr key={s.id}>
                               <td><span className="avatar-sm">{getInitials(s.full_name)}</span>{s.full_name}{s.id === auth.userId && ' (you)'}</td>
+                              <td style={{ fontSize: 16 }}>{s.mood_emoji || '—'}</td>
                               <td>{s.role === 'super_admin' ? 'Super Admin' : (s.title || 'Staff Admin')}</td>
                               <td>{s.clientCount}</td>
                               <td><Badge status={s.status === 'active' ? 'Active' : 'Suspended'} /></td>
