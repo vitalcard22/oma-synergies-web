@@ -8,6 +8,7 @@ interface AuthState {
   email: string | null;
   role: UserRole | null;
   fullName: string | null;
+  moodEmoji: string | null;
   suspended: boolean;
 }
 
@@ -17,6 +18,7 @@ const initialState: AuthState = {
   email: null,
   role: null,
   fullName: null,
+  moodEmoji: null,
   suspended: false,
 };
 
@@ -35,7 +37,7 @@ export function useAuth() {
     async function loadProfile(userId: string, email: string | undefined) {
       const { data, error } = await supabase
         .from('profiles')
-        .select('role, full_name, status')
+        .select('role, full_name, status, mood_emoji')
         .eq('id', userId)
         .single();
 
@@ -69,6 +71,7 @@ export function useAuth() {
         email: email ?? null,
         role: data.role,
         fullName: data.full_name,
+        moodEmoji: data.mood_emoji,
         suspended: false,
       });
     }
@@ -107,5 +110,23 @@ export function useAuth() {
     await supabase.auth.signOut();
   }
 
-  return { ...state, signIn, signOut };
+  // Server-side only (see api/admin/update-mood.js) - profiles writes are
+  // restricted by RLS to super_admin, so a plain staff_admin setting their
+  // own mood has to go through the service-role endpoint, not a direct
+  // Supabase client update. Optimistically updates local state on success.
+  async function updateMood(emoji: string | null) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return 'Not signed in';
+    const res = await fetch('/api/admin/update-mood', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ emoji }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) return json.error ?? 'Failed to update mood';
+    setState((s) => ({ ...s, moodEmoji: emoji }));
+    return null;
+  }
+
+  return { ...state, signIn, signOut, updateMood };
 }
