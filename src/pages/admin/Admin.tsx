@@ -3,7 +3,7 @@ import logoIcon from '../../assets/logo-icon.png';
 import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
 import { useIdleTimeout } from '../../hooks/useIdleTimeout';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateClientAssignment, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, deleteSubmission, updateStaffStatus, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateClientAssignment, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, deleteSubmission, updateStaffStatus, type StaffWithCount, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -642,6 +642,46 @@ export default function Admin() {
     const newStatus = currentStatus === 'suspended' ? 'active' : 'suspended';
     await updateStaffStatus(staffId, newStatus);
     refetchStaff();
+  }
+
+  // ---- Delete Staff (real, irreversible - requires typing the name to confirm) ----
+  const [deleteStaffTarget, setDeleteStaffTarget] = useState<StaffWithCount | null>(null);
+  const [deleteStaffConfirmText, setDeleteStaffConfirmText] = useState('');
+  const [deleteStaffSubmitting, setDeleteStaffSubmitting] = useState(false);
+  const [deleteStaffError, setDeleteStaffError] = useState<string | null>(null);
+
+  async function handleDeleteStaff() {
+    if (!deleteStaffTarget) return;
+    if (!isSuperAdmin) { setDeleteStaffError('Only the Super Admin can remove staff accounts.'); return; }
+    setDeleteStaffError(null);
+    setDeleteStaffSubmitting(true);
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setDeleteStaffError('Your session has expired - please sign in again.');
+      setDeleteStaffSubmitting(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/delete-staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ staffId: deleteStaffTarget.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setDeleteStaffError(data.error ?? 'Something went wrong removing this staff account.');
+        setDeleteStaffSubmitting(false);
+        return;
+      }
+      setDeleteStaffTarget(null);
+      setDeleteStaffConfirmText('');
+      refetchStaff();
+    } catch {
+      setDeleteStaffError('Could not reach the server. Check your connection and try again.');
+    }
+    setDeleteStaffSubmitting(false);
   }
 
   // ---- Delete Client (real, irreversible - requires typing the name to confirm) ----
@@ -1594,9 +1634,14 @@ export default function Admin() {
                               <td><Badge status={s.status === 'active' ? 'Active' : 'Suspended'} /></td>
                               <td className="row-actions">
                                 {s.role !== 'super_admin' && (
-                                  <button className="icon-btn" title={s.status === 'suspended' ? 'Reactivate' : 'Suspend'} onClick={() => handleToggleStaffStatus(s.id, s.status)}>
-                                    {s.status === 'suspended' ? '↺' : '⏸'}
-                                  </button>
+                                  <>
+                                    <button className="icon-btn" title={s.status === 'suspended' ? 'Reactivate' : 'Suspend'} onClick={() => handleToggleStaffStatus(s.id, s.status)}>
+                                      {s.status === 'suspended' ? '↺' : '⏸'}
+                                    </button>
+                                    <button className="icon-btn" title="Remove staff account" onClick={() => { setDeleteStaffTarget(s); setDeleteStaffConfirmText(''); setDeleteStaffError(null); }}>
+                                      🗑
+                                    </button>
+                                  </>
                                 )}
                               </td>
                             </tr>
@@ -2239,6 +2284,38 @@ export default function Admin() {
                 {deleteSubmitting ? 'Deleting…' : 'Delete Permanently'}
               </button>
               <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => { setDeleteTarget(null); setDeleteConfirmText(''); }} disabled={deleteSubmitting}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteStaffTarget && (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !deleteStaffSubmitting) { setDeleteStaffTarget(null); setDeleteStaffConfirmText(''); } }}>
+          <div className="modal" style={{ maxWidth: 460 }}>
+            <div className="modal-head">
+              <div><h3>Remove {deleteStaffTarget.full_name}?</h3><div className="page-sub">This permanently deletes their account and login access. This action cannot be reversed.</div></div>
+              <button className="modal-close" onClick={() => { setDeleteStaffTarget(null); setDeleteStaffConfirmText(''); }}>✕</button>
+            </div>
+            <div className="form-row">
+              <label>Type "{deleteStaffTarget.full_name}" to confirm</label>
+              <input
+                type="text"
+                value={deleteStaffConfirmText}
+                onChange={(e) => setDeleteStaffConfirmText(e.target.value)}
+                placeholder={deleteStaffTarget.full_name}
+              />
+            </div>
+            {deleteStaffError && <div className="login-error">{deleteStaffError}</div>}
+            <div className="modal-actions">
+              <button
+                className="login-btn"
+                style={{ background: '#B3261E' }}
+                disabled={deleteStaffSubmitting || deleteStaffConfirmText !== deleteStaffTarget.full_name}
+                onClick={handleDeleteStaff}
+              >
+                {deleteStaffSubmitting ? 'Removing…' : 'Remove Permanently'}
+              </button>
+              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => { setDeleteStaffTarget(null); setDeleteStaffConfirmText(''); }} disabled={deleteStaffSubmitting}>Cancel</button>
             </div>
           </div>
         </div>
