@@ -12,6 +12,7 @@ import { useTestimonials } from '../hooks/useTestimonials';
 import { getInitials } from '../utils/initials';
 import { GROUP_DISCOUNT_PERCENT, GROUP_DISCOUNT_MIN_SIZE, formatNaira, formatDuration } from '../data/tours';
 import { usePublicTours } from '../lib/usePublicTours';
+import { usePublicAnnouncements } from '../lib/usePublicAnnouncements';
 import kcOverseasTeam from '../assets/kc-overseas-team.jpg';
 import wwdTeamPhoto from '../assets/wwd-team.jpg';
 import wwdStaffDesk from '../assets/wwd-staff-desk.jpg';
@@ -120,6 +121,7 @@ export default function Home() {
   const heroStatsRef = useCountUp();
   const { testimonials } = useTestimonials();
   const { tours } = usePublicTours();
+  const { announcements } = usePublicAnnouncements();
 
   const [headlineIdx, setHeadlineIdx] = useState(0);
   const [leadIdx, setLeadIdx] = useState(0);
@@ -710,6 +712,46 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ON THE RADAR — announcements section (only renders when there is ≥1 active entry) */}
+      {announcements.length > 0 && (
+        <section className="radar-section">
+          <div className="wrap">
+            <div className="section-head reveal">
+              <span className="eyebrow">On The Radar</span>
+              <h2>Latest from Oma Synergies</h2>
+            </div>
+            <div className={`radar-grid reveal stagger${announcements.length === 1 ? ' radar-single' : ''}`}>
+              {announcements.map((a) => (
+                <div className="radar-card" key={a.id}>
+                  {a.image_url && (
+                    <div className="radar-card-img">
+                      <img src={a.image_url} alt={a.title} loading="lazy" />
+                    </div>
+                  )}
+                  <div className="radar-card-body">
+                    <div className="radar-card-date">
+                      {new Date(a.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </div>
+                    <h4 className="radar-card-title">{a.title}</h4>
+                    {a.body && <p className="radar-card-text">{a.body}</p>}
+                    {a.link && (
+                      <a
+                        href={a.link}
+                        className="radar-card-link"
+                        target={a.link.startsWith('http') ? '_blank' : undefined}
+                        rel={a.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      >
+                        {a.link_label ?? 'Learn More'} →
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* TESTIMONIALS */}
       <div className="test-wrap" id="stories">

@@ -832,3 +832,76 @@ export async function deletePayment(id: string): Promise<string | null> {
   const { error } = await supabase.from('payments').delete().eq('id', id);
   return error?.message ?? null;
 }
+
+// ---- Announcements ("On The Radar") ----
+
+export interface AnnouncementRow {
+  id: string;
+  title: string;
+  body: string | null;
+  image_url: string | null;
+  link: string | null;
+  link_label: string | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export function useAnnouncements(enabled = true) {
+  const [announcements, setAnnouncements] = useState<AnnouncementRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refetch = useCallback(async () => {
+    if (!enabled) { setLoading(false); return; }
+    setLoading(true);
+    const { data } = await supabase
+      .from('announcements')
+      .select('*')
+      .order('created_at', { ascending: false });
+    setAnnouncements((data as AnnouncementRow[]) ?? []);
+    setLoading(false);
+  }, [enabled]);
+
+  useEffect(() => { refetch(); }, [refetch]);
+  return { announcements, loading, refetch };
+}
+
+export interface AnnouncementInput {
+  title: string;
+  body: string;
+  imageUrl: string;
+  link: string;
+  linkLabel: string;
+  active: boolean;
+}
+
+export async function upsertAnnouncement(
+  id: string | null,
+  input: AnnouncementInput
+): Promise<{ error: string | null; id: string | null }> {
+  const payload = {
+    title: input.title,
+    body: input.body || null,
+    image_url: input.imageUrl || null,
+    link: input.link || null,
+    link_label: input.linkLabel || null,
+    active: input.active,
+    updated_at: new Date().toISOString(),
+  };
+  if (id) {
+    const { error } = await supabase.from('announcements').update(payload).eq('id', id);
+    return { error: error?.message ?? null, id };
+  } else {
+    const { data, error } = await supabase
+      .from('announcements')
+      .insert(payload)
+      .select('id')
+      .single();
+    return { error: error?.message ?? null, id: (data as { id: string } | null)?.id ?? null };
+  }
+}
+
+export async function deleteAnnouncement(id: string): Promise<string | null> {
+  const { error } = await supabase.from('announcements').delete().eq('id', id);
+  return error?.message ?? null;
+}

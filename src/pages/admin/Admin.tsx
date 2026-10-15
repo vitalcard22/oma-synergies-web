@@ -3,7 +3,7 @@ import logoIcon from '../../assets/logo-icon.png';
 import logoFull from '../../assets/logo-full.png';
 import { useAuth } from '../../hooks/useAuth';
 import { useIdleTimeout } from '../../hooks/useIdleTimeout';
-import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateClientAssignment, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, deleteSubmission, updateStaffStatus, type StaffWithCount, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails } from '../../hooks/useAdminData';
+import { useClients, useDashboardStats, useRecentActivity, useApplicationDocuments, useContactSubmissions, useStaffList, usePayments, useTourPackages, useMasterclasses, useClientMessages, updateApplicationStage, updateApplicationNotes, updateApplicationKeyDate, updateClientAssignment, updateDocumentStatus, updateSubmissionStatus, convertSubmissionToClient, deleteSubmission, updateStaffStatus, type StaffWithCount, addPayment, deletePayment, updateTestimonialStatus, addTestimonial, upsertTourPackage, updateTourStatus, deleteTour, upsertMasterclass, sendAdminMessage, useCalendarEntries, startNewApplication, type ClientWithDetails, useAnnouncements, upsertAnnouncement, deleteAnnouncement } from '../../hooks/useAdminData';
 import { useTestimonials } from '../../hooks/useTestimonials';
 import { supabase } from '../../lib/supabase';
 import type { Database } from '../../lib/database.types';
@@ -13,7 +13,7 @@ import { DESTINATIONS } from '../../data/destinations';
 
 import './Admin.css';
 
-type ViewId = 'dashboard' | 'clients' | 'inquiries' | 'calendar' | 'payments' | 'testimonials' | 'destinations' | 'tours' | 'staff';
+type ViewId = 'dashboard' | 'clients' | 'inquiries' | 'calendar' | 'payments' | 'testimonials' | 'destinations' | 'tours' | 'staff' | 'announcements';
 
 // Kept in sync with ALLOWED_EMOJI in api/admin/update-mood.js.
 const MOOD_OPTIONS = ['😊', '😐', '😫', '☕', '😴', '🎯'];
@@ -41,6 +41,7 @@ const NAV: { section: string; items: { id: ViewId; icon: string; label: string }
       { id: 'testimonials', icon: '❝', label: 'Testimonials' },
       { id: 'destinations', icon: '◎', label: 'Destinations' },
       { id: 'tours', icon: '✈', label: 'Tours & Packages' },
+      { id: 'announcements', icon: '📡', label: 'On The Radar' },
     ],
   },
   { section: 'Finance', items: [{ id: 'payments', icon: '₦', label: 'Payments' }] },
@@ -506,6 +507,96 @@ export default function Admin() {
     refetchMasterclasses();
   }
 
+  // ---- Announcement add/edit ----
+  type AnnouncementFormState = { id: string | null; title: string; body: string; imageUrl: string; link: string; linkLabel: string; active: boolean };
+  const emptyAnnouncementForm: AnnouncementFormState = { id: null, title: '', body: '', imageUrl: '', link: '', linkLabel: '', active: true };
+  const [announcementModalOpen, setAnnouncementModalOpen] = useState(false);
+  const [announcementForm, setAnnouncementForm] = useState<AnnouncementFormState>(emptyAnnouncementForm);
+  const [announcementSaving, setAnnouncementSaving] = useState(false);
+  const [announcementError, setAnnouncementError] = useState<string | null>(null);
+  const [announcementPhotoFile, setAnnouncementPhotoFile] = useState<File | null>(null);
+  const [announcementPhotoPreview, setAnnouncementPhotoPreview] = useState<string | null>(null);
+  const [announcementPhotoUploading, setAnnouncementPhotoUploading] = useState(false);
+  const [announcementPhotoCompressing, setAnnouncementPhotoCompressing] = useState(false);
+
+  function openAnnouncementModal(a?: { id: string; title: string; body: string | null; image_url: string | null; link: string | null; link_label: string | null; active: boolean }) {
+    setAnnouncementForm(a
+      ? { id: a.id, title: a.title, body: a.body ?? '', imageUrl: a.image_url ?? '', link: a.link ?? '', linkLabel: a.link_label ?? '', active: a.active }
+      : emptyAnnouncementForm);
+    setAnnouncementPhotoFile(null);
+    setAnnouncementPhotoPreview(a?.image_url ?? null);
+    setAnnouncementError(null);
+    setAnnouncementModalOpen(true);
+  }
+
+  async function handleAnnouncementPhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { setAnnouncementError('Photo must be under 5MB.'); return; }
+    setAnnouncementError(null);
+    setAnnouncementPhotoCompressing(true);
+    try {
+      const compressed = await compressImage(file);
+      setAnnouncementPhotoFile(compressed);
+      setAnnouncementPhotoPreview(URL.createObjectURL(compressed));
+    } catch {
+      setAnnouncementPhotoFile(file);
+      setAnnouncementPhotoPreview(URL.createObjectURL(file));
+    }
+    setAnnouncementPhotoCompressing(false);
+  }
+
+  async function handleSaveAnnouncement() {
+    if (!announcementForm.title.trim()) { setAnnouncementError('Title is required.'); return; }
+    setAnnouncementSaving(true);
+
+    let imageUrl = announcementForm.imageUrl;
+
+    // Upload photo first if a new one was selected
+    if (announcementPhotoFile) {
+      setAnnouncementPhotoUploading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const base64 = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve((reader.result as string).split(',')[1]);
+          reader.readAsDataURL(announcementPhotoFile);
+        });
+        const uploadRes = await fetch('/api/admin/upload-announcement-photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+          body: JSON.stringify({ fileName: announcementPhotoFile.name, fileBase64: base64, mimeType: announcementPhotoFile.type }),
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadRes.ok) {
+          setAnnouncementError(uploadData.error ?? 'Photo upload failed.');
+          setAnnouncementSaving(false);
+          setAnnouncementPhotoUploading(false);
+          return;
+        }
+        if (uploadData.photoUrl) {
+          imageUrl = uploadData.photoUrl;
+          setAnnouncementPhotoPreview(uploadData.photoUrl);
+        }
+      }
+      setAnnouncementPhotoUploading(false);
+    }
+
+    const { error: saveErr } = await upsertAnnouncement(announcementForm.id, {
+      title: announcementForm.title,
+      body: announcementForm.body,
+      imageUrl,
+      link: announcementForm.link,
+      linkLabel: announcementForm.linkLabel,
+      active: announcementForm.active,
+    });
+    setAnnouncementSaving(false);
+    if (saveErr) { setAnnouncementError(saveErr); return; }
+    setAnnouncementModalOpen(false);
+    setAnnouncementPhotoFile(null);
+    refetchAnnouncements();
+  }
+
   // ---- Add / Approve / Reject Testimonial ----
   const [addTestimonialOpen, setAddTestimonialOpen] = useState(false);
   const [testimonialForm, setTestimonialForm] = useState({ clientName: '', destination: '', category: 'Study', serviceTag: '', quote: '', clientId: '' });
@@ -739,6 +830,7 @@ export default function Admin() {
   const { tours: dbTours, loading: toursLoading, refetch: refetchTours } = useTourPackages(isAuthedAdmin);
   const { masterclasses, loading: masterclassesLoading, refetch: refetchMasterclasses } = useMasterclasses(isAuthedAdmin);
   const { entries: calendarEntries, loading: calendarLoading, refetch: refetchCalendar } = useCalendarEntries(isAuthedAdmin);
+  const { announcements, loading: announcementsLoading, refetch: refetchAnnouncements } = useAnnouncements(isAuthedAdmin);
   const [calMonth, setCalMonth] = useState(() => {
     const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
@@ -1607,6 +1699,69 @@ export default function Admin() {
             </div>
           )}
 
+          {activeView === 'announcements' && (
+            <div className="view active">
+              <div className="topbar">
+                <div>
+                  <div className="page-title">On The Radar</div>
+                  <div className="page-sub">Active announcements appear on the homepage — toggle any off to hide it without deleting</div>
+                </div>
+                <button className="btn-add" onClick={() => openAnnouncementModal()}>+ Add Announcement</button>
+              </div>
+              <div className="panel">
+                <div className="panel-head"><h3>All Announcements ({announcements.length})</h3></div>
+                {announcementsLoading ? (
+                  <div className="empty-state">Loading…</div>
+                ) : announcements.length === 0 ? (
+                  <div className="empty-state">No announcements yet. Add your first one using the button above.</div>
+                ) : (
+                  <div className="announcement-card-list">
+                    {announcements.map((a) => (
+                      <div key={a.id} className={`announcement-card${!a.active ? ' announcement-card-inactive' : ''}`}>
+                        {a.image_url && (
+                          <div className="announcement-card-img">
+                            <img src={a.image_url} alt={a.title} />
+                          </div>
+                        )}
+                        <div className="announcement-card-body">
+                          <div className="announcement-card-top">
+                            <div>
+                              <div className="announcement-card-title">{a.title}</div>
+                              <div className="announcement-card-date">
+                                {new Date(a.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              </div>
+                            </div>
+                            <span className={`badge ${a.active ? 'status-done' : 'status-pending'}`}>{a.active ? 'Active' : 'Hidden'}</span>
+                          </div>
+                          {a.body && <div className="announcement-card-body-text">{a.body}</div>}
+                          {a.link && <div className="announcement-card-link-preview">🔗 {a.link_label || 'Link'}: {a.link}</div>}
+                          <div className="announcement-card-actions">
+                            <button className="btn-row" onClick={() => openAnnouncementModal(a)}>Edit</button>
+                            <button
+                              className="btn-row"
+                              onClick={() => upsertAnnouncement(a.id, { title: a.title, body: a.body ?? '', imageUrl: a.image_url ?? '', link: a.link ?? '', linkLabel: a.link_label ?? '', active: !a.active }).then(() => refetchAnnouncements())}
+                            >
+                              {a.active ? 'Hide' : 'Publish'}
+                            </button>
+                            <button
+                              className="btn-row btn-row-danger"
+                              onClick={async () => {
+                                if (window.confirm(`Delete "${a.title}"? This cannot be undone.`)) {
+                                  await deleteAnnouncement(a.id);
+                                  refetchAnnouncements();
+                                }
+                              }}
+                            >Delete</button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {activeView === 'staff' && (
             <div className="view active">
               {!isSuperAdmin ? (
@@ -1719,6 +1874,93 @@ export default function Admin() {
                 {tourPhotoUploading ? 'Uploading photo…' : tourSaving ? 'Saving…' : 'Save'}
               </button>
               <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setTourModalOpen(false)} disabled={tourSaving || tourPhotoUploading}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {announcementModalOpen && (
+        <div className="modal-overlay open" onClick={(e) => { if (e.target === e.currentTarget && !announcementSaving) setAnnouncementModalOpen(false); }}>
+          <div className="modal" style={{ maxWidth: 500 }}>
+            <div className="modal-head">
+              <div><h3>{announcementForm.id ? 'Edit Announcement' : 'New Announcement'}</h3></div>
+              <button className="modal-close" onClick={() => setAnnouncementModalOpen(false)}>✕</button>
+            </div>
+
+            {/* Photo upload */}
+            <div className="form-row">
+              <label>Image <span className="form-label-meta">optional — displays above the announcement card</span></label>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                {announcementPhotoPreview ? (
+                  <img
+                    src={announcementPhotoPreview}
+                    alt="Preview"
+                    style={{ width: 120, height: 70, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--line-dark)', flexShrink: 0 }}
+                  />
+                ) : (
+                  <div style={{ width: 120, height: 70, borderRadius: 8, border: '1px dashed var(--line-dark)', background: 'var(--paper)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: 'var(--slate-light)', flexShrink: 0 }}>
+                    No image
+                  </div>
+                )}
+                <div style={{ flex: 1 }}>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    id="announcement-photo-input"
+                    style={{ display: 'none' }}
+                    onChange={handleAnnouncementPhotoSelect}
+                  />
+                  <label
+                    htmlFor="announcement-photo-input"
+                    style={{ display: 'inline-block', cursor: 'pointer', padding: '8px 14px', background: 'var(--paper)', border: '1px solid var(--line-dark)', borderRadius: 7, fontSize: 12.5, color: 'var(--navy)', fontWeight: 600, opacity: announcementPhotoCompressing ? 0.6 : 1, pointerEvents: announcementPhotoCompressing ? 'none' : 'auto' }}
+                  >
+                    {announcementPhotoCompressing ? 'Compressing…' : announcementPhotoFile ? 'Change Image' : 'Choose Image'}
+                  </label>
+                  {announcementPhotoFile && !announcementPhotoCompressing && <div style={{ marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)' }}>Image selected · {(announcementPhotoFile.size / 1024).toFixed(0)}KB (compressed)</div>}
+                  {announcementForm.imageUrl && !announcementPhotoFile && (
+                    <button
+                      type="button"
+                      style={{ display: 'block', marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                      onClick={() => { setAnnouncementPhotoPreview(null); setAnnouncementForm((f) => ({ ...f, imageUrl: '' })); }}
+                    >
+                      Remove image
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="form-row">
+              <label>Title</label>
+              <input type="text" placeholder="New Service Launched, Special Offer…" value={announcementForm.title} onChange={(e) => setAnnouncementForm((f) => ({ ...f, title: e.target.value }))} />
+            </div>
+            <div className="form-row">
+              <label>Body <span className="form-label-meta">optional</span></label>
+              <textarea className="notes-box" rows={3} placeholder="A short description shown on the card…" value={announcementForm.body} onChange={(e) => setAnnouncementForm((f) => ({ ...f, body: e.target.value }))} />
+            </div>
+            <div className="form-two">
+              <div className="form-row">
+                <label>Link URL <span className="form-label-meta">optional</span></label>
+                <input type="text" placeholder="https://… or /page" value={announcementForm.link} onChange={(e) => setAnnouncementForm((f) => ({ ...f, link: e.target.value }))} />
+              </div>
+              <div className="form-row">
+                <label>Link Label</label>
+                <input type="text" placeholder="Learn More" value={announcementForm.linkLabel} onChange={(e) => setAnnouncementForm((f) => ({ ...f, linkLabel: e.target.value }))} />
+              </div>
+            </div>
+            <div className="form-row">
+              <label>Visibility</label>
+              <select value={announcementForm.active ? 'active' : 'hidden'} onChange={(e) => setAnnouncementForm((f) => ({ ...f, active: e.target.value === 'active' }))}>
+                <option value="active">Active — visible on homepage</option>
+                <option value="hidden">Hidden — saved but not shown</option>
+              </select>
+            </div>
+            {announcementError && <div className="login-error">{announcementError}</div>}
+            <div className="modal-actions">
+              <button className="btn-save" onClick={handleSaveAnnouncement} disabled={announcementSaving || announcementPhotoUploading || announcementPhotoCompressing}>
+                {announcementPhotoUploading ? 'Uploading image…' : announcementSaving ? 'Saving…' : 'Save'}
+              </button>
+              <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setAnnouncementModalOpen(false)} disabled={announcementSaving || announcementPhotoUploading}>Cancel</button>
             </div>
           </div>
         </div>

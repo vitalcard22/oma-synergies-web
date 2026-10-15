@@ -1298,3 +1298,48 @@
   .tour-card-actions .btn-row{
     flex:1;text-align:center;padding:8px 10px;font-size:12.5px;
   }
+
+  /* ---- ANNOUNCEMENT CARD LIST ---- */
+  .announcement-card-list{ display:flex;flex-direction:column; }
+  .announcement-card{
+    border-bottom:1px solid var(--line-dark);
+    overflow:hidden;
+    display:flex;
+    gap:0;
+  }
+  .announcement-card:last-child{ border-bottom:none; }
+  .announcement-card-inactive{ opacity:0.55; }
+  .announcement-card-img{
+    width:120px;flex-shrink:0;
+    background:var(--paper);overflow:hidden;
+  }
+  .announcement-card-img img{
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+  .announcement-card-body{ padding:14px 16px;flex:1;min-width:0; }
+  .announcement-card-top{
+    display:flex;align-items:flex-start;
+    justify-content:space-between;gap:10px;
+    margin-bottom:8px;
+  }
+  .announcement-card-title{
+    font-size:14px;font-weight:600;color:var(--navy);margin-bottom:3px;
+  }
+  .announcement-card-date{
+    font-size:11.5px;color:var(--slate-light);font-family:var(--mono);letter-spacing:0.03em;
+  }
+  .announcement-card-body-text{
+    font-size:13px;color:var(--slate);line-height:1.55;margin-bottom:8px;
+    white-space:pre-line;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .announcement-card-link-preview{
+    font-size:11.5px;color:var(--slate-light);margin-bottom:8px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .announcement-card-actions{
+    display:flex;gap:8px;
+  }
+  .announcement-card-actions .btn-row{
+    padding:7px 14px;font-size:12.5px;
+  }
