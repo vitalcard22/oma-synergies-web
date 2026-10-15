@@ -20,8 +20,8 @@ export function usePublicAnnouncements() {
     async function load() {
       try {
         const { supabase } = await import('./supabase');
-        const { data, error } = await supabase
-          .from('announcements')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data, error } = await (supabase.from('announcements') as any)
           .select('id, title, body, image_url, link, link_label, created_at')
           .eq('active', true)
           .order('created_at', { ascending: false })

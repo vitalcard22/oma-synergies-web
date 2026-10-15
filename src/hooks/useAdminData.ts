@@ -854,8 +854,8 @@ export function useAnnouncements(enabled = true) {
   const refetch = useCallback(async () => {
     if (!enabled) { setLoading(false); return; }
     setLoading(true);
-    const { data } = await supabase
-      .from('announcements')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data } = await (supabase.from('announcements') as any)
       .select('*')
       .order('created_at', { ascending: false });
     setAnnouncements((data as AnnouncementRow[]) ?? []);
@@ -888,20 +888,19 @@ export async function upsertAnnouncement(
     active: input.active,
     updated_at: new Date().toISOString(),
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const table = supabase.from('announcements') as any;
   if (id) {
-    const { error } = await supabase.from('announcements').update(payload).eq('id', id);
+    const { error } = await table.update(payload).eq('id', id);
     return { error: error?.message ?? null, id };
   } else {
-    const { data, error } = await supabase
-      .from('announcements')
-      .insert(payload)
-      .select('id')
-      .single();
+    const { data, error } = await table.insert(payload).select('id').single();
     return { error: error?.message ?? null, id: (data as { id: string } | null)?.id ?? null };
   }
 }
 
 export async function deleteAnnouncement(id: string): Promise<string | null> {
-  const { error } = await supabase.from('announcements').delete().eq('id', id);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase.from('announcements') as any).delete().eq('id', id);
   return error?.message ?? null;
 }
