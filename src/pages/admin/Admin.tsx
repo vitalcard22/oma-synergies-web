@@ -518,6 +518,7 @@ export default function Admin() {
   const [announcementPhotoPreview, setAnnouncementPhotoPreview] = useState<string | null>(null);
   const [announcementPhotoUploading, setAnnouncementPhotoUploading] = useState(false);
   const [announcementPhotoCompressing, setAnnouncementPhotoCompressing] = useState(false);
+  const [announcementMediaIsVideo, setAnnouncementMediaIsVideo] = useState(false);
 
   function openAnnouncementModal(a?: { id: string; title: string; body: string | null; image_url: string | null; link: string | null; link_label: string | null; active: boolean }) {
     setAnnouncementForm(a
@@ -525,6 +526,7 @@ export default function Admin() {
       : emptyAnnouncementForm);
     setAnnouncementPhotoFile(null);
     setAnnouncementPhotoPreview(a?.image_url ?? null);
+    setAnnouncementMediaIsVideo(a ? /\.(mp4|webm|mov)$/i.test(a.image_url ?? '') : false);
     setAnnouncementError(null);
     setAnnouncementModalOpen(true);
   }
@@ -532,8 +534,16 @@ export default function Admin() {
   async function handleAnnouncementPhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { setAnnouncementError('Photo must be under 5MB.'); return; }
+    const isVid = file.type.startsWith('video/');
+    const maxBytes = isVid ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    if (file.size > maxBytes) { setAnnouncementError(isVid ? 'Video must be under 50MB.' : 'Photo must be under 5MB.'); return; }
     setAnnouncementError(null);
+    setAnnouncementMediaIsVideo(isVid);
+    if (isVid) {
+      setAnnouncementPhotoFile(file);
+      setAnnouncementPhotoPreview(URL.createObjectURL(file));
+      return;
+    }
     setAnnouncementPhotoCompressing(true);
     try {
       const compressed = await compressImage(file);
@@ -1720,7 +1730,11 @@ export default function Admin() {
                       <div key={a.id} className={`announcement-card${!a.active ? ' announcement-card-inactive' : ''}`}>
                         {a.image_url && (
                           <div className="announcement-card-img">
-                            <img src={a.image_url} alt={a.title} />
+                            {/\.(mp4|webm|mov)$/i.test(a.image_url) ? (
+                              <video src={a.image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted playsInline loop />
+                            ) : (
+                              <img src={a.image_url} alt={a.title} />
+                            )}
                           </div>
                         )}
                         <div className="announcement-card-body">
@@ -1887,25 +1901,34 @@ export default function Admin() {
               <button className="modal-close" onClick={() => setAnnouncementModalOpen(false)}>✕</button>
             </div>
 
-            {/* Photo upload */}
+            {/* Photo / Video upload */}
             <div className="form-row">
-              <label>Image <span className="form-label-meta">optional — displays above the announcement card</span></label>
+              <label>Image / Video <span className="form-label-meta">optional — displays above the announcement card</span></label>
               <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                 {announcementPhotoPreview ? (
-                  <img
-                    src={announcementPhotoPreview}
-                    alt="Preview"
-                    style={{ width: 120, height: 70, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--line-dark)', flexShrink: 0 }}
-                  />
+                  announcementMediaIsVideo ? (
+                    <video
+                      src={announcementPhotoPreview}
+                      style={{ width: 120, height: 70, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--line-dark)', flexShrink: 0 }}
+                      muted
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={announcementPhotoPreview}
+                      alt="Preview"
+                      style={{ width: 120, height: 70, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--line-dark)', flexShrink: 0 }}
+                    />
+                  )
                 ) : (
                   <div style={{ width: 120, height: 70, borderRadius: 8, border: '1px dashed var(--line-dark)', background: 'var(--paper)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: 'var(--slate-light)', flexShrink: 0 }}>
-                    No image
+                    No media
                   </div>
                 )}
                 <div style={{ flex: 1 }}>
                   <input
                     type="file"
-                    accept="image/jpeg,image/png,image/webp"
+                    accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"
                     id="announcement-photo-input"
                     style={{ display: 'none' }}
                     onChange={handleAnnouncementPhotoSelect}
@@ -1914,16 +1937,22 @@ export default function Admin() {
                     htmlFor="announcement-photo-input"
                     style={{ display: 'inline-block', cursor: 'pointer', padding: '8px 14px', background: 'var(--paper)', border: '1px solid var(--line-dark)', borderRadius: 7, fontSize: 12.5, color: 'var(--navy)', fontWeight: 600, opacity: announcementPhotoCompressing ? 0.6 : 1, pointerEvents: announcementPhotoCompressing ? 'none' : 'auto' }}
                   >
-                    {announcementPhotoCompressing ? 'Compressing…' : announcementPhotoFile ? 'Change Image' : 'Choose Image'}
+                    {announcementPhotoCompressing ? 'Compressing…' : announcementPhotoFile ? (announcementMediaIsVideo ? 'Change Video' : 'Change Image') : 'Choose Image / Video'}
                   </label>
-                  {announcementPhotoFile && !announcementPhotoCompressing && <div style={{ marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)' }}>Image selected · {(announcementPhotoFile.size / 1024).toFixed(0)}KB (compressed)</div>}
+                  {announcementPhotoFile && !announcementPhotoCompressing && (
+                    <div style={{ marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)' }}>
+                      {announcementMediaIsVideo
+                        ? `Video selected · ${(announcementPhotoFile.size / (1024 * 1024)).toFixed(1)}MB`
+                        : `Image selected · ${(announcementPhotoFile.size / 1024).toFixed(0)}KB (compressed)`}
+                    </div>
+                  )}
                   {announcementForm.imageUrl && !announcementPhotoFile && (
                     <button
                       type="button"
                       style={{ display: 'block', marginTop: 6, fontSize: 11.5, color: 'var(--slate-light)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                      onClick={() => { setAnnouncementPhotoPreview(null); setAnnouncementForm((f) => ({ ...f, imageUrl: '' })); }}
+                      onClick={() => { setAnnouncementPhotoPreview(null); setAnnouncementMediaIsVideo(false); setAnnouncementForm((f) => ({ ...f, imageUrl: '' })); }}
                     >
-                      Remove image
+                      Remove media
                     </button>
                   )}
                 </div>

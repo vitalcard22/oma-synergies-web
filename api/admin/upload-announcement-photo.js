@@ -1,41 +1,27 @@
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var upload_announcement_photo_exports = {};
-__export(upload_announcement_photo_exports, {
-  default: () => handler
-});
-module.exports = __toCommonJS(upload_announcement_photo_exports);
-var import_supabase_js = require("@supabase/supabase-js");
+const { createClient } = require("@supabase/supabase-js");
 
-const supabaseAdmin = (0, import_supabase_js.createClient)(
+const supabaseAdmin = createClient(
   process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? "https://rxuylffiobkhmbyrmvlk.supabase.co",
   process.env.SUPABASE_SERVICE_ROLE_KEY,
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-async function handler(req, res) {
+const IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"];
+const ALLOWED_TYPES = [...IMAGE_TYPES, ...VIDEO_TYPES];
+
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;   // 5 MB
+const MAX_VIDEO_BYTES = 50 * 1024 * 1024;  // 50 MB
+
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
     return;
   }
 
-  const authHeader = req.headers.authorization;
-  const token = typeof authHeader === "string" ? authHeader.replace("Bearer ", "") : null;
+  const token = typeof req.headers.authorization === "string"
+    ? req.headers.authorization.replace("Bearer ", "")
+    : null;
   if (!token) {
     res.status(401).json({ error: "Missing authorization token." });
     return;
@@ -57,7 +43,7 @@ async function handler(req, res) {
     return;
   }
   if (callerProfile.role !== "super_admin" && callerProfile.role !== "staff_admin") {
-    res.status(403).json({ error: "Only staff accounts can upload images." });
+    res.status(403).json({ error: "Only staff accounts can upload media." });
     return;
   }
 
@@ -67,28 +53,26 @@ async function handler(req, res) {
     return;
   }
 
-  const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-  if (!allowed.includes(body.mimeType)) {
-    res.status(400).json({ error: "Only JPEG, PNG, and WebP images are supported." });
+  if (!ALLOWED_TYPES.includes(body.mimeType)) {
+    res.status(400).json({ error: "Supported formats: JPEG, PNG, WebP, MP4, WebM, MOV." });
     return;
   }
 
+  const isVideo = VIDEO_TYPES.includes(body.mimeType);
   const fileBuffer = Buffer.from(body.fileBase64, "base64");
-  if (fileBuffer.length > 5 * 1024 * 1024) {
-    res.status(400).json({ error: "Image must be under 5MB." });
+  const maxBytes = isVideo ? MAX_VIDEO_BYTES : MAX_IMAGE_BYTES;
+  if (fileBuffer.length > maxBytes) {
+    res.status(400).json({ error: `File must be under ${isVideo ? "50MB" : "5MB"}.` });
     return;
   }
 
-  // Use a timestamp-based unique name so each upload is a fresh file
-  const ext = body.mimeType.split("/")[1].replace("jpeg", "jpg");
+  const extMap = { "image/jpeg": "jpg", "image/jpg": "jpg", "image/png": "png", "image/webp": "webp", "video/mp4": "mp4", "video/webm": "webm", "video/quicktime": "mov" };
+  const ext = extMap[body.mimeType] ?? body.mimeType.split("/")[1];
   const storagePath = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
   const { error: uploadError } = await supabaseAdmin.storage
     .from("announcement-images")
-    .upload(storagePath, fileBuffer, {
-      contentType: body.mimeType,
-      upsert: false,
-    });
+    .upload(storagePath, fileBuffer, { contentType: body.mimeType, upsert: false });
 
   if (uploadError) {
     res.status(500).json({ error: `Upload failed: ${uploadError.message}` });
@@ -99,5 +83,5 @@ async function handler(req, res) {
     .from("announcement-images")
     .getPublicUrl(storagePath);
 
-  res.status(200).json({ success: true, photoUrl: urlData.publicUrl });
-}
+  res.status(200).json({ success: true, photoUrl: urlData.publicUrl, isVideo });
+};
