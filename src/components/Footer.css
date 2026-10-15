@@ -6,9 +6,10 @@ footer {
 @media (max-width: 900px) {
   footer { padding: 36px 0 20px; }
 }
-@media (max-width: 480px) {
-  footer { padding: 26px 0 14px; }
+@media (max-width: 640px) {
+  footer { padding: 32px 0 18px; }
 }
+
 .footer-grid {
   display: grid;
   grid-template-columns: 1.4fr repeat(3, 1fr);
@@ -18,12 +19,18 @@ footer {
 @media (max-width: 900px) {
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 32px; }
 }
-/* Keep the same compact two-column grid all the way down to phone widths -
-   a true single-column stack made the footer disproportionately tall, so
-   phones get tighter gaps/padding here rather than a different layout. */
-@media (max-width: 480px) {
-  .footer-grid { gap: 20px 16px; margin-bottom: 18px; }
+/* Single-column on phones — sections stack cleanly with a subtle
+   top border as the visual separator between groups. */
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 0; margin-bottom: 24px; }
+  .footer-brand { padding-bottom: 20px; }
+  .footer-col { border-top: 1px solid rgba(255, 255, 255, 0.07); padding-top: 18px; padding-bottom: 2px; }
 }
+@media (max-width: 480px) {
+  .footer-brand { padding-bottom: 16px; }
+  .footer-col { padding-top: 14px; }
+}
+
 .footer-brand img {
   height: 40px;
   width: auto;
@@ -31,6 +38,9 @@ footer {
 }
 @media (max-width: 900px) {
   .footer-brand img { margin-bottom: 12px; }
+}
+@media (max-width: 640px) {
+  .footer-brand img { height: 36px; margin-bottom: 10px; }
 }
 @media (max-width: 480px) {
   .footer-brand img { height: 32px; margin-bottom: 8px; }
@@ -40,8 +50,11 @@ footer {
   max-width: 280px;
   line-height: 1.6;
 }
+@media (max-width: 640px) {
+  .footer-brand p { max-width: none; font-size: 13px; }
+}
 @media (max-width: 480px) {
-  .footer-brand p { font-size: 12px; line-height: 1.45; }
+  .footer-brand p { font-size: 12.5px; line-height: 1.45; }
 }
 .footer-col h5 {
   font-family: var(--font-mono);
@@ -51,15 +64,21 @@ footer {
   color: rgba(255, 255, 255, 0.4);
   margin-bottom: 18px;
 }
+@media (max-width: 640px) {
+  .footer-col h5 { margin-bottom: 12px; }
+}
 @media (max-width: 480px) {
-  .footer-col h5 { margin-bottom: 8px; font-size: 10px; }
+  .footer-col h5 { margin-bottom: 10px; font-size: 10px; }
 }
 .footer-col li {
   margin-bottom: 12px;
   font-size: 14px;
 }
+@media (max-width: 640px) {
+  .footer-col li { margin-bottom: 9px; font-size: 13px; }
+}
 @media (max-width: 480px) {
-  .footer-col li { margin-bottom: 6px; font-size: 12.5px; line-height: 1.35; }
+  .footer-col li { margin-bottom: 7px; font-size: 12.5px; line-height: 1.35; }
 }
 .footer-col a:hover,
 .footer-col a:focus-visible {
@@ -94,7 +113,7 @@ footer {
   gap: 12px;
   font-size: 12.5px;
   font-family: var(--font-mono);
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.62);
 }
 @media (max-width: 900px) {
   .footer-bottom { padding-top: 16px; }

@@ -458,8 +458,8 @@
   .timeline-progress{position:absolute;top:26px;left:0;height:1px;width:0;background:var(--gold);z-index:1;transition:width 1.4s cubic-bezier(.19,1,.22,1) .3s;}
   .timeline.in .timeline-progress{width:100%;}
   .timeline-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;}
-  @media(max-width:900px){.timeline-steps{grid-template-columns:1fr;gap:22px;}.timeline-track,.timeline-progress{display:none;}}
-  @media(max-width:480px){.timeline{margin-top:16px;}.timeline-steps{gap:20px;}}
+  @media(max-width:900px){.timeline-steps{grid-template-columns:1fr;gap:18px;}.timeline-track,.timeline-progress{display:none;}}
+  @media(max-width:480px){.timeline{margin-top:16px;}.timeline-steps{gap:16px;}}
   /* Vertical connector for the mobile stacked layout - the desktop dotted
      track/progress line above only works horizontally across 4 grid
      columns, so this is its vertical equivalent for phones/tablets. Position
