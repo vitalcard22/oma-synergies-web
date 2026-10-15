@@ -115,12 +115,12 @@ export default function Contact() {
                   <label htmlFor="service">Service Interested In</label>
                   <select id="service" required value={service} onChange={(e) => setService(e.target.value)}>
                     <option value="" disabled>Select a service</option>
-                    <option>Global Admissions Processing</option>
-                    <option>Professional Academic & Career Branding</option>
+                    <option>Study Abroad</option>
+                    <option>SOP, CV & Research Proposal</option>
                     <option>End-to-End Visa Application Support</option>
                     <option>Document Review & Profile Verification</option>
                     <option>Study Loan Facilitation</option>
-                    <option>Comprehensive Flight Bookings & Travel Logistics</option>
+                    <option>Flight Booking & Hotel Reservations</option>
                     <option>Relocation & Destination Assistance</option>
                     <option>Tours & Packages</option>
                     <option>Not sure yet, need guidance</option>
