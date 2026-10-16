@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 // element's own height - use that instead, everywhere .reveal/.stagger is used.
 const REVEAL_ROOT_MARGIN = '0px 0px -10% 0px';
 
-export function useScrollReveal() {
+export function useScrollReveal(dep?: unknown) {
   useEffect(() => {
     const els = document.querySelectorAll('.reveal');
     const io = new IntersectionObserver(
@@ -26,7 +26,8 @@ export function useScrollReveal() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dep]);
 }
 
 export function useStaggerReveal(selector: string, itemSelector: string) {

@@ -113,15 +113,17 @@ const FAQS = [
 ];
 
 export default function Home() {
-  useScrollReveal();
+  const { testimonials } = useTestimonials();
+  const { tours } = usePublicTours();
+  const { announcements } = usePublicAnnouncements();
+  // Pass announcements.length so the observer re-runs after async data loads
+  // and picks up the radar-section .reveal elements that weren't in the DOM yet.
+  useScrollReveal(announcements.length);
   useStaggerReveal('.service-grid.stagger', '.service-card');
   useStaggerReveal('.test-track.stagger', '.test-card, .video-slot');
   useStaggerReveal('.dest-grid.stagger', '.dest-card');
   const statsRef = useCountUp();
   const heroStatsRef = useCountUp();
-  const { testimonials } = useTestimonials();
-  const { tours } = usePublicTours();
-  const { announcements } = usePublicAnnouncements();
 
   const [headlineIdx, setHeadlineIdx] = useState(0);
   const [leadIdx, setLeadIdx] = useState(0);
