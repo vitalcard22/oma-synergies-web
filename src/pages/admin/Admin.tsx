@@ -535,8 +535,8 @@ export default function Admin() {
     const file = e.target.files?.[0];
     if (!file) return;
     const isVid = file.type.startsWith('video/');
-    const maxBytes = isVid ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
-    if (file.size > maxBytes) { setAnnouncementError(isVid ? 'Video must be under 50MB.' : 'Photo must be under 5MB.'); return; }
+    const maxBytes = isVid ? 500 * 1024 * 1024 : 5 * 1024 * 1024;
+    if (file.size > maxBytes) { setAnnouncementError(isVid ? 'Video must be under 500MB.' : 'Photo must be under 5MB.'); return; }
     setAnnouncementError(null);
     setAnnouncementMediaIsVideo(isVid);
     if (isVid) {
