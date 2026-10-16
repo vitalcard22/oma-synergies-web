@@ -562,33 +562,23 @@ export default function Admin() {
 
     let imageUrl = announcementForm.imageUrl;
 
-    // Upload photo first if a new one was selected
+    // Upload media directly to Supabase Storage (bypasses Vercel function size limit)
     if (announcementPhotoFile) {
       setAnnouncementPhotoUploading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        const base64 = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve((reader.result as string).split(',')[1]);
-          reader.readAsDataURL(announcementPhotoFile);
-        });
-        const uploadRes = await fetch('/api/admin/upload-announcement-photo', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
-          body: JSON.stringify({ fileName: announcementPhotoFile.name, fileBase64: base64, mimeType: announcementPhotoFile.type }),
-        });
-        const uploadData = await uploadRes.json();
-        if (!uploadRes.ok) {
-          setAnnouncementError(uploadData.error ?? 'Photo upload failed.');
-          setAnnouncementSaving(false);
-          setAnnouncementPhotoUploading(false);
-          return;
-        }
-        if (uploadData.photoUrl) {
-          imageUrl = uploadData.photoUrl;
-          setAnnouncementPhotoPreview(uploadData.photoUrl);
-        }
+      const ext = announcementPhotoFile.name.split('.').pop() ?? 'bin';
+      const storagePath = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: uploadErr } = await supabase.storage
+        .from('announcement-images')
+        .upload(storagePath, announcementPhotoFile, { contentType: announcementPhotoFile.type, upsert: false });
+      if (uploadErr) {
+        setAnnouncementError(`Upload failed: ${uploadErr.message}`);
+        setAnnouncementSaving(false);
+        setAnnouncementPhotoUploading(false);
+        return;
       }
+      const { data: urlData } = supabase.storage.from('announcement-images').getPublicUrl(storagePath);
+      imageUrl = urlData.publicUrl;
+      setAnnouncementPhotoPreview(urlData.publicUrl);
       setAnnouncementPhotoUploading(false);
     }
 
