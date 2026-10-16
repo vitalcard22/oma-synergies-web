@@ -1977,7 +1977,7 @@ export default function Admin() {
             {announcementError && <div className="login-error">{announcementError}</div>}
             <div className="modal-actions">
               <button className="btn-save" onClick={handleSaveAnnouncement} disabled={announcementSaving || announcementPhotoUploading || announcementPhotoCompressing}>
-                {announcementPhotoUploading ? 'Uploading image…' : announcementSaving ? 'Saving…' : 'Save'}
+                {announcementPhotoUploading ? (announcementMediaIsVideo ? 'Uploading video…' : 'Uploading image…') : announcementSaving ? 'Saving…' : 'Save'}
               </button>
               <button className="icon-btn" style={{ width: 'auto', padding: '0 16px' }} onClick={() => setAnnouncementModalOpen(false)} disabled={announcementSaving || announcementPhotoUploading}>Cancel</button>
             </div>
