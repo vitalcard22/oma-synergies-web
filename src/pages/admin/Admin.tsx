@@ -1721,7 +1721,7 @@ export default function Admin() {
                         {a.image_url && (
                           <div className="announcement-card-img">
                             {/\.(mp4|webm|mov)$/i.test(a.image_url) ? (
-                              <video src={a.image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted playsInline loop />
+                              <video src={a.image_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} controls playsInline preload="metadata" />
                             ) : (
                               <img src={a.image_url} alt={a.title} />
                             )}

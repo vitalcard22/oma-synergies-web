@@ -729,7 +729,7 @@ export default function Home() {
                   {a.image_url && (
                     <div className="radar-card-img">
                       {/\.(mp4|webm|mov)$/i.test(a.image_url) ? (
-                        <video src={a.image_url} style={{ width: '100%', height: 'auto', display: 'block' }} muted playsInline loop autoPlay />
+                        <video src={a.image_url} style={{ width: '100%', height: 'auto', display: 'block' }} controls playsInline preload="metadata" />
                       ) : (
                         <img src={a.image_url} alt={a.title} loading="lazy" />
                       )}
